@@ -13,7 +13,7 @@ public class InputManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    /*void Update()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
@@ -48,5 +48,5 @@ public class InputManager : MonoBehaviour
             print("A is pressed");
             conn.Move("-1", "0");
         }
-    }
+    }*/
 }
