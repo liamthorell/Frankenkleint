@@ -16,35 +16,26 @@ public class Connection : MonoBehaviour
         chunkManager = GetComponent<ChunkManager>();
     }
 
-    async private void Start()
+    private async void Start()
     {
         print("Starting");
         ws =  new WebSocket("wss://daydun.com:666");
         //ws.OnMessage += WebSocketHandler;
         
-        ws.OnOpen += () =>
-        {
-            Debug.Log("Connection open!");
-        };
-
-        ws.OnError += (e) =>
-        {
-            Debug.Log("Error! " + e);
-        };
-
-        ws.OnClose += (e) =>
-        {
-            Debug.Log("Connection closed!");
-        };
+        ws.OnMessage += WebSocketHandler;
         
-        ws.OnMessage += (bytes) =>
-        {
-            var message = Encoding.UTF8.GetString(bytes);
-            Debug.Log("OnMessage! " + message);
-        };
+        Invoke(nameof(Connect), 0.5f);
         
         await ws.Connect();
         
+    }
+    void Update()
+    {
+        ws.DispatchMessageQueue();
+    }
+
+    async void Connect()
+    {
         var data =  
             new Dictionary<string, string>(){
                 {"type", "connect"},
@@ -54,14 +45,11 @@ public class Connection : MonoBehaviour
         string json = JsonConvert.SerializeObject(data);
         await ws.SendText(json);
     }
-    void Update()
-    {
-        ws.DispatchMessageQueue();
-    }
 
-    /*private void WebSocketHandler(object sender, MessageEventArgs e)
+    private void WebSocketHandler(byte[] bytes)
     {
-        var data = JsonConvert.DeserializeObject<IDictionary>(e.Data);
+        var message = Encoding.UTF8.GetString(bytes);
+        var data = JsonConvert.DeserializeObject<IDictionary>(message);
         print($"Packet type: {data["type"]}");
 
         switch (data["type"])
@@ -70,9 +58,9 @@ public class Connection : MonoBehaviour
                 chunkManager.HandleTick(data);
                 break;
         }
-    }*/
+    }
 
-    /*public void Interact(string x, string y, string slot)
+    public async void Interact(string x, string y, string slot)
     {
         var data =  
             new Dictionary<string, string>(){
@@ -83,10 +71,10 @@ public class Connection : MonoBehaviour
             };
 
         string json = JsonConvert.SerializeObject(data);
-        ws.Send(json);
-    }*/
+        await ws.SendText(json);
+    }
     
-    /*public void Move(string x, string y)
+    public async void Move(string x, string y)
     {
         var data =  
             new Dictionary<string, string>(){
@@ -96,6 +84,6 @@ public class Connection : MonoBehaviour
             };
 
         string json = JsonConvert.SerializeObject(data);
-        ws.Send(json);
-    }*/
+        await ws.SendText(json);
+    }
 }
