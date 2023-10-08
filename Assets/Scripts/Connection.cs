@@ -30,7 +30,9 @@ public class Connection : MonoBehaviour
     
     void Update()
     {
+#if !UNITY_WEBGL || UNITY_EDITOR
         ws.DispatchMessageQueue();
+#endif
     }
 
     async void Connect()
