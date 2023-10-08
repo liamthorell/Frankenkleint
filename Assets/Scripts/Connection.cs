@@ -64,7 +64,7 @@ public class Connection : MonoBehaviour
     public async void Interact(string x, string y, string slot)
     {
         var data =  
-            new Dictionary<string, string>(){
+            new Dictionary<string, string>{
                 {"type", "interact"},
                 {"x", x},
                 {"y", y},
@@ -78,7 +78,7 @@ public class Connection : MonoBehaviour
     public async void Move(string x, string y)
     {
         var data =  
-            new Dictionary<string, string>(){
+            new Dictionary<string, string>{
                 {"type", "move"},
                 {"x", x},
                 {"y", y}

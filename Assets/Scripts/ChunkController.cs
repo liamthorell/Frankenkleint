@@ -4,10 +4,27 @@ using UnityEngine;
 
 public class ChunkController : MonoBehaviour
 {
-    // Start is called before the first frame update
     public Dictionary<string, string>[,] map;
     public Dictionary<string, object>[] entities;
+    
+    public Material blockMaterial;
+    private Dictionary<string, Material> materials;
+    
+    public void Init()
+    {
+        materials = new Dictionary<string, Material>();
+        
+        string[] blockTypes = { "dirt", "concrete", "wood", "leaves", "tombstone", "none" };
 
+        for (int i = 0; i < blockTypes.Length; i++)
+        {        
+            Material material = new Material(blockMaterial);
+            material.SetFloat("_index", i);
+            materials.Add(blockTypes[i], material);
+        }
+        print(materials.Keys);
+    }
+    
     public void GenerateBlocks()
     {
         print("Starting generation");
@@ -18,30 +35,27 @@ public class ChunkController : MonoBehaviour
                 var block = map[y + 7, x + 7];
 
                 if (block["type"] == "air") continue;
-                
-                if (block["type"] == "dirt")
+
+                switch (block["type"])
                 {
-                    CreateBlock(PrimitiveType.Cube, new Color32(87, 73, 36,255), x, y);
-                } 
-                else if (block["type"] == "concrete")
-                {
-                    CreateBlock(PrimitiveType.Cube, new Color32(150, 150, 150,255), x, y);
-                }
-                else if (block["type"] == "tombstone")
-                {
-                    CreateBlock(PrimitiveType.Cylinder, new Color32(79, 79, 79,255), x, y);
-                }
-                else if (block["type"] == "wood")
-                {
-                    CreateBlock(PrimitiveType.Cube, new Color32(214, 154, 75,255), x, y);
-                }
-                else if (block["type"] == "leaves")
-                {
-                    CreateBlock(PrimitiveType.Cube, new Color32(94, 204, 78,255), x, y);
-                }
-                else
-                {
-                    CreateBlock(PrimitiveType.Cube, new Color32(173, 49, 49,255), x, y);
+                    case "dirt":
+                        CreateBlock(PrimitiveType.Cube, "dirt", x, y);
+                        break;
+                    case "concrete":
+                        CreateBlock(PrimitiveType.Cube, "concrete", x, y);
+                        break;
+                    case "tombstone":
+                        CreateBlock(PrimitiveType.Cylinder, "tombstone", x, y);
+                        break;
+                    case "wood":
+                        CreateBlock(PrimitiveType.Cube, "wood", x, y);
+                        break;
+                    case "leaves":
+                        CreateBlock(PrimitiveType.Cube, "leaves", x, y);
+                        break;
+                    default:
+                        CreateBlock(PrimitiveType.Cube, "none", x, y);
+                        break;
                 }
             }
         }
@@ -54,33 +68,32 @@ public class ChunkController : MonoBehaviour
         {
             int x = int.Parse((string)entity["x"]);
             int y = int.Parse((string)entity["y"]);
-            
-            if ((string)entity["type"] == "player")
+
+            switch ((string)entity["type"])
             {
-                CreateBlock(PrimitiveType.Capsule, new Color32(240, 200, 0,255), x, y);
+                case "player":
+                    CreateBlock(PrimitiveType.Capsule, "none", x, y);
+                    break;
+                case "monster":
+                    CreateBlock(PrimitiveType.Capsule, "none", x, y);
+                    break;
+                case "ghost":
+                    CreateBlock(PrimitiveType.Capsule, "none", x, y);
+                    break;
+                default:
+                    CreateBlock(PrimitiveType.Capsule, "none", x, y);
+                    break;
             }
-            if ((string)entity["type"] == "monster")
-            {
-                CreateBlock(PrimitiveType.Capsule, new Color32(240, 0, 0,255), x, y);
-            }
-            if ((string)entity["type"] == "monster")
-            {
-                CreateBlock(PrimitiveType.Capsule, new Color32(255, 255, 255,255), x, y);
-            }
-            else
-            {
-                CreateBlock(PrimitiveType.Capsule, new Color32(173, 49, 49,255), x, y);
-            }
-            
         }
     }
 
-    private void CreateBlock(PrimitiveType type, Color color, int x, int y)
+    private void CreateBlock(PrimitiveType type, string textureName, int x, int y)
     {
         var block = GameObject.CreatePrimitive(type);
         block.transform.position = new Vector3(x, 0,y);
         block.name = "Block";
         block.transform.parent = transform;
-        block.GetComponent<Renderer>().material.color = color;
+
+        block.GetComponent<Renderer>().sharedMaterial = materials[textureName];
     }
 }
