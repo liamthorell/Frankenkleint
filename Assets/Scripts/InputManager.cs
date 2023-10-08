@@ -50,5 +50,15 @@ public class InputManager : MonoBehaviour
             print("A is pressed");
             conn.Move("-1", "0");
         }
+        if (Input.GetKeyDown(KeyCode.PageUp))
+        {
+            print("PageUp is pressed");
+            conn.Move("1i", "0");
+        }
+        if (Input.GetKeyDown(KeyCode.PageDown))
+        {
+            print("PageDown is pressed");
+            conn.Move("-1i", "0");
+        }
     }
 }
