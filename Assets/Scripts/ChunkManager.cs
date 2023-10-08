@@ -18,6 +18,13 @@ public class ChunkManager : MonoBehaviour
         
     }
 
+    private void Start()
+    {
+        print("yay before bad 2");
+        Instantiate(chunkPrefab, chuncksGameObject.transform);
+        print("yay after goo 2");
+    }
+
     public void HandleTick(IDictionary data)
     {
         print("yay before bad");
