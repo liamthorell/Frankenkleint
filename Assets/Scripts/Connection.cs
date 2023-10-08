@@ -8,6 +8,13 @@ using Newtonsoft.Json;
 public class Connection : MonoBehaviour
 {
     private WebSocket ws;
+    private ChunkManager chunkManager;
+
+    private void Awake()
+    {
+        chunkManager = GetComponent<ChunkManager>();
+    }
+
     private void Start()
     {
         print("Starting");
@@ -26,14 +33,17 @@ public class Connection : MonoBehaviour
         ws.Send(json);
     }
 
-    private void OnDestroy()
-    {
-        ws.Close();
-    }
-
     private void WebSocketHandler(object sender, MessageEventArgs e)
     {
-        print($"Packets {e.Data}");
+        var data = JsonConvert.DeserializeObject<IDictionary>(e.Data);
+        print($"Packet type: {data["type"]}");
+
+        switch (data["type"])
+        {
+            case "tick":
+                chunkManager.HandleTick(data);
+                break;
+        }
     }
 
     public void Interact(string x, string y, string slot)
