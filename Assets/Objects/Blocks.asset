@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e6a48cbd9c25044ba8b1cb7e0e2ccd5, type: 3}
+  m_Name: Blocks
+  m_EditorClassIdentifier: 
+  blocks:
+  - name: dirt
+    textureIndex: 0
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
+  - name: concrete
+    textureIndex: 1
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
+  - name: wood
+    textureIndex: 2
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
+  - name: leaves
+    textureIndex: 3
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
+  - name: tombstone
+    textureIndex: 4
+    modelOverride: {fileID: 8763126163069985025, guid: d6258866e4d41d545b230c1cea4781cc, type: 3}
+    material: {fileID: 0}
+  - name: amethyst
+    textureIndex: 5
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
+  - name: spawner
+    textureIndex: 6
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
+  - name: mystery
+    textureIndex: 7
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
+  - name: none
+    textureIndex: 255
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}

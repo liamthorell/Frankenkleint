@@ -20,13 +20,45 @@ public class ChunkManager : MonoBehaviour
 
     private Connection conn;
 
-    private List<Vector3Int> chunkQueue = new List<Vector3Int>();
+    private List<Vector3Int> chunkQueue = new();
 
     public bool isRendering;
 
+    // very temporary way of doing it
+    public BlockTypes blockTypesObject; 
+    public List<BlockTypes.BlockType> blockTypes;
+    
     public void Awake()
     {
         conn = GetComponent<Connection>();
+
+        blockTypes = ParseBlockTypes(blockTypesObject);
+    }
+
+    private List<BlockTypes.BlockType> ParseBlockTypes(BlockTypes types)
+    {
+        List<BlockTypes.BlockType> res = new();
+
+        foreach (var entry in types.blocks)
+        {
+            var temp = new BlockTypes.BlockType
+            {
+                textureIndex = entry.textureIndex,
+                name = entry.name,
+                modelOverride = entry.modelOverride
+            };
+
+            if (entry.modelOverride == null)
+            {
+                var material = new Material(blockMaterial);
+                material.SetFloat("_index", temp.textureIndex);
+                temp.material = material;
+            }
+
+            res.Add(temp);
+        }
+
+        return res;
     }
 
     public void CreateChunk(Vector3Int position, IDictionary data)
@@ -38,12 +70,11 @@ public class ChunkManager : MonoBehaviour
 
         var chunk = Instantiate(chunkObject, chunksGameObject.transform);
         var chunkController = chunk.GetComponent<ChunkController>();
-        chunkController.blockMaterial = blockMaterial;
+        chunkController.types = blockTypes;
         chunkController.map = ConvertObject<Dictionary<string,string>[,]>(data["map"]);
         chunkController.entities = ConvertObject<Dictionary<string,object>[]>(data["entities"]);
         chunkController.chunkPosition = ConvertPositionToRelativeZero(position);
 
-        chunkController.Init();
         chunkController.GenerateBlocks();
         chunkController.GenerateEntities();
         

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ChunkController : MonoBehaviour
@@ -8,25 +9,8 @@ public class ChunkController : MonoBehaviour
     public Dictionary<string, object>[] entities;
     public Vector3Int chunkPosition;
     
-    public Material blockMaterial;
-    private Dictionary<string, Material> materials;
-    
-    
-    public void Init()
-    {
-        materials = new Dictionary<string, Material>();
-        
-        string[] blockTypes = { "dirt", "concrete", "wood", "leaves", "tombstone", "none" };
+    public List<BlockTypes.BlockType> types; // also temporary as heck
 
-        for (int i = 0; i < blockTypes.Length; i++)
-        {        
-            Material material = new Material(blockMaterial);
-            material.SetFloat("_index", i);
-            materials.Add(blockTypes[i], material);
-        }
-        print(materials.Keys);
-    }
-    
     public void GenerateBlocks()
     {
         print("Starting generation");
@@ -37,28 +21,20 @@ public class ChunkController : MonoBehaviour
                 var block = map[y + 7, x + 7];
 
                 if (block["type"] == "air") continue;
-
-                switch (block["type"])
+                
+                var type = block["type"]; // todo error handling if doesnt exist
+                CreateBlock(type, x, y);
+                
+                /*switch (block["type"])
                 {
-                    case "dirt":
-                        CreateBlock(PrimitiveType.Cube, "dirt", x, y);
-                        break;
-                    case "concrete":
-                        CreateBlock(PrimitiveType.Cube, "concrete", x, y);
-                        break;
                     case "tombstone":
                         CreateBlock(PrimitiveType.Cylinder, "tombstone", x, y, 0.6f);
                         break;
-                    case "wood":
-                        CreateBlock(PrimitiveType.Cube, "wood", x, y);
-                        break;
-                    case "leaves":
-                        CreateBlock(PrimitiveType.Cube, "leaves", x, y);
-                        break;
                     default:
-                        CreateBlock(PrimitiveType.Cube, "none", x, y);
+                        var type = block.ContainsKey(block["type"]) ? block["type"] : "none";
+                        CreateBlock(PrimitiveType.Cube, type, x, y);
                         break;
-                }
+                }*/
             }
         }
     }
@@ -66,7 +42,7 @@ public class ChunkController : MonoBehaviour
     public void GenerateEntities()
     {
         print("Generating entities");
-        foreach (Dictionary<string, object> entity in entities)
+        foreach (var entity in entities)
         {
             int x = int.Parse((string)entity["x"]);
             int y = int.Parse((string)entity["y"]);
@@ -75,29 +51,46 @@ public class ChunkController : MonoBehaviour
             {
                 case "player":
                     if (chunkPosition.y != 0) break;
-                    CreateBlock(PrimitiveType.Capsule, "none", x, y, 0.6f);
+                    CreateBlock("none", x, y);
                     break;
                 case "monster":
-                    CreateBlock(PrimitiveType.Capsule, "none", x, y, 0.6f);
+                    CreateBlock("none", x, y);
                     break;
                 case "ghost":
-                    CreateBlock(PrimitiveType.Capsule, "none", x, y, 0.6f);
+                    CreateBlock("none", x, y);
                     break;
                 default:
-                    CreateBlock(PrimitiveType.Capsule, "none", x, y, 0.6f);
+                    CreateBlock("none", x, y);
                     break;
             }
         }
     }
 
-    private void CreateBlock(PrimitiveType type, string textureName, int x, int y, float scale = 1)
-    {
-        var block = GameObject.CreatePrimitive(type);
-        block.transform.position = new Vector3(x + (15 * chunkPosition.x),chunkPosition.y ,y + (15 * chunkPosition.z));
+    private void CreateBlock(string textureName, int x, int y, float scale = 1)
+    { 
+        BlockTypes.BlockType type = types.Find(item => item.name == textureName);
+        if (type.material == null && type.modelOverride == null) // todo clean this ugly ass shit up
+        {
+            type = types.Find(item => item.name == "none");
+        }
+
+        GameObject block;
+        if (type.modelOverride == null)
+        {
+
+            block = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            block.GetComponent<Renderer>().sharedMaterial = type.material;
+            block.name = "Block";
+        }
+        else
+        {
+            block = Instantiate(type.modelOverride);
+        }
+        
+        block.transform.position =
+            new Vector3(x + (15 * chunkPosition.x), chunkPosition.y, y + (15 * chunkPosition.z));
         block.name = "Block";
         block.transform.localScale = new Vector3(1f, scale, 1f);
         block.transform.parent = transform;
-
-        block.GetComponent<Renderer>().sharedMaterial = materials[textureName];
     }
 }
