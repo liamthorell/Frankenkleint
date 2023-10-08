@@ -21,7 +21,7 @@ public class ChunkManager : MonoBehaviour
     public void HandleTick(IDictionary data)
     {
         print("yay before bad");
-        Instantiate(chunkPrefab, this.transform);
+        Instantiate(chunkPrefab, chuncksGameObject.transform);
         print("yay after goo");
     }
 }
