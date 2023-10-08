@@ -5,14 +5,12 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     private Connection conn;
-    // Start is called before the first frame update
     
     private void Awake ()
     {
         conn = GetComponent<Connection>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))

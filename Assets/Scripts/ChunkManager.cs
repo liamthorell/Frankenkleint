@@ -6,13 +6,11 @@ using UnityEngine;
 public class ChunkManager : MonoBehaviour
 {
     static public int ViewDistance = 3;
-    // Start is called before the first frame update
-    private GameObject[,,] chunks = new GameObject[15,15,15];
+    private GameObject[,,] chunks = new GameObject[3, 3, 6];
 
-    public GameObject chunkPrefab;
+    public GameObject chunkObject;
     public GameObject chuncksGameObject;
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -25,8 +23,11 @@ public class ChunkManager : MonoBehaviour
 
     public void HandleTick(IDictionary data)
     {
-        print("yay before bad");
-        Instantiate(chunkPrefab, chuncksGameObject.transform);
-        print("yay after goo");
+        if (chunks[1, 1, 2] != null)
+        {
+            Destroy(chunks[1,1,2]);
+        }
+        var chunk = Instantiate(chunkObject, chuncksGameObject.transform);
+        chunks[1, 1, 2] = chunk;
     }
 }

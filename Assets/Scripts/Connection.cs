@@ -20,15 +20,14 @@ public class Connection : MonoBehaviour
     {
         print("Starting");
         ws =  new WebSocket("wss://daydun.com:666");
-        //ws.OnMessage += WebSocketHandler;
         
         ws.OnMessage += WebSocketHandler;
         
         Invoke(nameof(Connect), 0.5f);
         
         await ws.Connect();
-        
     }
+    
     void Update()
     {
         ws.DispatchMessageQueue();
