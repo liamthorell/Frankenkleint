@@ -74,6 +74,7 @@ public class ChunkController : MonoBehaviour
             switch ((string)entity["type"])
             {
                 case "player":
+                    if (chunkPosition.y != 0) break;
                     CreateBlock(PrimitiveType.Capsule, "none", x, y, 0.6f);
                     break;
                 case "monster":
