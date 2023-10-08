@@ -5,14 +5,18 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     private Connection conn;
+    private ChunkManager chunkManager;
     
     private void Awake ()
     {
         conn = GetComponent<Connection>();
+        chunkManager = GetComponent<ChunkManager>();
     }
 
     void Update()
     {
+        if (chunkManager.isRendering) return;
+        
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             print(Input.mousePosition);

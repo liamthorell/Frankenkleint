@@ -6,9 +6,11 @@ public class ChunkController : MonoBehaviour
 {
     public Dictionary<string, string>[,] map;
     public Dictionary<string, object>[] entities;
+    public Vector3Int chunkPosition;
     
     public Material blockMaterial;
     private Dictionary<string, Material> materials;
+    
     
     public void Init()
     {
@@ -45,7 +47,7 @@ public class ChunkController : MonoBehaviour
                         CreateBlock(PrimitiveType.Cube, "concrete", x, y);
                         break;
                     case "tombstone":
-                        CreateBlock(PrimitiveType.Cylinder, "tombstone", x, y);
+                        CreateBlock(PrimitiveType.Cylinder, "tombstone", x, y, 0.6f);
                         break;
                     case "wood":
                         CreateBlock(PrimitiveType.Cube, "wood", x, y);
@@ -72,26 +74,27 @@ public class ChunkController : MonoBehaviour
             switch ((string)entity["type"])
             {
                 case "player":
-                    CreateBlock(PrimitiveType.Capsule, "none", x, y);
+                    CreateBlock(PrimitiveType.Capsule, "none", x, y, 0.6f);
                     break;
                 case "monster":
-                    CreateBlock(PrimitiveType.Capsule, "none", x, y);
+                    CreateBlock(PrimitiveType.Capsule, "none", x, y, 0.6f);
                     break;
                 case "ghost":
-                    CreateBlock(PrimitiveType.Capsule, "none", x, y);
+                    CreateBlock(PrimitiveType.Capsule, "none", x, y, 0.6f);
                     break;
                 default:
-                    CreateBlock(PrimitiveType.Capsule, "none", x, y);
+                    CreateBlock(PrimitiveType.Capsule, "none", x, y, 0.6f);
                     break;
             }
         }
     }
 
-    private void CreateBlock(PrimitiveType type, string textureName, int x, int y)
+    private void CreateBlock(PrimitiveType type, string textureName, int x, int y, float scale = 1)
     {
         var block = GameObject.CreatePrimitive(type);
-        block.transform.position = new Vector3(x, 0,y);
+        block.transform.position = new Vector3(x + (15 * chunkPosition.x),chunkPosition.y ,y + (15 * chunkPosition.z));
         block.name = "Block";
+        block.transform.localScale = new Vector3(1f, scale, 1f);
         block.transform.parent = transform;
 
         block.GetComponent<Renderer>().sharedMaterial = materials[textureName];

@@ -40,7 +40,7 @@ public class Connection : MonoBehaviour
         var data =  
             new Dictionary<string, string>(){
                 {"type", "connect"},
-                {"name", "lol"},
+                {"name", "balls420"},
             };
         
         string json = JsonConvert.SerializeObject(data);
@@ -57,6 +57,9 @@ public class Connection : MonoBehaviour
         {
             case "tick":
                 chunkManager.HandleTick(data);
+                break;
+            case "move":
+                chunkManager.HandleMove(data);
                 break;
         }
     }
