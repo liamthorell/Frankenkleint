@@ -66,16 +66,30 @@ public class ChunkManager : MonoBehaviour
 
     public void CreateChunk(Vector3Int position, IDictionary data)
     {
-        if (chunks[position.x, position.y, position.z] != null)
+        var map = ConvertObject<Dictionary<string, string>[,]>(data["map"]);
+        var entities = ConvertObject<Dictionary<string,object>[]>(data["entities"]);
+
+        var currentChunk = chunks[position.x, position.y, position.z];
+
+        if (currentChunk != null)
         {
-            Destroy(chunks[position.x, position.y, position.z]);
+            var currentChunkController = currentChunk.GetComponent<ChunkController>();
+            
+            if (JsonConvert.SerializeObject(currentChunkController.map) == JsonConvert.SerializeObject(map) && JsonConvert.SerializeObject(currentChunkController.entities) == JsonConvert.SerializeObject(entities))
+            {
+                return;
+            } 
+            
+            Destroy(currentChunk);
         }
+        
+        
 
         var chunk = Instantiate(chunkObject, chunksGameObject.transform);
         var chunkController = chunk.GetComponent<ChunkController>();
         chunkController.types = blockTypes;
-        chunkController.map = ConvertObject<Dictionary<string,string>[,]>(data["map"]);
-        chunkController.entities = ConvertObject<Dictionary<string,object>[]>(data["entities"]);
+        chunkController.map = map;
+        chunkController.entities = entities;
         chunkController.chunkPosition = ConvertPositionToRelativeZero(position);
 
         chunkController.GenerateBlocks();
