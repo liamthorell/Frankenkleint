@@ -2,40 +2,46 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net.WebSockets;
 using UnityEngine;
-using NativeWebSocket;
+using Websocket.Client;
 using Newtonsoft.Json;
 using System.Text;
 public class Connection : MonoBehaviour
 {
-    private WebSocket ws;
+    private WebsocketClient ws;
     private ChunkManager chunkManager;
+    private bool newPacket;
+    private ResponseMessage resp;
 
     private void Awake()
     {
+        newPacket = false;
         chunkManager = GetComponent<ChunkManager>();
     }
 
     private async void Start()
     {
         print("Starting");
-        ws =  new WebSocket("wss://daydun.com:666");
+        var url = new Uri("wss://daydun.com:666");
+        ws = new WebsocketClient(url);
         
-        ws.OnMessage += WebSocketHandler;
+        ws.MessageReceived.Subscribe((msg) =>
+        {
+            resp = msg;
+            newPacket = true;
+        });
+        await ws.Start();
         
-        Invoke(nameof(Connect), 0.5f);
-        
-        await ws.Connect();
-    }
-    
-    void Update()
-    {
-#if !UNITY_WEBGL || UNITY_EDITOR
-        ws.DispatchMessageQueue();
-#endif
+        Connect();
     }
 
-    async void Connect()
+    private async void OnDestroy()
+    {
+        await ws.Stop(WebSocketCloseStatus.NormalClosure, "Closed");
+    }
+
+    void Connect()
     {
         var data =  
             new Dictionary<string, string>(){
@@ -44,13 +50,25 @@ public class Connection : MonoBehaviour
             };
         
         string json = JsonConvert.SerializeObject(data);
-        await ws.SendText(json);
+        ws.Send(json);
+        print("Done connecting");
     }
 
-    private void WebSocketHandler(byte[] bytes)
+    private void Update()
     {
-        var message = Encoding.UTF8.GetString(bytes);
-        var data = JsonConvert.DeserializeObject<IDictionary>(message);
+        if (newPacket)
+        {
+            newPacket = false;
+            WebSocketHandler();
+        }
+    }
+
+    private void WebSocketHandler()
+    {
+        if (resp == null || resp.MessageType != WebSocketMessageType.Text || resp.Text == null) return;
+
+        var data = JsonConvert.DeserializeObject<IDictionary>(resp.Text);
+        
         print($"Packet type: {data["type"]}");
 
         switch (data["type"])
@@ -64,7 +82,7 @@ public class Connection : MonoBehaviour
         }
     }
 
-    public async void Interact(string x, string y, string slot)
+    public void Interact(string x, string y, string slot)
     {
         var data =  
             new Dictionary<string, string>{
@@ -75,10 +93,10 @@ public class Connection : MonoBehaviour
             };
 
         string json = JsonConvert.SerializeObject(data);
-        await ws.SendText(json);
+        ws.Send(json);
     }
     
-    public async void Move(string x, string y)
+    public void Move(string x, string y)
     {
         var data =  
             new Dictionary<string, string>{
@@ -88,6 +106,7 @@ public class Connection : MonoBehaviour
             };
 
         string json = JsonConvert.SerializeObject(data);
-        await ws.SendText(json);
+        ws.Send(json);
+        print("Done moving");
     }
 }

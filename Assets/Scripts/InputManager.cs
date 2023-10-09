@@ -30,24 +30,28 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             print("W is pressed");
+            chunkManager.IsDoingMove();
             conn.Move("0", "1");
         }
         
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             print("S is pressed");
+            chunkManager.IsDoingMove();
             conn.Move("0", "-1");
         }
         
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             print("D is pressed");
+            chunkManager.IsDoingMove();
             conn.Move("1", "0");
         }
         
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             print("A is pressed");
+            chunkManager.IsDoingMove();
             conn.Move("-1", "0");
         }
         if (Input.GetKeyDown(KeyCode.PageUp))

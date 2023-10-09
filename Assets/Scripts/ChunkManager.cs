@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 
 public class ChunkManager : MonoBehaviour
 {
-     public static int ViewDistance = 3;
+     public static int ViewDistance = 5;
      public static int HeightDistance = 7;
      public static int ViewDelta = (ViewDistance - 1) / 2;
      public static int HeightDelta = (HeightDistance - 1) / 2;
@@ -23,7 +23,11 @@ public class ChunkManager : MonoBehaviour
 
     private Connection conn;
 
-    private List<Vector3Int> chunkQueue = new();
+    //private List<Vector3Int> chunkQueue = new();
+
+    private List<Vector3Int> allChunkPositions = new();
+
+    private Vector3Int nextChunk;
 
     public bool isRendering;
 
@@ -36,6 +40,16 @@ public class ChunkManager : MonoBehaviour
         conn = GetComponent<Connection>();
 
         blockTypes = ParseBlockTypes(blockTypesObject);
+        
+        RestockChunks();
+
+        nextChunk = new Vector3Int(-2, -2, -2);
+    }
+
+    public void IsDoingMove()
+    {
+        nextChunk = new Vector3Int(-1, -1, -1);
+        RestockChunks();
     }
 
     private List<BlockTypes.BlockType> ParseBlockTypes(BlockTypes types)
@@ -100,9 +114,11 @@ public class ChunkManager : MonoBehaviour
 
     public void HandleTick(IDictionary data)
     {
-        isRendering = true;
-        CreateChunk(new Vector3Int(ViewDelta, HeightDelta, ViewDelta), data);
-        FetchAllChunks();
+        if (nextChunk.x == -2) FetchNextChunk();
+        //isRendering = true;
+        //CreateChunk(new Vector3Int(ViewDelta, HeightDelta, ViewDelta), data);
+        //FetchAllChunks();
+        //FetchNextChunk();
     }
 
     private Vector3Int ConvertPositionToRelativeZero(Vector3Int pos)
@@ -112,7 +128,7 @@ public class ChunkManager : MonoBehaviour
 
     private void  FetchAllChunks()
     {
-        for (int y = -HeightDelta; y <= HeightDelta; y++)
+        /*for (int y = -HeightDelta; y <= HeightDelta; y++)
         {
             for (int x = -ViewDelta; x <= ViewDelta; x++)
             {
@@ -120,9 +136,10 @@ public class ChunkManager : MonoBehaviour
                 chunkQueue.Add(new Vector3Int(x + ViewDelta,y + HeightDelta,0 + ViewDelta));
                 conn.Move((15 * x).ToString(), y + "i");
             }
+        }*/
+        
+        /*if (y != 0) continue;
 
-            /*if (y != 0) continue;
-            
             for (int z = -ViewDelta; z <= ViewDelta; z++)
             {
                 if (z == 0) continue;
@@ -132,22 +149,58 @@ public class ChunkManager : MonoBehaviour
                     conn.Move((15 * x).ToString(), (15 * z).ToString());
                 }
             }*/
+    }
+
+    public void FetchNextChunk()
+    {
+        if (allChunkPositions.Count == 0)
+        {
+            print("Setting to zero");
+            nextChunk = new Vector3Int(-1,-1,-1);
+            return;
+        };
+        
+        Vector3Int chunkPos = allChunkPositions[0];
+        allChunkPositions.RemoveAt(0);
+        //allChunkPositions.Add(chunkPos);
+        
+        //chunkQueue.Add(new Vector3Int(chunkPos.x + ViewDelta,chunkPos.y + HeightDelta,0 + ViewDelta));
+        nextChunk = new Vector3Int(chunkPos.x + ViewDelta, chunkPos.y + HeightDelta, 0 + ViewDelta);
+        
+        conn.Move((15 * chunkPos.x).ToString(), chunkPos.y + "i");
+    }
+
+    public void RestockChunks()
+    {
+        allChunkPositions = new List<Vector3Int>();
+        for (int x = -ViewDelta; x <= ViewDelta; x++)
+        {
+            for (int y = -HeightDelta; y <= HeightDelta; y++)
+            {
+                //if (y == 0 && x == 0) continue;
+                allChunkPositions.Add(new Vector3Int(x,y,0));
+            }
         }
     }
 
     public void HandleMove(IDictionary data)
     {
-        if (!isRendering) return;
+        //if (!isRendering) return;
         
-        Vector3Int chunkPos = chunkQueue[0];
-        chunkQueue.RemoveAt(0);
+        //Vector3Int chunkPos = chunkQueue[0];
+        //chunkQueue.RemoveAt(0);
 
-        if (chunkPos.x == -1) return;
+        if (nextChunk.x == -1)
+        {
+            FetchNextChunk();
+            return;
+        };
         
-        CreateChunk(new Vector3Int(chunkPos.x, chunkPos.y, chunkPos.z), data);
+        CreateChunk(new Vector3Int(nextChunk.x, nextChunk.y, nextChunk.z), data);
         
         // in the end
-        if (chunkQueue.Count == 0) isRendering = false;
+        //if (chunkQueue.Count == 0) FetchNextChunk();
+        FetchNextChunk();
     }
     
     private static TValue ConvertObject<TValue>(object obj)
