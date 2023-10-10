@@ -14,6 +14,13 @@
       "dependencies": {},
       "hash": "ad5eac259a335fdfef1668f11ce59cdef40945f3"
     },
+    "com.hgs.call-limiter": {
+      "version": "https://github.com/homy-game-studio/hgs-unity-call-limiter.git#2.1.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "acf11d6e9dffa65e60aaa57549411ea4e3faa15c"
+    },
     "com.unity.burst": {
       "version": "1.8.8",
       "depth": 1,

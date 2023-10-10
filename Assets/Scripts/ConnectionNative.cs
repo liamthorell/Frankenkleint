@@ -94,7 +94,6 @@ public class ConnectionNative : MonoBehaviour
                 {"x", x + i + "i"},
                 {"y", z + y + "i"}
             };
-        print(data["x"] + " " + data["y"]);
         string json = JsonConvert.SerializeObject(data);
         await ws.SendText(json);
     }

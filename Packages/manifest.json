@@ -2,6 +2,7 @@
   "dependencies": {
     "com.endel.nativewebsocket": "https://github.com/endel/NativeWebSocket.git#upm",
     "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
+    "com.hgs.call-limiter": "https://github.com/homy-game-studio/hgs-unity-call-limiter.git#2.1.0",
     "com.unity.collab-proxy": "2.0.7",
     "com.unity.feature.development": "1.0.1",
     "com.unity.render-pipelines.universal": "14.0.8",

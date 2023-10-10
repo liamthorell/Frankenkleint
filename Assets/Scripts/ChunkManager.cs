@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Unity.VisualScripting;
 using UnityEngine.Serialization;
 using System.Linq;
+using HGS.CallLimiter;
 
 public class ChunkManager : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class ChunkManager : MonoBehaviour
     public BlockTypes blockTypesObject; 
     public List<BlockTypes.BlockType> blockTypes;
     
+    Debounce _updateChunksDebounce = new Debounce();
+    
     public void Awake()
     {
         conn = GetComponent<Connection>();
@@ -39,11 +42,17 @@ public class ChunkManager : MonoBehaviour
         blockTypes = ParseBlockTypes(blockTypesObject);
     }
 
-    public void IsDoingMove(string x, string y)
+    public void MoveAndUpdate(string x, string z)
     {
+        
+        Debug.LogWarning("move and update");
+        
         chunkQueue.Add(new Vector3Int(-1,-1,-1));
-        conn.Move(x,y);
+        conn.Move(x,z);
         //InvalidateChunkQueue();
+
+        //_updateChunksDebounce.Run(AddAllChunksToQueue, 0.5f, this);
+
         AddAllChunksToQueue();
     }
 
