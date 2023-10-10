@@ -150,3 +150,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eae345e7fc2da91428f6c581d3036645, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chunkPosition: {x: 0, y: 0, z: 0}
+  floatingText: {fileID: 6166080631631126365, guid: 2b46cc8a9ddb2604f850c874c069d61c, type: 3}
+  types: []

@@ -83,15 +83,18 @@ public class ConnectionNative : MonoBehaviour
         await ws.SendText(json);
     }
     
-    public async void Move(string x, string y)
+    public async void Move(string x, string z, string y = "0", string i = "0")
     {
+        if (i[0] != '-') i = "+" + i;
+        if (y[0] != '-') y = "+" + y;
+        
         var data =  
             new Dictionary<string, string>{
                 {"type", "move"},
-                {"x", x},
-                {"y", y}
+                {"x", x + i + "i"},
+                {"y", z + y + "i"}
             };
-
+        print(data["x"] + " " + data["y"]);
         string json = JsonConvert.SerializeObject(data);
         await ws.SendText(json);
     }

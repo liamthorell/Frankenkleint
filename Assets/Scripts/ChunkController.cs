@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class ChunkController : MonoBehaviour
@@ -8,6 +9,8 @@ public class ChunkController : MonoBehaviour
     public Dictionary<string, string>[,] map;
     public Dictionary<string, object>[] entities;
     public Vector3Int chunkPosition;
+
+    public GameObject floatingText;
     
     public List<BlockTypes.BlockType> types; // also temporary as heck
 
@@ -51,13 +54,13 @@ public class ChunkController : MonoBehaviour
             {
                 case "player":
                     if (chunkPosition.y != 0) break;
-                    CreateBlock("none", x, y);
+                    CreateBlock("none", x, y,1f, entity["name"] + " " + entity["hp"] + "/" + entity["max_hp"]);
                     break;
                 case "monster":
-                    CreateBlock("none", x, y);
+                    CreateBlock("none", x, y,1f, "Monster" + " " + entity["hp"] + "/" + entity["max_hp"]);
                     break;
                 case "ghost":
-                    CreateBlock("none", x, y);
+                    CreateBlock("none", x, y,1f, "Ghost");
                     break;
                 default:
                     CreateBlock("none", x, y);
@@ -66,7 +69,7 @@ public class ChunkController : MonoBehaviour
         }
     }
 
-    private void CreateBlock(string textureName, int x, int y, float scale = 1)
+    private void CreateBlock(string textureName, int x, int y, float scale = 1, string text = null)
     { 
         BlockTypes.BlockType type = types.Find(item => item.name == textureName);
         if (type.material == null && type.modelOverride == null) // todo clean this ugly ass shit up
@@ -92,5 +95,13 @@ public class ChunkController : MonoBehaviour
         block.name = "Block";
         block.transform.localScale = new Vector3(1f, scale, 1f);
         block.transform.parent = transform;
+    
+        // init floating text
+        if (text != null)
+        {
+            var textObject = Instantiate(floatingText, new Vector3(block.transform.position.x, block.transform.position.y + 0.75f, block.transform.position.z), Quaternion.identity, block.transform);
+            var textMeshPro = textObject.GetComponent<TextMeshPro>();
+            textMeshPro.text = text;
+        }
     }
 }
