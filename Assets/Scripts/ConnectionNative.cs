@@ -6,7 +6,7 @@ using UnityEngine;
 using NativeWebSocket;
 using Newtonsoft.Json;
 using System.Text;
-public class ConnectionOLD : MonoBehaviour
+public class ConnectionNative : MonoBehaviour
 {
     private WebSocket ws;
     private ChunkManager chunkManager;
