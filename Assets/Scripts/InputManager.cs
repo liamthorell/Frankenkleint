@@ -19,6 +19,7 @@ public class InputManager : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            print(Camera.main.transform.rotation);
             print(Input.mousePosition);
         }
         

@@ -53,7 +53,7 @@ public class ChunkController : MonoBehaviour
             switch ((string)entity["type"])
             {
                 case "player":
-                    if (chunkPosition.y != 0) break;
+                    if (chunkPosition.y != 0 && chunkPosition.x == 0 && chunkPosition.z == 0) break;
                     CreateBlock("none", x, y,1f, entity["name"] + " " + entity["hp"] + "/" + entity["max_hp"]);
                     break;
                 case "monster":
@@ -101,6 +101,8 @@ public class ChunkController : MonoBehaviour
         {
             var textObject = Instantiate(floatingText, new Vector3(block.transform.position.x, block.transform.position.y + 0.75f, block.transform.position.z), Quaternion.identity, block.transform);
             var textMeshPro = textObject.GetComponent<TextMeshPro>();
+            var floatingController = textObject.GetComponent<FloatingTextController>();
+            floatingController.mainCamera = Camera.main;
             textMeshPro.text = text;
         }
     }

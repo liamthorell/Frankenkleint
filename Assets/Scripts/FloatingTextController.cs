@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class FloatingTextController : MonoBehaviour
 {
+    public Camera mainCamera;
     void Update()
     {
         transform.rotation =
-            Quaternion.LookRotation(transform.position - Camera.main.transform.position);
+            Quaternion.LookRotation(transform.position - mainCamera.transform.position);
     }
 }
