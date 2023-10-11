@@ -27,8 +27,6 @@ public class ChunkManager : MonoBehaviour
 
     private List<Vector3Int> chunkQueue = new();
 
-    public bool isRendering;
-
     // very temporary way of doing it
     public BlockTypes blockTypesObject; 
     public List<BlockTypes.BlockType> blockTypes;
@@ -42,13 +40,13 @@ public class ChunkManager : MonoBehaviour
         blockTypes = ParseBlockTypes(blockTypesObject);
     }
 
-    public void MoveAndUpdate(string x, string z)
+    public void MoveAndUpdate(string x, string y, string z)
     {
         
-        Debug.LogWarning("move and update");
+        //Debug.LogWarning("move and update");
         
         chunkQueue.Add(new Vector3Int(-1,-1,-1));
-        conn.Move(x,z);
+        conn.Move(x, z, y);
         //InvalidateChunkQueue();
 
         //_updateChunksDebounce.Run(AddAllChunksToQueue, 0.5f, this);

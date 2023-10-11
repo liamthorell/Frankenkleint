@@ -53,7 +53,7 @@ public class ChunkController : MonoBehaviour
             switch ((string)entity["type"])
             {
                 case "player":
-                    if (chunkPosition.y != 0 && chunkPosition.x == 0 && chunkPosition.z == 0) break;
+                    if (chunkPosition.y != 0 && chunkPosition.x == 0 && chunkPosition.z == 0 && x == 0 && y == 0) break;
                     CreateBlock("none", x, y,1f, entity["name"] + " " + entity["hp"] + "/" + entity["max_hp"]);
                     break;
                 case "monster":

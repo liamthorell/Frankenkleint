@@ -84,12 +84,12 @@ public class FreeCam : MonoBehaviour
             transform.position = transform.position + (-transform.up * movementSpeed * Time.deltaTime);
         }
 
-        if (Input.GetKey(KeyCode.R) || Input.GetKey(KeyCode.PageUp))
+        if (Input.GetKey(KeyCode.R))
         {
             transform.position = transform.position + (Vector3.up * movementSpeed * Time.deltaTime);
         }
 
-        if (Input.GetKey(KeyCode.F) || Input.GetKey(KeyCode.PageDown))
+        if (Input.GetKey(KeyCode.F))
         {
             transform.position = transform.position + (-Vector3.up * movementSpeed * Time.deltaTime);
         }
@@ -108,11 +108,11 @@ public class FreeCam : MonoBehaviour
             transform.position = transform.position + transform.forward * axis * zoomSensitivity;
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        if (Input.GetKey(KeyCode.Mouse1) && Input.GetKey(KeyCode.Mouse0) && !looking)
         {
             StartLooking();
         }
-        else if (Input.GetKeyUp(KeyCode.Mouse1))
+        else if (Input.GetKeyUp(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.Mouse0))
         {
             StopLooking();
         }

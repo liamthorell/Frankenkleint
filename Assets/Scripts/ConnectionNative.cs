@@ -10,10 +10,12 @@ public class ConnectionNative : MonoBehaviour
 {
     private WebSocket ws;
     private ChunkManager chunkManager;
+    private PlayerController playerController;
 
     private void Awake()
     {
         chunkManager = GetComponent<ChunkManager>();
+        playerController = GetComponent<PlayerController>();
     }
 
     private async void Start()
@@ -62,6 +64,7 @@ public class ConnectionNative : MonoBehaviour
         {
             case "tick":
                 chunkManager.HandleTick(data);
+                playerController.HandleTick(data);
                 break;
             case "move":
                 chunkManager.HandleMove(data);
@@ -69,16 +72,18 @@ public class ConnectionNative : MonoBehaviour
         }
     }
 
-    public async void Interact(string x, string y, string slot)
+    public async void Interact(string slot, string x, string z, string y = "0", string i = "0")
     {
+        if (i[0] != '-') i = "+" + i;
+        if (y[0] != '-') y = "+" + y;
+        
         var data =  
             new Dictionary<string, string>{
                 {"type", "interact"},
-                {"x", x},
-                {"y", y},
+                {"x", x + i + "i"},
+                {"y", z + y + "i"},
                 {"slot", slot}
             };
-
         string json = JsonConvert.SerializeObject(data);
         await ws.SendText(json);
     }
