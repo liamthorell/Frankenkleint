@@ -22,8 +22,6 @@ public class UIController : MonoBehaviour
    {
       if (playerController.inventory == null) return;
       
-      Debug.LogWarning("Update inventory");
-      
       root = doc.rootVisualElement;
       
       var inventory = playerController.inventory;

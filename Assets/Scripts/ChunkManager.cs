@@ -40,13 +40,13 @@ public class ChunkManager : MonoBehaviour
         blockTypes = ParseBlockTypes(blockTypesObject);
     }
 
-    public void MoveAndUpdate(string x, string y, string z)
+    public void MoveAndUpdate(string x, string y, string z, string xi = "0")
     {
         
         //Debug.LogWarning("move and update");
         
         chunkQueue.Add(new Vector3Int(-1,-1,-1));
-        conn.Move(x, z, y);
+        conn.Move(x, z, y, xi);
         //InvalidateChunkQueue();
 
         //_updateChunksDebounce.Run(AddAllChunksToQueue, 0.5f, this);

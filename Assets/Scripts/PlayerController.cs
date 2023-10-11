@@ -28,8 +28,6 @@ public class PlayerController : MonoBehaviour
                 level = entity["level"] as string;
                 playerName = entity["name"] as string;
                 inventory = ConvertObject<List<List<object>>>(entity["inventory"]);
-                
-                Debug.LogWarning(inventory.Count);
             }
         }
         

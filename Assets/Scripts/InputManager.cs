@@ -4,7 +4,6 @@ using UnityEditor;
 using UnityEngine;
 using HGS.CallLimiter;
 //using System.Diagnostics;
-
 public class InputManager : MonoBehaviour
 {
     private ChunkManager chunkManager;
@@ -64,6 +63,7 @@ public class InputManager : MonoBehaviour
         int x = 0;
         int z = 0;
         int y = 0;
+        int xi = 0;
         jumpTimer -= Time.deltaTime;
         
         if (Input.GetKeyDown(KeyCode.Mouse0) && !Input.GetKeyDown(KeyCode.Mouse1))
@@ -90,13 +90,21 @@ public class InputManager : MonoBehaviour
         {
             x--;
         }
+        if (Input.GetKey(KeyCode.Comma))
+        {
+            xi--;
+        }
+        if (Input.GetKey(KeyCode.Period))
+        {
+            xi++;
+        }
 
         if (Input.GetKey(KeyCode.Space))
         {
             jumpTimer = 0.5f;
         }
         
-        if (x != 0 || z != 0)
+        if (x != 0 || z != 0 || xi != 0)
         {
             var localY = mainCamera.transform.localEulerAngles.y;
 
@@ -110,7 +118,7 @@ public class InputManager : MonoBehaviour
 
             if (jumpTimer > 0f) y += 1;
 
-            MoveWithThrottle(x.ToString(), y.ToString(), z.ToString());
+            MoveWithThrottle(x.ToString(), y.ToString(), z.ToString(), xi.ToString());
 
             //chunkManager.MoveAndUpdate(x.ToString(), z.ToString());
         }
@@ -127,8 +135,8 @@ public class InputManager : MonoBehaviour
         }*/
     }
 
-    private void MoveWithThrottle(string x, string y, string z)
+    private void MoveWithThrottle(string x, string y, string z, string xi = "0")
     {
-        _moveThrottle.Run(() => chunkManager.MoveAndUpdate(x, y, z), 0.3f);
+        _moveThrottle.Run(() => chunkManager.MoveAndUpdate(x, y, z, xi), 0.3f);
     }
 }
