@@ -51,9 +51,9 @@ public class FreeCam : MonoBehaviour
 
     void Update()
     {
-        var fastMode = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        //var fastMode = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        var fastMode = false;
         var movementSpeed = fastMode ? this.fastMovementSpeed : this.movementSpeed;
-
         if (Input.GetKey(KeyCode.A))
         {
             transform.position = transform.position + (-transform.right * movementSpeed * Time.deltaTime);
@@ -108,7 +108,7 @@ public class FreeCam : MonoBehaviour
             transform.position = transform.position + transform.forward * axis * zoomSensitivity;
         }
 
-        if (Input.GetKey(KeyCode.Mouse1) && Input.GetKey(KeyCode.Mouse0) && !looking)
+        if (((Input.GetKey(KeyCode.Mouse1) && Input.GetKey(KeyCode.Mouse0)) || (Input.GetKey(KeyCode.Mouse0) && Input.GetKey(KeyCode.LeftShift))) && !looking)
         {
             StartLooking();
         }
