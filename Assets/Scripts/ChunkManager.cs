@@ -11,7 +11,7 @@ using HGS.CallLimiter;
 public class ChunkManager : MonoBehaviour
 {
      public static int ViewDistance = 3;
-     public static int HeightDistance = 3;
+     public static int HeightDistance = 5;
      public static int ViewDelta = (ViewDistance - 1) / 2;
      public static int HeightDelta = (HeightDistance - 1) / 2;
     

@@ -51,7 +51,7 @@ public class UIController : MonoBehaviour
          }
          
          label.style.color = new StyleColor(new Color32(191, 191, 191 ,255));
-         label.style.fontSize = Length.Percent(4f);
+         label.style.fontSize = Length.Percent(10f);
          label.style.whiteSpace = new StyleEnum<WhiteSpace>(WhiteSpace.Normal);
          string itemIndex = inventory.IndexOf(item).ToString();
          label.userData = itemIndex;
