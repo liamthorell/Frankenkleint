@@ -11,7 +11,7 @@ using HGS.CallLimiter;
 public class ChunkManager : MonoBehaviour
 {
      public static int ViewDistance = 3;
-     public static int HeightDistance = 5;
+     public static int HeightDistance = 7;
      public static int ViewDelta = (ViewDistance - 1) / 2;
      public static int HeightDelta = (HeightDistance - 1) / 2;
     
@@ -26,6 +26,7 @@ public class ChunkManager : MonoBehaviour
     private Connection conn;
 
     private List<Vector3Int> chunkQueue = new();
+    private List<IDictionary> chunkDataQueue = new();
 
     // very temporary way of doing it
     public BlockTypes blockTypesObject; 
@@ -40,14 +41,17 @@ public class ChunkManager : MonoBehaviour
         blockTypes = ParseBlockTypes(blockTypesObject);
     }
 
+    public void Start()
+    {
+        StartCoroutine(ScheduleChunkGeneration());
+    }
+
     public void MoveAndUpdate(string x, string y, string z, string xi = "0")
     {
         
-        //Debug.LogWarning("move and update");
-        
         chunkQueue.Add(new Vector3Int(-1,-1,-1));
         conn.Move(x, z, y, xi);
-        //InvalidateChunkQueue();
+        InvalidateChunkQueue();
 
         //_updateChunksDebounce.Run(AddAllChunksToQueue, 0.5f, this);
 
@@ -123,6 +127,37 @@ public class ChunkManager : MonoBehaviour
         
         chunks[position.x, position.y, position.z] = chunk;
     }
+    
+    
+    IEnumerator ScheduleChunkGeneration()
+    {
+        while (true)
+        {
+            int chunksPerFrame = 0;
+            while (chunksPerFrame < 5)
+            {
+                if (chunkQueue.Count > 0 && chunkDataQueue.Count > 0)
+                {
+                    var chunkPos = chunkQueue[0];
+                    var chunkData = chunkDataQueue[0];
+                    chunkQueue.RemoveAt(0);
+                    chunkDataQueue.RemoveAt(0);
+                    
+                    if (chunkPos.x != -1)
+                    {
+                        CreateChunk(new Vector3Int(chunkPos.x, chunkPos.y, chunkPos.z), chunkData);
+                        chunksPerFrame++;
+                    };
+                }
+                else
+                {
+                    break;
+                }
+            }
+            
+            yield return null; // Yield to the next frame
+        }
+    }
 
     public void HandleTick(IDictionary data)
     {
@@ -177,12 +212,7 @@ public class ChunkManager : MonoBehaviour
 
     public void HandleMove(IDictionary data)
     {
-        Vector3Int chunkPos = chunkQueue[0];
-        chunkQueue.RemoveAt(0);
-
-        if (chunkPos.x == -1) return;
-
-        CreateChunk(new Vector3Int(chunkPos.x, chunkPos.y, chunkPos.z), data);
+        chunkDataQueue.Add(data);
     }
     
     private static TValue ConvertObject<TValue>(object obj)
