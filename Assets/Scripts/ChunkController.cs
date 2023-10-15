@@ -187,6 +187,7 @@ public class ChunkController : MonoBehaviour
                 position = new Vector3(x + (15 * chunkPosition.x), chunkPosition.y, y + (15 * chunkPosition.z))
             }
         };
+        blockObject.isStatic = true;
 
         Mesh mesh = new Mesh();
         var renderer = blockObject.transform.AddComponent<MeshRenderer>();
