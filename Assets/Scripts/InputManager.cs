@@ -31,7 +31,7 @@ public class InputManager : MonoBehaviour
         
         if (Physics.Raycast(ray, out hit)) {
             Transform objectHit = hit.transform;
-            var position = objectHit.position;
+            var position = Vector3Int.FloorToInt(objectHit.position);
             
             if (position.x > 1 ||  position.x < -1 || position.y > 1 || position.y < -1 || position.z > 1 || position.z < -1) return;
             
@@ -47,7 +47,7 @@ public class InputManager : MonoBehaviour
         
         if (Physics.Raycast(ray, out hit)) {
             Transform objectHit = hit.transform;
-            var position = objectHit.position + hit.normal;
+            var position = Vector3Int.FloorToInt(objectHit.position + hit.normal);
 
             conn.Interact(playerController.currentSlot, position.x.ToString(), position.z.ToString(), position.y.ToString());
             MoveWithThrottle("0", "0", "0");

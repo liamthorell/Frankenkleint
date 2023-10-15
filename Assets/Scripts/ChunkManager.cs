@@ -53,9 +53,9 @@ public class ChunkManager : MonoBehaviour
         conn.Move(x, z, y, xi);
         InvalidateChunkQueue();
 
-        //_updateChunksDebounce.Run(AddAllChunksToQueue, 0.5f, this);
+        _updateChunksDebounce.Run(AddAllChunksToQueue, 0.5f, this);
 
-        AddAllChunksToQueue();
+        //AddAllChunksToQueue();
     }
 
     private void InvalidateChunkQueue()
