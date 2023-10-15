@@ -30,12 +30,19 @@ public class InputManager : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         
         if (Physics.Raycast(ray, out hit)) {
+            if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
+
             Transform objectHit = hit.transform;
             var position = Vector3Int.FloorToInt(objectHit.position);
             
             if (position.x > 1 ||  position.x < -1 || position.y > 1 || position.y < -1 || position.z > 1 || position.z < -1) return;
             
             conn.Interact("-1", position.x.ToString(), position.z.ToString(), position.y.ToString());
+            
+            var chunkController = objectHit.parent.GetComponent<ChunkController>();
+            
+            chunkManager.UpdateSingleChunk(chunkController.chunkPosition.x, chunkController.chunkPosition.y, chunkController.chunkPosition.z);
+            
             Destroy(objectHit.gameObject);
         }
     }
@@ -46,11 +53,16 @@ public class InputManager : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         
         if (Physics.Raycast(ray, out hit)) {
+            if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
+
             Transform objectHit = hit.transform;
             var position = Vector3Int.FloorToInt(objectHit.position + hit.normal);
 
             conn.Interact(playerController.currentSlot, position.x.ToString(), position.z.ToString(), position.y.ToString());
-            MoveWithThrottle("0", "0", "0");
+
+            var chunkController = objectHit.parent.GetComponent<ChunkController>();
+            
+            chunkManager.UpdateSingleChunk(chunkController.chunkPosition.x, chunkController.chunkPosition.y, chunkController.chunkPosition.z);
         }
     }
 

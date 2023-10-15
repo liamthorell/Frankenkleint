@@ -10,13 +10,14 @@ using HGS.CallLimiter;
 
 public class ChunkManager : MonoBehaviour
 {
-     public static int ViewDistance = 3;
-     public static int HeightDistance = 7;
-     public static int ViewDelta = (ViewDistance - 1) / 2;
-     public static int HeightDelta = (HeightDistance - 1) / 2;
+     public int ViewDistance = 3;
+     public int HeightDistance = 7;
+     public int ViewDelta = 0;
+     public int HeightDelta = 0;
     
     
-    private GameObject[,,] chunks = new GameObject[ViewDistance, HeightDistance, ViewDistance];
+    //private GameObject[,,] chunks = new GameObject[ViewDistance, HeightDistance, ViewDistance];
+    private List<List<List<GameObject>>> chunks = new();
 
     public GameObject chunkObject;
     public GameObject chunksGameObject;
@@ -24,7 +25,8 @@ public class ChunkManager : MonoBehaviour
     public Material blockMaterial;
 
     private Connection conn;
-
+    
+    private List<Vector3Int> preChunkQueue = new();
     private List<Vector3Int> chunkQueue = new();
     private List<IDictionary> chunkDataQueue = new();
 
@@ -33,12 +35,33 @@ public class ChunkManager : MonoBehaviour
     public List<BlockTypes.BlockType> blockTypes;
     
     Debounce _updateChunksDebounce = new Debounce();
+
+    public void UpdateDistanceDelta()
+    {
+        ViewDelta = (ViewDistance - 1) / 2;
+        HeightDelta = (HeightDistance - 1) / 2;
+    }
     
     public void Awake()
     {
         conn = GetComponent<Connection>();
 
         blockTypes = ParseBlockTypes(blockTypesObject);
+        
+        for (int x = 0; x < ViewDistance; x++)
+        {
+            chunks.Add(new List<List<GameObject>>());
+            for (int y = 0; y < HeightDistance; y++)
+            {
+                chunks[x].Add(new List<GameObject>());
+                for (int z = 0; z < ViewDistance; z++)
+                {
+                    chunks[x][y].Add(null);
+                }
+            }
+        }
+
+        UpdateDistanceDelta();
     }
 
     public void Start()
@@ -53,9 +76,20 @@ public class ChunkManager : MonoBehaviour
         conn.Move(x, z, y, xi);
         InvalidateChunkQueue();
 
+        for (int yy = -HeightDelta; yy <= HeightDelta; yy++)
+        {
+            UpdateSingleChunk(0, yy, 0);
+        }
+
         _updateChunksDebounce.Run(AddAllChunksToQueue, 0.5f, this);
 
         //AddAllChunksToQueue();
+    }
+    
+    public void UpdateSingleChunk(int x, int y, int z)
+    {
+        chunkQueue.Add(new Vector3Int(x + ViewDelta, y + HeightDelta, z + ViewDelta));
+        conn.Move((15 * x).ToString(), (15 * z).ToString(), y.ToString());
     }
 
     private void InvalidateChunkQueue()
@@ -100,7 +134,7 @@ public class ChunkManager : MonoBehaviour
         var map = ConvertObject<Dictionary<string, string>[,]>(data["map"]);
         var entities = ConvertObject<Dictionary<string,object>[]>(data["entities"]);
 
-        var currentChunk = chunks[position.x, position.y, position.z];
+        var currentChunk = chunks[position.x][position.y][position.z];
 
         // benchmark this!
         if (currentChunk != null)
@@ -125,7 +159,7 @@ public class ChunkManager : MonoBehaviour
         chunkController.GenerateBlocks();
         chunkController.GenerateEntities();
         
-        chunks[position.x, position.y, position.z] = chunk;
+        chunks[position.x][position.y][position.z] = chunk;
     }
     
     
@@ -134,7 +168,7 @@ public class ChunkManager : MonoBehaviour
         while (true)
         {
             int chunksPerFrame = 0;
-            while (chunksPerFrame < 5)
+            while (chunksPerFrame < 3)
             {
                 if (chunkQueue.Count > 0 && chunkDataQueue.Count > 0)
                 {
@@ -148,6 +182,24 @@ public class ChunkManager : MonoBehaviour
                         CreateChunk(new Vector3Int(chunkPos.x, chunkPos.y, chunkPos.z), chunkData);
                         chunksPerFrame++;
                     };
+                }
+                else
+                {
+                    break;
+                }
+            }
+            
+            int chunksToSendPerFrame = 0;
+            while (chunksToSendPerFrame < HeightDistance)
+            {
+                if (preChunkQueue.Count > 0)
+                {
+                    var chunkPos = preChunkQueue[0];
+                    preChunkQueue.RemoveAt(0);
+                    
+                    chunkQueue.Add(new Vector3Int(chunkPos.x + ViewDelta, chunkPos.y + HeightDelta, chunkPos.z + ViewDelta));
+                    conn.Move((15 * chunkPos.x).ToString(), (15 * chunkPos.z).ToString(), chunkPos.y.ToString());
+                    chunksToSendPerFrame++;
                 }
                 else
                 {
@@ -203,9 +255,11 @@ public class ChunkManager : MonoBehaviour
                 int x = xz[0];
                 int z = xz[1];
                 
-                if (y == 0 && z == 0 && x == 0) continue;
-                chunkQueue.Add(new Vector3Int(x + ViewDelta, y + HeightDelta, z + ViewDelta));
-                conn.Move((15 * x).ToString(), (15 * z).ToString(), y.ToString());
+                //if (y == 0 && z == 0 && x == 0) continue;
+                
+                preChunkQueue.Add(new Vector3Int(x, y, z));
+                //chunkQueue.Add(new Vector3Int(x + ViewDelta, y + HeightDelta, z + ViewDelta));
+                //conn.Move((15 * x).ToString(), (15 * z).ToString(), y.ToString());
             }
         }
     }
