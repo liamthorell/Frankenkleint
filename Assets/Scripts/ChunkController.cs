@@ -193,7 +193,10 @@ public class ChunkController : MonoBehaviour
         renderer.sharedMaterial = type.material;
         var filter = blockObject.transform.AddComponent<MeshFilter>();
         filter.mesh = mesh;
-        
+        var collider = blockObject.transform.AddComponent<BoxCollider>();
+        collider.size = Vector3.one;
+        collider.center = new Vector3(0.5f, 0.5f, 0.5f);
+
         // custom mesh logic
         List<Vector3> verts = new();
         List<int> tris = new();
@@ -228,7 +231,8 @@ public class ChunkController : MonoBehaviour
         mesh.vertices = verts.ToArray();
         mesh.triangles = tris.ToArray();
         mesh.uv = uvs.ToArray();
-          
+
+        mesh.RecalculateBounds();
         mesh.RecalculateNormals();
     }
 }
