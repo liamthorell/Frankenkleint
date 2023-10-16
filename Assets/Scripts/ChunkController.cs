@@ -117,13 +117,13 @@ public class ChunkController : MonoBehaviour
             {
                 case "player":
                     if (chunkPosition.y != 0 && chunkPosition.x == 0 && chunkPosition.z == 0 && x == 0 && y == 0) break;
-                    CreateBlockWithModel("none", x, y,1f, entity["name"] + " " + entity["hp"] + "/" + entity["max_hp"]);
+                    CreateBlockWithModel((string)entity["type"], x, y,1f, entity["name"] + " " + entity["hp"] + "/" + entity["max_hp"]);
                     break;
                 case "monster":
-                    CreateBlockWithModel("none", x, y,1f, "Monster" + " " + entity["hp"] + "/" + entity["max_hp"]);
+                    CreateBlockWithModel((string)entity["type"], x, y,1f, "Monster" + " " + entity["hp"] + "/" + entity["max_hp"]);
                     break;
                 case "ghost":
-                    CreateBlockWithModel("none", x, y,1f, "Ghost");
+                    CreateBlockWithModel((string)entity["type"], x, y,1f, "Ghost");
                     break;
                 default:
                     CreateBlockWithModel("none", x, y);

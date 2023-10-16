@@ -41,13 +41,29 @@ public class ChunkManager : MonoBehaviour
         ViewDelta = (ViewDistance - 1) / 2;
         HeightDelta = (HeightDistance - 1) / 2;
     }
-    
-    public void Awake()
-    {
-        conn = GetComponent<Connection>();
 
-        blockTypes = ParseBlockTypes(blockTypesObject);
+    public void ResetChunks()
+    {
+        // Loop through all chunks and destroy them
+        foreach (var chunk in chunks)
+        {
+            foreach (var chunkY in chunk)
+            {
+                foreach (var chunkZ in chunkY)
+                {
+                    Destroy(chunkZ);
+                }
+            }
+        }
         
+        chunks.Clear();
+        InitChunks();
+        InvalidateChunkQueue();
+        AddAllChunksToQueue();
+    }
+
+    public void InitChunks()
+    {
         for (int x = 0; x < ViewDistance; x++)
         {
             chunks.Add(new List<List<GameObject>>());
@@ -60,7 +76,15 @@ public class ChunkManager : MonoBehaviour
                 }
             }
         }
+    }
+    
+    public void Awake()
+    {
+        conn = GetComponent<Connection>();
 
+        blockTypes = ParseBlockTypes(blockTypesObject);
+        
+        InitChunks();
         UpdateDistanceDelta();
     }
 
@@ -96,10 +120,18 @@ public class ChunkManager : MonoBehaviour
     {
         int chunkCount = chunkQueue.Count;
         chunkQueue = new List<Vector3Int>();
+        
+        int preChunkCount = preChunkQueue.Count;
+        preChunkQueue = new List<Vector3Int>();
 
         for (int i = 0; i < chunkCount; i++)
         {
             chunkQueue.Add(new Vector3Int(-1,-1,-1));
+        }
+        
+        for (int i = 0; i < preChunkCount; i++)
+        {
+            preChunkQueue.Add(new Vector3Int(-999,-999,-999));
         }
     }
 
@@ -196,10 +228,14 @@ public class ChunkManager : MonoBehaviour
                 {
                     var chunkPos = preChunkQueue[0];
                     preChunkQueue.RemoveAt(0);
-                    
-                    chunkQueue.Add(new Vector3Int(chunkPos.x + ViewDelta, chunkPos.y + HeightDelta, chunkPos.z + ViewDelta));
-                    conn.Move((15 * chunkPos.x).ToString(), (15 * chunkPos.z).ToString(), chunkPos.y.ToString());
-                    chunksToSendPerFrame++;
+
+                    if (chunkPos.x != -999)
+                    {
+                        chunkQueue.Add(new Vector3Int(chunkPos.x + ViewDelta, chunkPos.y + HeightDelta,
+                            chunkPos.z + ViewDelta));
+                        conn.Move((15 * chunkPos.x).ToString(), (15 * chunkPos.z).ToString(), chunkPos.y.ToString());
+                        chunksToSendPerFrame++;
+                    }
                 }
                 else
                 {

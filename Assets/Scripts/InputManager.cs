@@ -9,6 +9,7 @@ public class InputManager : MonoBehaviour
     private ChunkManager chunkManager;
     private Connection conn;
     private PlayerController playerController;
+    public UIController uiController;
     public Camera mainCamera;
     
     Throttle _moveThrottle = new Throttle();
@@ -85,6 +86,10 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse1) && !Input.GetKeyDown(KeyCode.Mouse0))
         {
             HandleRightClick();
+        }
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            uiController.ToggleModMenu();
         }
         if (Input.GetKey(KeyCode.UpArrow))
         {

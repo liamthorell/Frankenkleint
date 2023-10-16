@@ -15,14 +15,22 @@ public class UIController : MonoBehaviour
 
    private void Start()
    {
+      root = doc.rootVisualElement;
+      
+      root.Q<VisualElement>("mod-menu").visible = false;
+      
       UpdateInventory();      
    }
-
+   
+   public void ToggleModMenu()
+   {
+      var modMenu = root.Q<VisualElement>("mod-menu");
+      modMenu.visible = !modMenu.visible;
+   }
+   
    public void UpdateInventory()
    {
       if (playerController.inventory == null) return;
-      
-      root = doc.rootVisualElement;
       
       var inventory = playerController.inventory;
       

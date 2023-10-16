@@ -252,6 +252,7 @@ GameObject:
   - component: {fileID: 734952254}
   - component: {fileID: 734952253}
   - component: {fileID: 734952255}
+  - component: {fileID: 734952256}
   m_Layer: 5
   m_Name: UIDocument
   m_TagString: Untagged
@@ -305,6 +306,23 @@ MonoBehaviour:
   doc: {fileID: 734952253}
   listTemplate: {fileID: 0}
   playerController: {fileID: 967077405}
+--- !u!114 &734952256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 734952252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ef3137ff4ca42e08057f8bb1a9da712, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chunkManager: {fileID: 967077404}
+  killAura: 0
+  selfKill: 0
+  viewDistance: 0
+  heightDistance: 0
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -519,6 +537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21b82af633c22534c9172d6ded080b20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiController: {fileID: 734952255}
   mainCamera: {fileID: 963194227}
 --- !u!114 &967077404
 MonoBehaviour:
@@ -532,6 +551,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c39d6e4610214479245d3aba30751d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ViewDistance: 3
+  HeightDistance: 7
+  ViewDelta: 0
+  HeightDelta: 0
   chunkObject: {fileID: 8430967951448889010, guid: 7bdd1c1400b2aa943b693d13a9fa6ff5, type: 3}
   chunksGameObject: {fileID: 1364168029}
   blockMaterial: {fileID: 2100000, guid: 1c3474a43bfdf4846810af0cc97edceb, type: 2}
@@ -554,6 +577,7 @@ MonoBehaviour:
   xp: 
   level: 
   playerName: 
+  currentSlot: 0
   uiController: {fileID: 734952255}
 --- !u!1 &1082765651
 GameObject:

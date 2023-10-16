@@ -45,6 +45,18 @@ MonoBehaviour:
     textureIndex: 7
     modelOverride: {fileID: 0}
     material: {fileID: 0}
+  - name: ghost
+    textureIndex: 8
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
+  - name: monster
+    textureIndex: 9
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
+  - name: player
+    textureIndex: 10
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
   - name: none
     textureIndex: 255
     modelOverride: {fileID: 0}
