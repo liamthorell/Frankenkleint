@@ -17,7 +17,7 @@ public class ChunkManager : MonoBehaviour
     
     
     //private GameObject[,,] chunks = new GameObject[ViewDistance, HeightDistance, ViewDistance];
-    private List<List<List<GameObject>>> chunks = new();
+    public List<List<List<GameObject>>> chunks = new();
 
     public GameObject chunkObject;
     public GameObject chunksGameObject;

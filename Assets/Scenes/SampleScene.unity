@@ -323,6 +323,7 @@ MonoBehaviour:
   selfKill: 0
   viewDistance: 0
   heightDistance: 0
+  conn: {fileID: 967077401}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

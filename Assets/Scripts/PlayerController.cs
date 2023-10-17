@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour
         }
         
         uiController.UpdateInventory();
+        uiController.UpdateStats();
     }
     
     private static TValue ConvertObject<TValue>(object obj)

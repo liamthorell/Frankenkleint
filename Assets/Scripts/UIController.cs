@@ -27,6 +27,15 @@ public class UIController : MonoBehaviour
       var modMenu = root.Q<VisualElement>("mod-menu");
       modMenu.visible = !modMenu.visible;
    }
+
+   public void UpdateStats()
+   {
+      if (playerController.level == null) return;
+      
+      var statsText = root.Q<Label>("stats");
+      
+      statsText.text = "Level: " + playerController.level + "\n" + "XP: " + playerController.xp + "\n" + "HP: " + playerController.hp + "/" + playerController.maxHp;
+   }
    
    public void UpdateInventory()
    {

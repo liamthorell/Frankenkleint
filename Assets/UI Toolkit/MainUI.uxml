@@ -12,5 +12,6 @@
             </ui:ScrollView>
         </ui:VisualElement>
         <ui:VisualElement name="VisualElement" style="height: 0; width: 15%; background-color: rgba(0, 0, 0, 0.6); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center; display: flex;" />
+        <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="stats" style="position: absolute; height: auto; width: auto; background-color: rgba(0, 0, 0, 0.69); color: rgb(219, 219, 219);" />
     </ui:VisualElement>
 </ui:UXML>
