@@ -39,14 +39,15 @@ public class UIController : MonoBehaviour
    
    public void UpdateInventory()
    {
-      if (playerController.inventory == null) return;
-      
+      return;
+      /*if (playerController.inventory == null) return;
+
       var inventory = playerController.inventory;
-      
+
       var inventoryList = root.Q<ScrollView>("inventory-list");
-      
+
       inventoryList.Clear();
-      
+
       foreach (var item in inventory)
       {
          var label = new Label();
@@ -61,27 +62,27 @@ public class UIController : MonoBehaviour
          {
             label.text = item[1] as string + " - " + itemData["type"];
          }
-         
+
          if (label.text.Length > 45)
          {
             label.text = label.text.Substring(0, 45) + "...";
          }
-         
+
          label.style.color = new StyleColor(new Color32(191, 191, 191 ,255));
          label.style.fontSize = Length.Percent(10f);
          label.style.whiteSpace = new StyleEnum<WhiteSpace>(WhiteSpace.Normal);
          string itemIndex = inventory.IndexOf(item).ToString();
          label.userData = itemIndex;
-         
+
          if (itemIndex == playerController.currentSlot)
          {
-            label.style.backgroundColor = new StyleColor(new Color32(255, 255, 255, 50));     
+            label.style.backgroundColor = new StyleColor(new Color32(255, 255, 255, 50));
          }
-         
+
          label.RegisterCallback<ClickEvent>(OnInventoryItemClicked);
-         
+
          inventoryList.Add(label);
-      }
+      }*/
    }
    private void OnInventoryItemClicked(ClickEvent evt)
    {

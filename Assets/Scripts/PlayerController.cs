@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 public class PlayerController : MonoBehaviour
 {
     // Start is called before the first frame update
-    public List<List<object>> inventory;
+    public Dictionary<string,Dictionary<string, string>> inventory;
     public string hp;
     public string maxHp;
     public string xp;
@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
                 xp = entity["xp"] as string;
                 level = entity["level"] as string;
                 playerName = entity["name"] as string;
-                inventory = ConvertObject<List<List<object>>>(entity["inventory"]);
+                inventory = ConvertObject<Dictionary<string,Dictionary<string, string>>>(entity["inventory"]);
             }
         }
         
