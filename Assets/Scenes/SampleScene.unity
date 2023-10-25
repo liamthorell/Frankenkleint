@@ -552,8 +552,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c39d6e4610214479245d3aba30751d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ViewDistance: 3
-  HeightDistance: 7
+  ViewDistance: 1
+  HeightDistance: 3
   ViewDelta: 0
   HeightDelta: 0
   chunkObject: {fileID: 8430967951448889010, guid: 7bdd1c1400b2aa943b693d13a9fa6ff5, type: 3}
