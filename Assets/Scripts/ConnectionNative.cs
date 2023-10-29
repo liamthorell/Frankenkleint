@@ -58,7 +58,8 @@ public class ConnectionNative : MonoBehaviour
     {
         var message = Encoding.UTF8.GetString(bytes);
         var data = JsonConvert.DeserializeObject<IDictionary>(message);
-        print($"Packet type: {data["type"]}");
+        
+        //print($"Packet type: {data["type"]}");
 
         switch (data["type"])
         {

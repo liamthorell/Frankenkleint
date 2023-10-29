@@ -17,7 +17,7 @@ public class ChunkController : MonoBehaviour
     public List<BlockTypes.BlockType> types; // also temporary as heck
     
     // temp
-    private Vector3[] baseVerts =
+    private static Vector3[] baseVerts =
     {
         new(0, 1, 0),
         new(1, 1, 0),
@@ -45,7 +45,7 @@ public class ChunkController : MonoBehaviour
         new (1, 0, 1)
     };
     
-    private Vector2[] baseUvs =
+    private static Vector2[] baseUvs =
     {
         new (0, 1),
         new (1, 1),
@@ -55,25 +55,6 @@ public class ChunkController : MonoBehaviour
 
     public void GenerateBlocks()
     {
-        print("Starting generation");
-
-        /*var blockl = new Dictionary<string, string>();
-        blockl["type"] = "concrete";
-        
-        var blockg = new Dictionary<string, string>();
-        blockg["type"] = "air";
-        
-        for (int x = 0; x < map.GetLength(0); x++)
-        {
-            for (int y = 0; y < map.GetLength(1); y++)
-            {
-                map[x, y] = blockl;
-            }
-        }
-
-        map[0, 0] = blockg;
-        map[1, 0] = blockg;*/
-        
         bool[,] drawn = new bool[15, 15];
 
         for (int y = 0; y < 15; y++)
@@ -93,12 +74,12 @@ public class ChunkController : MonoBehaviour
                 
                 var type = block["type"];
 
-                if (type == "tombstone")
+                if (type == "tombstone") // rendering for special blocks
                 {
-                    // no fucking tombstones i am alladeen madafaka
+                    //no fucking tombstones i am alladeen madafaka
                     CreateBlockWithModel("tombstone", x-7, y-7);
                 }
-                else
+                else // greedy meshing algorithm
                 {
                     int x_width = 0;
                     
@@ -131,15 +112,11 @@ public class ChunkController : MonoBehaviour
 
                         for (int xx = 0; xx < x_width; xx++)
                         {
-                            //print($"{y + yy - 1} {x + xx - 1} - {y},{yy}, {x},{xx}");
-                            
                             drawn[y + yy, x + xx] = true;
                         }
                         
                         y_width += 1;
                     }
-                    
-                    //print($"x width: {x_width}, x: {x}, y width: {y_width}, y: {y}");
                     
                     // block face culling
                     if (y > 0)
@@ -202,7 +179,6 @@ public class ChunkController : MonoBehaviour
 
     public void GenerateEntities()
     {
-        print("Generating entities");
         foreach (var entity in entities)
         {
             int x = int.Parse((string)entity["x"]);
@@ -289,14 +265,15 @@ public class ChunkController : MonoBehaviour
         var filter = blockObject.transform.AddComponent<MeshFilter>();
         filter.mesh = mesh;
         var collider = blockObject.transform.AddComponent<BoxCollider>();
-        collider.size = Vector3.one;
-        collider.center = new Vector3(0.5f, 0.5f, 0.5f);
+        collider.size = new Vector3(x_width, 1f, y_width);
+        collider.center = new Vector3(x_width * 0.5f, 0.5f, y_width * 0.5f);
 
         // custom mesh logic
         List<Vector3> verts = new();
         List<int> tris = new();
         List<Vector2> uvs = new();
 
+        // generate correct faces
         int faceId = 0;
         for (int i = 0; i < 6; i++)
         {

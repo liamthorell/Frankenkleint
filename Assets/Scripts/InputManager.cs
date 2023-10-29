@@ -25,21 +25,33 @@ public class InputManager : MonoBehaviour
         playerController = GetComponent<PlayerController>();
     }
 
+    private float CalcBlockPos(float input)
+    {
+        return Mathf.Abs(input) <= 0.5f ? 0 : Mathf.Sign(input);
+    }
+
     private void HandleLeftClick()
     {
         RaycastHit hit;
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         
         if (Physics.Raycast(ray, out hit)) {
+            // prevent clicking through ui elements
             if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
 
             Transform objectHit = hit.transform;
-            var position = Vector3Int.FloorToInt(objectHit.position);
             
-            if (position.x > 1 ||  position.x < -1 || position.y > 1 || position.y < -1 || position.z > 1 || position.z < -1) return;
+            var final_pos = hit.point - new Vector3(.5f, .5f, .5f);
+            if (final_pos.x > 1.5f ||  final_pos.x < -1.5f || final_pos.y > 1.5f || final_pos.y < -1.5f || final_pos.z > 1.5f || final_pos.z < -1.5f) return;
             
-            conn.Interact("-1", position.x.ToString(), position.z.ToString(), position.y.ToString());
+            var block_pos = new Vector3(
+                CalcBlockPos(final_pos.x),
+                CalcBlockPos(final_pos.y),
+                CalcBlockPos(final_pos.z)
+            );
             
+            conn.Interact("-1", block_pos.x.ToString(), block_pos.z.ToString(), block_pos.y.ToString());
+
             var chunkController = objectHit.parent.GetComponent<ChunkController>();
             
             chunkManager.UpdateSingleChunk(chunkController.chunkPosition.x, chunkController.chunkPosition.y, chunkController.chunkPosition.z);
