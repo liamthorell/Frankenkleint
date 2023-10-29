@@ -324,6 +324,8 @@ MonoBehaviour:
   viewDistance: 0
   heightDistance: 0
   conn: {fileID: 967077401}
+  freecam: {fileID: 963194229}
+  inputManager: {fileID: 967077403}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,13 +413,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.08715578, y: 0, z: 0, w: 0.9961947}
-  m_LocalPosition: {x: 0, y: 2.958, z: -10.96}
+  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
+  m_LocalPosition: {x: 0, y: 6.63, z: -11.47}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 10, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -435,6 +437,7 @@ MonoBehaviour:
   freeLookSensitivity: 3
   zoomSensitivity: 10
   fastZoomSensitivity: 50
+  active: 0
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -540,6 +543,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiController: {fileID: 734952255}
   mainCamera: {fileID: 963194227}
+  wasd: 1
 --- !u!114 &967077404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -578,7 +582,7 @@ MonoBehaviour:
   xp: 
   level: 
   playerName: 
-  currentSlot: 0
+  currentSlot: {x: 0, y: 0}
   uiController: {fileID: 734952255}
 --- !u!1 &1082765651
 GameObject:

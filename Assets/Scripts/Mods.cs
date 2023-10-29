@@ -19,6 +19,9 @@ public class Mods : MonoBehaviour
     private VisualElement root;
     private UIController uiController;
     public Connection conn;
+    public FreeCam freecam;
+    public InputManager inputManager;
+
     private void Start()
     {
         uiController = GetComponent<UIController>();
@@ -26,6 +29,7 @@ public class Mods : MonoBehaviour
         
         root.Q<Toggle>("kill-aura").RegisterValueChangedCallback(KillAuraEvent);
         root.Q<Toggle>("self-kill").RegisterValueChangedCallback(SelfKillEvent);
+        root.Q<Toggle>("freecam").RegisterValueChangedCallback(FreecamEvent);
         root.Q<Vector2IntField>("render-distance").RegisterValueChangedCallback(RenderDistanceEvent);
         root.Q<Button>("apply-render-distance").RegisterCallback<ClickEvent>(RenderDistanceButtonEvent);
         
@@ -95,5 +99,14 @@ public class Mods : MonoBehaviour
         chunkManager.HeightDistance = heightDistance;
         chunkManager.UpdateDistanceDelta();
         chunkManager.ResetChunks();
+    }
+    
+    private void FreecamEvent(ChangeEvent<bool> evt)
+    {
+        var newValue = evt.newValue;
+
+        freecam.active = newValue;
+        freecam.SetDefaultCameraPos();
+        inputManager.wasd = !newValue;
     }
 }

@@ -49,8 +49,21 @@ public class FreeCam : MonoBehaviour
     /// </summary>
     private bool looking = false;
 
+    public bool active = false;
+
+    private Vector3 defaultPos;
+    private Vector3 defaultRot;
+
+    private void Awake()
+    {
+        defaultPos = transform.position;
+        defaultRot = transform.localEulerAngles;
+    }
+
     void Update()
     {
+        if (!active) return;
+        
         //var fastMode = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
         var fastMode = false;
         var movementSpeed = fastMode ? this.fastMovementSpeed : this.movementSpeed;
@@ -141,5 +154,11 @@ public class FreeCam : MonoBehaviour
         looking = false;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+    }
+
+    public void SetDefaultCameraPos()
+    {
+        transform.position = defaultPos;
+        transform.localEulerAngles = defaultRot;
     }
 }

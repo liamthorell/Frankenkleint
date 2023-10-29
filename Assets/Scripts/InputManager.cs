@@ -15,7 +15,8 @@ public class InputManager : MonoBehaviour
     Throttle _moveThrottle = new Throttle();
     //Stopwatch sw = new Stopwatch();
     private float jumpTimer = 0f;
-    
+
+    public bool wasd = true;
     
     private void Awake()
     {
@@ -105,22 +106,46 @@ public class InputManager : MonoBehaviour
         {
             uiController.ToggleModMenu();
         }
-        if (Input.GetKey(KeyCode.UpArrow))
+        
+        if (wasd)
         {
-            z++;
+            if (Input.GetKey(KeyCode.W))
+            {
+                z++;
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                z--;
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                x++;
+            }
+            if (Input.GetKey(KeyCode.A))
+            {
+                x--;
+            }
         }
-        if (Input.GetKey(KeyCode.DownArrow))
+        else
         {
-            z--;
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                z++;
+            }
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                z--;
+            }
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                x++;
+            }
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                x--;
+            }
         }
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            x++;
-        }
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            x--;
-        }
+        
         if (Input.GetKey(KeyCode.Comma))
         {
             xi--;
