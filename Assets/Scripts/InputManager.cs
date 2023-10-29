@@ -50,13 +50,15 @@ public class InputManager : MonoBehaviour
                 CalcBlockPos(final_pos.z)
             );
             
+            //print(block_pos);
+            
             conn.Interact("-1", block_pos.x.ToString(), block_pos.z.ToString(), block_pos.y.ToString());
 
             var chunkController = objectHit.parent.GetComponent<ChunkController>();
             
             chunkManager.UpdateSingleChunk(chunkController.chunkPosition.x, chunkController.chunkPosition.y, chunkController.chunkPosition.z);
             
-            Destroy(objectHit.gameObject);
+            //Destroy(objectHit.gameObject);
         }
     }
     
