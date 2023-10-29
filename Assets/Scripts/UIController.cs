@@ -39,8 +39,6 @@ public class UIController : MonoBehaviour
    
    public void UpdateInventory()
    {
-      return;
-      /*if (playerController.inventory == null) return;
 
       var inventory = playerController.inventory;
 
@@ -48,32 +46,45 @@ public class UIController : MonoBehaviour
 
       inventoryList.Clear();
 
-      foreach (var item in inventory)
+      for (int i = 0; i < 10; i++)
       {
          var label = new Label();
+         
+         var itemIndex = new Vector2Int(i,0);
 
-         var itemData = ConvertObject<Dictionary<string, string>>(item[0]);
+         label.text = "Empty";
 
-         if (itemData["type"] == "tombstone")
+         if (playerController.inventory != null)
          {
-            label.text = item[1] as string + " - " + itemData["type"] + " - " + itemData["text"];
-         }
-         else
-         {
-            label.text = item[1] as string + " - " + itemData["type"];
-         }
-
-         if (label.text.Length > 45)
-         {
-            label.text = label.text.Substring(0, 45) + "...";
+            foreach (var item in inventory)
+            {
+               if (item.Key == playerController.ConvertSlot(itemIndex.x, itemIndex.y))
+               {
+                  var itemData = ConvertObject<Dictionary<string, string>>(item.Value);
+                  
+                  if (itemData["type"] == "tombstone")
+                  {
+                     label.text = itemData["count"] + " - " + itemData["type"] + " - " + itemData["text"];
+                  }
+                  else
+                  {
+                     label.text = itemData["count"] + " - " + itemData["type"];
+                  }
+            
+                  if (label.text.Length > 45)
+                  {
+                     label.text = label.text.Substring(0, 45) + "...";
+                  }
+               }
+            }
          }
 
          label.style.color = new StyleColor(new Color32(191, 191, 191 ,255));
-         label.style.fontSize = Length.Percent(10f);
+         label.style.fontSize = 12;
          label.style.whiteSpace = new StyleEnum<WhiteSpace>(WhiteSpace.Normal);
-         string itemIndex = inventory.IndexOf(item).ToString();
+         
          label.userData = itemIndex;
-
+         
          if (itemIndex == playerController.currentSlot)
          {
             label.style.backgroundColor = new StyleColor(new Color32(255, 255, 255, 50));
@@ -82,7 +93,7 @@ public class UIController : MonoBehaviour
          label.RegisterCallback<ClickEvent>(OnInventoryItemClicked);
 
          inventoryList.Add(label);
-      }*/
+      }
    }
    private void OnInventoryItemClicked(ClickEvent evt)
    {
@@ -96,8 +107,8 @@ public class UIController : MonoBehaviour
          if (item == targetBox) continue;
          item.style.backgroundColor = new StyleColor(new Color32(0, 0, 0, 0));      
       }
-      
-      playerController.currentSlot = targetBox.userData as string;
+
+      playerController.currentSlot = (Vector2Int)targetBox.userData;
    }
    
    private static TValue ConvertObject<TValue>(object obj)

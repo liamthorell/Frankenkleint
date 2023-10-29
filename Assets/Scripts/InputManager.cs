@@ -52,7 +52,7 @@ public class InputManager : MonoBehaviour
             
             //print(block_pos);
             
-            conn.Interact("-1", block_pos.x.ToString(), block_pos.z.ToString(), block_pos.y.ToString());
+            conn.Interact(playerController.GetCurrentSlot(), block_pos.x.ToString(), block_pos.z.ToString(), block_pos.y.ToString());
 
             var chunkController = objectHit.parent.GetComponent<ChunkController>();
             
@@ -73,7 +73,7 @@ public class InputManager : MonoBehaviour
             Transform objectHit = hit.transform;
             var position = Vector3Int.FloorToInt(objectHit.position + hit.normal);
 
-            conn.Interact(playerController.currentSlot, position.x.ToString(), position.z.ToString(), position.y.ToString());
+            conn.Interact(playerController.GetCurrentSlot(), position.x.ToString(), position.z.ToString(), position.y.ToString());
 
             var chunkController = objectHit.parent.GetComponent<ChunkController>();
             
