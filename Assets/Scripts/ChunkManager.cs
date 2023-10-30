@@ -10,13 +10,13 @@ using HGS.CallLimiter;
 
 public class ChunkManager : MonoBehaviour
 {
-     public int ViewDistance = 3;
-     public int HeightDistance = 7;
-     public int ViewDelta = 0;
-     public int HeightDelta = 0;
+    public int ViewDistance = 3;
+    public int HeightDistance = 7;
+    public int ViewDelta = 0;
+    public int HeightDelta = 0;
+     
+    public bool removeOldChunksOnMove = true;
     
-    
-    //private GameObject[,,] chunks = new GameObject[ViewDistance, HeightDistance, ViewDistance];
     public List<List<List<GameObject>>> chunks = new();
 
     public GameObject chunkObject;
@@ -93,12 +93,29 @@ public class ChunkManager : MonoBehaviour
         StartCoroutine(ScheduleChunkGeneration());
     }
 
+    public void DestroyAllChunks()
+    {
+        for (int i = 0; i < ViewDistance; i++)
+        {
+            for (int i2 = 0; i2 < HeightDistance; i2++)
+            {
+                for (int i3 = 0; i3 < ViewDistance; i3++)
+                {
+                    if (i == ViewDelta && i3 == ViewDelta) continue;
+                    Destroy(chunks[i][i2][i3]);
+                }
+            }
+        }
+    }
+    
     public void MoveAndUpdate(string x, string y, string z, string xi = "0")
     {
         
         chunkQueue.Add(new Vector3Int(-1,-1,-1));
         conn.Move(x, z, y, xi);
         InvalidateChunkQueue();
+        
+        if (removeOldChunksOnMove) DestroyAllChunks();
 
         for (int yy = -HeightDelta; yy <= HeightDelta; yy++)
         {

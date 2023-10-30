@@ -12,6 +12,7 @@ public class UIController : MonoBehaviour
    private VisualElement root;
    public VisualTreeAsset listTemplate;
    public PlayerController playerController;
+   public Mods mods;
 
    private void Start()
    {
@@ -46,11 +47,11 @@ public class UIController : MonoBehaviour
 
       inventoryList.Clear();
 
-      for (int i = 0; i < 10; i++)
+      for (int i = 0; i < mods.inventorySize; i++)
       {
          var label = new Label();
          
-         var itemIndex = new Vector2Int(i,0);
+         var itemIndex = new Vector2Int(i,mods.inventorySlider);
 
          label.text = "Empty";
 
