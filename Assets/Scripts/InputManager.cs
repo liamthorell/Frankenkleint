@@ -50,8 +50,14 @@ public class InputManager : MonoBehaviour
                 CalcBlockPos(final_pos.y),
                 CalcBlockPos(final_pos.z)
             );
+
+            if (final_pos.y == -0.5f)
+            {
+                block_pos.y = -1;
+            }
             
             //print(block_pos);
+            print($"{block_pos} | {final_pos} | y: {(Mathf.Abs(final_pos.y) <= 0.5f ? 0 : Mathf.Sign(final_pos.y))}");
             
             conn.Interact(playerController.GetCurrentSlot(), block_pos.x.ToString(), block_pos.z.ToString(), block_pos.y.ToString());
 
