@@ -15,6 +15,9 @@ public class Mods : MonoBehaviour
     public bool selfKill = false;
     public int viewDistance;
     public int heightDistance;
+    public int inventorySize = 10;
+    public int inventorySizeI = 10;
+    public int inventorySlider = 0;
     
     private VisualElement root;
     private UIController uiController;
@@ -26,10 +29,20 @@ public class Mods : MonoBehaviour
     {
         uiController = GetComponent<UIController>();
         root = uiController.doc.rootVisualElement;
-        
+
         root.Q<Toggle>("kill-aura").RegisterValueChangedCallback(KillAuraEvent);
         root.Q<Toggle>("self-kill").RegisterValueChangedCallback(SelfKillEvent);
         root.Q<Toggle>("freecam").RegisterValueChangedCallback(FreecamEvent);
+        root.Q<Button>("reset-camera-position").RegisterCallback<ClickEvent>(ResetCameraPositionEvent);
+
+        root.Q<Toggle>("remove-old-chunks-on-move").RegisterValueChangedCallback(RemoveOldChunksOnMoveEvent);
+        root.Q<Toggle>("remove-old-chunks-on-move").value = chunkManager.removeOldChunksOnMove;
+
+        root.Q<IntegerField>("inventory-size").RegisterValueChangedCallback(InventorySizeEvent);
+        root.Q<IntegerField>("inventory-size-i").RegisterValueChangedCallback(InventorySizeIEvent);
+        root.Q<SliderInt>("inventory-slider").RegisterValueChangedCallback(InventorySliderEvent);
+
+        
         root.Q<Vector2IntField>("render-distance").RegisterValueChangedCallback(RenderDistanceEvent);
         root.Q<Button>("apply-render-distance").RegisterCallback<ClickEvent>(RenderDistanceButtonEvent);
         
@@ -38,6 +51,11 @@ public class Mods : MonoBehaviour
         heightDistance = chunkManager.HeightDistance;
         root.Q<Vector2IntField>("render-distance").value = new Vector2Int(viewDistance, heightDistance);
         
+        // Init inventory size values
+        root.Q<SliderInt>("inventory-slider").highValue = inventorySizeI;
+        root.Q<IntegerField>("inventory-size").value = inventorySize;
+        root.Q<IntegerField>("inventory-size-i").value = inventorySizeI;
+
         InvokeRepeating(nameof(Execute), 2.0f, 0.08f);
     }
 
@@ -106,7 +124,37 @@ public class Mods : MonoBehaviour
         var newValue = evt.newValue;
 
         freecam.active = newValue;
-        freecam.SetDefaultCameraPos();
         inputManager.wasd = !newValue;
+    }
+    
+    private void InventorySizeEvent(ChangeEvent<int> evt)
+    {
+        inventorySize = evt.newValue;
+        
+        uiController.UpdateInventory();
+    }
+    
+    private void InventorySizeIEvent(ChangeEvent<int> evt)
+    {
+        inventorySizeI = evt.newValue;
+        root.Q<SliderInt>("inventory-slider").highValue = inventorySizeI;
+    }
+    
+    private void InventorySliderEvent(ChangeEvent<int> evt)
+    {
+        inventorySlider = evt.newValue;
+        root.Q<SliderInt>("inventory-slider").label = "Inventory i: " + inventorySlider;
+        
+        uiController.UpdateInventory();
+    }
+
+    private void RemoveOldChunksOnMoveEvent(ChangeEvent<bool> evt)
+    {
+        chunkManager.removeOldChunksOnMove = evt.newValue;
+    }
+    
+    private void ResetCameraPositionEvent(ClickEvent evt)
+    {
+        freecam.SetDefaultCameraPos();
     }
 }

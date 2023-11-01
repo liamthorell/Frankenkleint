@@ -2,6 +2,7 @@
     <Style src="project://database/Assets/UI%20Toolkit/stylesheet.uss?fileID=7433441132597879392&amp;guid=7a1bb1488096bd84091951c539bb1bbd&amp;type=3#stylesheet" />
     <ui:VisualElement name="VisualElement" picking-mode="Ignore" style="flex-grow: 1; justify-content: space-between; align-items: stretch; width: auto; flex-direction: row;">
         <ui:VisualElement name="VisualElement" style="height: 50%; width: 15%; background-color: rgba(0, 0, 0, 0.6); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center;">
+            <ui:SliderInt picking-mode="Ignore" label="Inventory i: 0" value="0" high-value="10" name="inventory-slider" show-input-field="false" style="color: rgb(191, 191, 191);" />
             <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0.1" name="inventory-list" mouse-wheel-scroll-size="150" style="flex-wrap: wrap;" />
         </ui:VisualElement>
         <ui:VisualElement name="mod-menu" style="height: 50%; width: 50%; background-color: rgba(115, 81, 128, 0.86); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center; visibility: visible;">
@@ -11,6 +12,10 @@
                 <ui:Toggle label="Kill Aura" name="kill-aura" />
                 <ui:Toggle label="Self kill" name="self-kill" />
                 <ui:Toggle label="Freecam" name="freecam" />
+                <ui:Button text="Reset camera position" parse-escape-sequences="true" display-tooltip-when-elided="true" name="reset-camera-position" />
+                <ui:Toggle label="Remove old chunks when moving" name="remove-old-chunks-on-move" />
+                <ui:IntegerField label="Inventory size" value="0" name="inventory-size" />
+                <ui:IntegerField label="Inventory size (i)" value="0" name="inventory-size-i" />
             </ui:ScrollView>
         </ui:VisualElement>
         <ui:VisualElement name="VisualElement" style="height: 0; width: 15%; background-color: rgba(0, 0, 0, 0.6); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center; display: flex;" />
