@@ -150,9 +150,18 @@ public class ChunkManager : MonoBehaviour
 
             if (entry.modelOverride == null)
             {
-                var material = new Material(blockMaterial);
-                material.SetFloat("_index", temp.textureIndex);
-                temp.material = material;
+                if (entry.material == null)
+                {
+                    var material = new Material(blockMaterial);
+                    material.SetFloat("_index", temp.textureIndex);
+                    temp.material = material;
+                }
+                else
+                {
+                    var material = new Material(entry.material);
+                    material.SetFloat("_index", temp.textureIndex);
+                    temp.material = material;
+                }
             }
 
             res.Add(temp);

@@ -4,7 +4,6 @@ using UnityEngine;
 using Newtonsoft.Json;
 public class PlayerController : MonoBehaviour
 {
-    // Start is called before the first frame update
     public Dictionary<string,Dictionary<string, string>> inventory;
     public string hp;
     public string maxHp;
