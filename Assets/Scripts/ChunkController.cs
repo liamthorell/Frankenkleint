@@ -71,7 +71,7 @@ public class ChunkController : MonoBehaviour
                 // front back left right up down
                 bool[] sides = { true, true, true, true, true, true };
                 
-                string[] transparent = { "air", "tombstone", "leaves", "spawner"};
+                string[] transparent = { "air", "tombstone", "leaves", "spawner", "soul"};
                 
                 var type = block["type"];
 
