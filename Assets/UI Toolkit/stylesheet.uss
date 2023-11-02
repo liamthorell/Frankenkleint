@@ -16,3 +16,14 @@
 #packet-type .unity-label {
     min-width: 100px;
 }
+
+.side-container {
+    padding-top: 4px;
+    padding-right: 4px;
+    padding-bottom: 4px;
+    padding-left: 4px;
+}
+
+.input-gray-text .unity-label {
+    color: rgb(191, 191, 191);
+}
