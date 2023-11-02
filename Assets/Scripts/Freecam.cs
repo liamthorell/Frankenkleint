@@ -110,7 +110,16 @@ public class FreeCam : MonoBehaviour
         if (looking)
         {
             float newRotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * freeLookSensitivity;
+
+            float prev = transform.localEulerAngles.x;
             float newRotationY = transform.localEulerAngles.x - Input.GetAxis("Mouse Y") * freeLookSensitivity;
+
+            // camera pitch limit
+            if (newRotationY < 271f && newRotationY > 89f)
+            {
+                newRotationY = prev;
+            }
+            
             transform.localEulerAngles = new Vector3(newRotationY, newRotationX, 0f);
         }
 
