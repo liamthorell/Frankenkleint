@@ -66,6 +66,6 @@ MonoBehaviour:
     modelOverride: {fileID: 0}
     material: {fileID: 0}
   - name: soul
-    textureIndex: 0
+    textureIndex: 4
     modelOverride: {fileID: 227301695705803069, guid: 6f2dc42c0bcc2e94083b731b1cfc984f, type: 3}
     material: {fileID: 0}

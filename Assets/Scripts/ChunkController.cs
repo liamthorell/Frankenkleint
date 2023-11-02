@@ -75,10 +75,10 @@ public class ChunkController : MonoBehaviour
                 
                 var type = block["type"];
 
-                if (type == "tombstone") // rendering for special blocks
+                if (type is "tombstone" or "soul") // rendering for special blocks (TODO should NOT be hardcoded but depend on if model override is set in block settings)
                 {
                     //no fucking tombstones i am alladeen madafaka
-                    CreateBlockWithModel("tombstone", x-7, y-7);
+                    CreateBlockWithModel(type, x-7, y-7);
                 }
                 else // greedy meshing algorithm
                 {
