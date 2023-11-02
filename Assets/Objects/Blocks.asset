@@ -61,3 +61,7 @@ MonoBehaviour:
     textureIndex: 255
     modelOverride: {fileID: 0}
     material: {fileID: 0}
+  - name: rock
+    textureIndex: 11
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}

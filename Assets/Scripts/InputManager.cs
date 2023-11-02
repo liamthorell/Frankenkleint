@@ -51,6 +51,7 @@ public class InputManager : MonoBehaviour
                 CalcBlockPos(final_pos.z)
             );
 
+            // fix not being able to break block below
             if (final_pos.y == -0.5f)
             {
                 block_pos.y = -1;

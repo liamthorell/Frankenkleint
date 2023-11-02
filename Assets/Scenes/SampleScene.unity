@@ -274,7 +274,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PanelSettings: {fileID: 11400000, guid: bd5015f9c62eff643b759d575ad03828, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 0efba2bbccf72394491d89989de971e9, type: 3}
+  sourceAsset: {fileID: 9197481963319205126, guid: 0efba2bbccf72394491d89989de971e9,
+    type: 3}
   m_SortingOrder: 0
 --- !u!4 &734952254
 Transform:
@@ -568,11 +569,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ViewDistance: 3
-  HeightDistance: 5
+  HeightDistance: 3
   ViewDelta: 0
   HeightDelta: 0
   removeOldChunksOnMove: 1
-  chunkObject: {fileID: 8430967951448889010, guid: 7bdd1c1400b2aa943b693d13a9fa6ff5, type: 3}
+  chunkObject: {fileID: 8430967951448889010, guid: 7bdd1c1400b2aa943b693d13a9fa6ff5,
+    type: 3}
   chunksGameObject: {fileID: 1364168029}
   blockMaterial: {fileID: 2100000, guid: 1c3474a43bfdf4846810af0cc97edceb, type: 2}
   blockTypesObject: {fileID: 11400000, guid: cb343699c8c957f45b86d375c75b5f0d, type: 2}

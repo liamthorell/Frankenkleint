@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -188,7 +189,7 @@ public class ChunkController : MonoBehaviour
             {
                 case "player":
                     if (chunkPosition.y != 0 && chunkPosition.x == 0 && chunkPosition.z == 0 && x == 0 && y == 0) break;
-                    CreateBlockWithModel((string)entity["type"], x, y, 1f, entity["name"] + " " + entity["hp"] + "/" + entity["max_hp"]);
+                    CreateBlockWithModel((string)entity["type"], x, y, 1f, entity["name"] + " " + entity["hp"] + "/" + entity["max_hp"], alpha: 0.3f);
                     break;
                 case "monster":
                     CreateBlockWithModel((string)entity["type"], x, y, 1f, "Monster" + " " + entity["hp"] + "/" + entity["max_hp"]);
@@ -203,7 +204,7 @@ public class ChunkController : MonoBehaviour
         }
     }
 
-    private void CreateBlockWithModel(string textureName, int x, int y, float scale = 1, string text = null)
+    private void CreateBlockWithModel(string textureName, int x, int y, float scale = 1, string text = null, float alpha = 1f)
     { 
         BlockTypes.BlockType type = types.Find(item => item.name == textureName);
         if (type.material == null && type.modelOverride == null) // todo clean this ugly ass shit up
@@ -214,10 +215,14 @@ public class ChunkController : MonoBehaviour
         GameObject block;
         if (type.modelOverride == null)
         {
-
             block = GameObject.CreatePrimitive(PrimitiveType.Cube);
             block.GetComponent<Renderer>().sharedMaterial = type.material;
-            block.name = "Block";
+            
+            if (alpha != 1f)
+            {
+                block.GetComponent<Renderer>().sharedMaterial.SetFloat("_opacity", alpha);
+                print(block.GetComponent<Renderer>().sharedMaterial.GetFloat("_opacity"));
+            }
         }
         else
         {
