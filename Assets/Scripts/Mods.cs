@@ -19,16 +19,26 @@ public class Mods : MonoBehaviour
     public int inventorySizeI = 10;
     public int inventorySlider = 0;
     
+    public int sendX = 0;
+    public int sendY = 0;
+    public int sendZ = 0;
+    public int send4th = 0;
+    
+    public bool sendRepeat = false;
+    public string packetType = "Move";
+    
     private VisualElement root;
     private UIController uiController;
     public Connection conn;
     public FreeCam freecam;
     public InputManager inputManager;
+    public PlayerController playerController;
 
     private void Start()
     {
         uiController = GetComponent<UIController>();
         root = uiController.doc.rootVisualElement;
+
 
         root.Q<Toggle>("kill-aura").RegisterValueChangedCallback(KillAuraEvent);
         root.Q<Toggle>("self-kill").RegisterValueChangedCallback(SelfKillEvent);
@@ -43,13 +53,31 @@ public class Mods : MonoBehaviour
         root.Q<SliderInt>("inventory-slider").RegisterValueChangedCallback(InventorySliderEvent);
 
         
-        root.Q<Vector2IntField>("render-distance").RegisterValueChangedCallback(RenderDistanceEvent);
+        root.Q<IntegerField>("view-distance").RegisterValueChangedCallback(ViewDistanceEvent);
+        root.Q<IntegerField>("height-distance").RegisterValueChangedCallback(HeightDistanceEvent);
+
         root.Q<Button>("apply-render-distance").RegisterCallback<ClickEvent>(RenderDistanceButtonEvent);
+        
+        root.Q<IntegerField>("send-x").RegisterValueChangedCallback(SendXEvent);
+        root.Q<IntegerField>("send-y").RegisterValueChangedCallback(SendYEvent);
+        root.Q<IntegerField>("send-z").RegisterValueChangedCallback(SendZEvent);
+        root.Q<IntegerField>("send-4th").RegisterValueChangedCallback(Send4thEvent);
+        
+        root.Q<Toggle>("send-repeat").RegisterValueChangedCallback(SendRepeatEvent);
+        root.Q<RadioButtonGroup>("packet-type").RegisterValueChangedCallback(PacketTypeEvent);
+        root.Q<Button>("send-packet").RegisterCallback<ClickEvent>(SendPacketEvent);
+        
+        // Quick send packet
+        root.Q<Button>("send-up").RegisterCallback<ClickEvent>(SendUpPacketEvent);
+        root.Q<Button>("send-down").RegisterCallback<ClickEvent>(SendDownPacketEvent);
+        root.Q<Button>("send-4-up").RegisterCallback<ClickEvent>(Send4UpPacketEvent);
+        root.Q<Button>("send-4-down").RegisterCallback<ClickEvent>(Send4DownPacketEvent);
         
         // Init render distance values
         viewDistance = chunkManager.ViewDistance;
         heightDistance = chunkManager.HeightDistance;
-        root.Q<Vector2IntField>("render-distance").value = new Vector2Int(viewDistance, heightDistance);
+        root.Q<IntegerField>("view-distance").value = viewDistance;
+        root.Q<IntegerField>("height-distance").value = heightDistance;
         
         // Init inventory size values
         root.Q<SliderInt>("inventory-slider").highValue = inventorySizeI;
@@ -63,6 +91,8 @@ public class Mods : MonoBehaviour
     {
         KillAuraExecute();
         SelfKillExecute();
+        
+        SendPacketExecute();
     }
 
     private void KillAuraEvent(ChangeEvent<bool> evt)
@@ -105,10 +135,14 @@ public class Mods : MonoBehaviour
         conn.Interact("-1", "0", "0");
     }
     
-    private void RenderDistanceEvent(ChangeEvent<Vector2Int> evt)
+    private void ViewDistanceEvent(ChangeEvent<int> evt)
     {
-        viewDistance = evt.newValue.x;
-        heightDistance = evt.newValue.y;
+        viewDistance = evt.newValue;
+    }
+    
+    private void HeightDistanceEvent(ChangeEvent<int> evt)
+    {
+        heightDistance = evt.newValue;
     }
 
     private void RenderDistanceButtonEvent(ClickEvent evt)
@@ -156,5 +190,115 @@ public class Mods : MonoBehaviour
     private void ResetCameraPositionEvent(ClickEvent evt)
     {
         freecam.SetDefaultCameraPos();
+    }
+    
+    private void SendXEvent(ChangeEvent<int> evt)
+    {
+        sendX = evt.newValue;
+    }
+    
+    private void SendYEvent(ChangeEvent<int> evt)
+    {
+        sendY = evt.newValue;
+    }
+    
+    private void SendZEvent(ChangeEvent<int> evt)
+    {
+        sendZ = evt.newValue;
+    }
+    
+    private void Send4thEvent(ChangeEvent<int> evt)
+    {
+        send4th = evt.newValue;
+    }
+    
+    private void SendRepeatEvent(ChangeEvent<bool> evt)
+    {
+        sendRepeat = evt.newValue;
+    }
+    
+    private void PacketTypeEvent(ChangeEvent<int> evt)
+    {
+        if (evt.newValue == 0)
+        {
+            packetType = "Move";
+        } else if (evt.newValue == 1)
+        {
+            packetType = "Interact";
+        }
+    }
+
+    private void SendPacketExecute()
+    {
+        if (!sendRepeat) return;
+
+        if (packetType == "Move")
+        {
+            chunkManager.MoveAndUpdate(sendX.ToString(), sendY.ToString(), sendZ.ToString(), send4th.ToString());
+        }
+        else if (packetType == "Interact")
+        {
+            conn.Interact(playerController.GetCurrentSlot(), sendX.ToString(), sendZ.ToString(), sendY.ToString(), send4th.ToString());
+        }
+    }
+
+    private void SendPacketEvent(ClickEvent evt)
+    {
+        if (packetType == "Move")
+        {
+            chunkManager.MoveAndUpdate(sendX.ToString(), sendY.ToString(), sendZ.ToString(), send4th.ToString());
+        }
+        else if (packetType == "Interact")
+        {
+            conn.Interact(playerController.GetCurrentSlot(), sendX.ToString(), sendZ.ToString(), sendY.ToString(), send4th.ToString());
+        }
+    }
+    
+    private void SendUpPacketEvent(ClickEvent evt)
+    {
+        if (packetType == "Move")
+        {
+            chunkManager.MoveAndUpdate("0", "1", "0", "0");
+        }
+        else if (packetType == "Interact")
+        {
+            conn.Interact(playerController.GetCurrentSlot(), "0", "0", "1", "0");
+        }
+    }
+    
+    private void SendDownPacketEvent(ClickEvent evt)
+    {
+        if (packetType == "Move")
+        {
+            chunkManager.MoveAndUpdate("0", "-1", "0", "0");
+        }
+        else if (packetType == "Interact")
+        {
+            conn.Interact(playerController.GetCurrentSlot(), "0", "0", "-1", "0");
+        }
+    }
+    
+    private void Send4UpPacketEvent(ClickEvent evt)
+    {
+        if (packetType == "Move")
+        {
+            chunkManager.MoveAndUpdate("0", "0", "0", "1");
+        }
+        else if (packetType == "Interact")
+        {
+            conn.Interact(playerController.GetCurrentSlot(), "0", "0", "0", "1");
+        }
+    }
+    
+    private void Send4DownPacketEvent(ClickEvent evt)
+    {
+        if (packetType == "Move")
+        {
+            chunkManager.MoveAndUpdate("0", "0", "0", "-1");
+        }
+        else if (packetType == "Interact")
+        {
+            conn.Interact(playerController.GetCurrentSlot(), "0", "0", "0", "-1");
+        }
     }
 }

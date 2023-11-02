@@ -1,13 +1,14 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/stylesheet.uss?fileID=7433441132597879392&amp;guid=7a1bb1488096bd84091951c539bb1bbd&amp;type=3#stylesheet" />
-    <ui:VisualElement name="VisualElement" picking-mode="Ignore" style="flex-grow: 1; justify-content: space-between; align-items: stretch; width: auto; flex-direction: row;">
-        <ui:VisualElement name="VisualElement" style="height: 50%; width: 15%; background-color: rgba(0, 0, 0, 0.6); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center;">
-            <ui:SliderInt picking-mode="Ignore" label="Inventory i: 0" value="0" high-value="10" name="inventory-slider" show-input-field="false" style="color: rgb(191, 191, 191);" />
+    <ui:VisualElement name="container" picking-mode="Ignore" style="flex-grow: 1; justify-content: space-between; align-items: stretch; width: auto; flex-direction: row;">
+        <ui:VisualElement name="inventory" style="height: 50%; width: 15%; background-color: rgba(0, 0, 0, 0.6); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center;">
+            <ui:SliderInt picking-mode="Ignore" label="Inventory i: 0" value="0" high-value="10" name="inventory-slider" show-input-field="false" focusable="false" tabindex="-1" style="color: rgb(191, 191, 191);" />
             <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0.1" name="inventory-list" mouse-wheel-scroll-size="150" style="flex-wrap: wrap;" />
         </ui:VisualElement>
         <ui:VisualElement name="mod-menu" style="height: 50%; width: 50%; background-color: rgba(115, 81, 128, 0.86); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center; visibility: visible;">
             <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0.1" mouse-wheel-scroll-size="150">
-                <ui:Vector2IntField label="Render distance\n(X=x,z Y=y)" name="render-distance" />
+                <ui:IntegerField label="View distance" value="0" name="view-distance" />
+                <ui:IntegerField label="Height distance" value="0" name="height-distance" />
                 <ui:Button text="Apply render distance" parse-escape-sequences="true" display-tooltip-when-elided="true" name="apply-render-distance" />
                 <ui:Toggle label="Kill Aura" name="kill-aura" />
                 <ui:Toggle label="Self kill" name="self-kill" />
@@ -18,7 +19,31 @@
                 <ui:IntegerField label="Inventory size (i)" value="0" name="inventory-size-i" />
             </ui:ScrollView>
         </ui:VisualElement>
-        <ui:VisualElement name="VisualElement" style="height: 0; width: 15%; background-color: rgba(0, 0, 0, 0.6); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center; display: flex;" />
+        <ui:VisualElement name="navigation" style="height: 50%; width: 15%; background-color: rgba(0, 0, 0, 0.6); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center;">
+            <ui:Label tabindex="-1" text="Send packets" parse-escape-sequences="true" display-tooltip-when-elided="true" style="color: rgb(191, 191, 191); -unity-font-style: bold;" />
+            <ui:VisualElement name="move-xz" style="flex-grow: 0; flex-direction: row; flex-wrap: nowrap;">
+                <ui:IntegerField label="X" value="0" name="send-x" tabindex="-1" class="move-input-2" style="flex-grow: 1;" />
+                <ui:IntegerField label="Z" value="0" name="send-z" tabindex="-1" class="move-input-2" style="flex-grow: 1;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="move-y4th" style="flex-grow: 0; flex-direction: row; flex-wrap: nowrap;">
+                <ui:IntegerField label="Y" value="0" name="send-y" tabindex="-1" class="move-input-2" style="flex-grow: 1;" />
+                <ui:IntegerField label="4th" value="0" name="send-4th" tabindex="-1" class="move-input-2" style="flex-grow: 1;" />
+            </ui:VisualElement>
+            <ui:RadioButtonGroup label="Packet type" value="0" choices="Move,Interact" name="packet-type" tabindex="-1" focusable="false" style="flex-direction: row; color: rgb(191, 191, 191);" />
+            <ui:VisualElement name="send-settings" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap;">
+                <ui:Button text="Send" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-packet" tabindex="-1" focusable="false" style="flex-grow: 1;" />
+                <ui:Toggle label="Repeat" name="send-repeat" tabindex="-1" />
+            </ui:VisualElement>
+            <ui:Label tabindex="-1" text="Quick send" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="color: rgb(191, 191, 191); -unity-font-style: bold;" />
+            <ui:VisualElement name="quick-send" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap;">
+                <ui:Button text="Up" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-up" tabindex="-1" focusable="false" />
+                <ui:Button text="Down" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-down" tabindex="-1" focusable="false" />
+            </ui:VisualElement>
+            <ui:VisualElement name="quick-send" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap;">
+                <ui:Button text="4th dim +" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-4-up" tabindex="-1" focusable="false" />
+                <ui:Button text="4th dim -" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-4-down" tabindex="-1" focusable="false" />
+            </ui:VisualElement>
+        </ui:VisualElement>
         <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="stats" style="position: absolute; height: auto; width: auto; background-color: rgba(0, 0, 0, 0.69); color: rgb(219, 219, 219);" />
     </ui:VisualElement>
 </ui:UXML>

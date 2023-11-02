@@ -1,0 +1,18 @@
+.move-input .unity-label {
+    color: rgb(191, 191, 191);
+    min-width: 100px;
+}
+
+.move-input-2 .unity-label {
+    color: rgb(191, 191, 191);
+    min-width: 0;
+}
+
+#send-repeat .unity-label {
+    min-width: 80px;
+    color: rgb(191, 191, 191);
+}
+
+#packet-type .unity-label {
+    min-width: 100px;
+}

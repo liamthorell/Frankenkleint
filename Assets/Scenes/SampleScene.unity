@@ -327,9 +327,16 @@ MonoBehaviour:
   inventorySize: 10
   inventorySizeI: 10
   inventorySlider: 0
+  sendX: 0
+  sendY: 0
+  sendZ: 0
+  send4th: 0
+  sendRepeat: 0
+  packetType: Move
   conn: {fileID: 967077401}
   freecam: {fileID: 963194229}
   inputManager: {fileID: 967077403}
+  playerController: {fileID: 967077405}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -560,10 +567,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c39d6e4610214479245d3aba30751d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ViewDistance: 1
-  HeightDistance: 3
+  ViewDistance: 3
+  HeightDistance: 5
   ViewDelta: 0
   HeightDelta: 0
+  removeOldChunksOnMove: 1
   chunkObject: {fileID: 8430967951448889010, guid: 7bdd1c1400b2aa943b693d13a9fa6ff5, type: 3}
   chunksGameObject: {fileID: 1364168029}
   blockMaterial: {fileID: 2100000, guid: 1c3474a43bfdf4846810af0cc97edceb, type: 2}
