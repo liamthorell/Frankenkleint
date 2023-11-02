@@ -53,7 +53,7 @@ public class ChunkController : MonoBehaviour
         new (0, 0),
         new (1, 0),
     };
-
+    
     public void GenerateBlocks()
     {
         bool[,] drawn = new bool[15, 15];
@@ -189,7 +189,7 @@ public class ChunkController : MonoBehaviour
             {
                 case "player":
                     if (chunkPosition.y != 0 && chunkPosition.x == 0 && chunkPosition.z == 0 && x == 0 && y == 0) break;
-                    CreateBlockWithModel((string)entity["type"], x, y, 1f, entity["name"] + " " + entity["hp"] + "/" + entity["max_hp"], alpha: 0.3f);
+                    CreateBlockWithModel((string)entity["type"], x, y, 1f, entity["name"] + " " + entity["hp"] + "/" + entity["max_hp"]);
                     break;
                 case "monster":
                     CreateBlockWithModel((string)entity["type"], x, y, 1f, "Monster" + " " + entity["hp"] + "/" + entity["max_hp"]);
@@ -248,12 +248,14 @@ public class ChunkController : MonoBehaviour
 
     private void CreateBlock(string textureName, int x, int y, bool[] sides, int x_width, int y_width)
     {
+        // this is most likely slow as fuck due to using linq pls fix it
         BlockTypes.BlockType type = types.Find(item => item.name == textureName);
-        if (type.material == null && type.modelOverride == null) // todo clean this ugly ass shit up
+        if (type.material == null && type.modelOverride == null)
         {
-            type = types.Find(item => item.name == "none");
+            return; // TODO issue with this: stops rendering of blocks without texture
+            //type = types.Find(item => item.name == "none");
         }
-        
+
         var blockObject = new GameObject
         {
             name = "block",

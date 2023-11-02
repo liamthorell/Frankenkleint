@@ -568,13 +568,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ViewDistance: 3
-  HeightDistance: 5
+  HeightDistance: 15
   ViewDelta: 0
   HeightDelta: 0
   removeOldChunksOnMove: 1
   chunkObject: {fileID: 8430967951448889010, guid: 7bdd1c1400b2aa943b693d13a9fa6ff5, type: 3}
   chunksGameObject: {fileID: 1364168029}
   blockMaterial: {fileID: 2100000, guid: 1c3474a43bfdf4846810af0cc97edceb, type: 2}
+  blockTransparentMaterial: {fileID: 2100000, guid: 460013d7d28f2de49b43807aa5b8ecfe, type: 2}
   blockTypesObject: {fileID: 11400000, guid: cb343699c8c957f45b86d375c75b5f0d, type: 2}
   blockTypes: []
 --- !u!114 &967077405
@@ -695,6 +696,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2078110281
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8275136151279877051, guid: d6258866e4d41d545b230c1cea4781cc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275136151279877051, guid: d6258866e4d41d545b230c1cea4781cc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275136151279877051, guid: d6258866e4d41d545b230c1cea4781cc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275136151279877051, guid: d6258866e4d41d545b230c1cea4781cc, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275136151279877051, guid: d6258866e4d41d545b230c1cea4781cc, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275136151279877051, guid: d6258866e4d41d545b230c1cea4781cc, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275136151279877051, guid: d6258866e4d41d545b230c1cea4781cc, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275136151279877051, guid: d6258866e4d41d545b230c1cea4781cc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275136151279877051, guid: d6258866e4d41d545b230c1cea4781cc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275136151279877051, guid: d6258866e4d41d545b230c1cea4781cc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8763126163069985025, guid: d6258866e4d41d545b230c1cea4781cc, type: 3}
+      propertyPath: m_Name
+      value: Tombstone
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d6258866e4d41d545b230c1cea4781cc, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -705,3 +763,4 @@ SceneRoots:
   - {fileID: 1364168030}
   - {fileID: 1082765654}
   - {fileID: 734952254}
+  - {fileID: 2078110281}

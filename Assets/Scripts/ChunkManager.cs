@@ -23,6 +23,7 @@ public class ChunkManager : MonoBehaviour
     public GameObject chunksGameObject;
 
     public Material blockMaterial;
+    public Material blockTransparentMaterial;
 
     private Connection conn;
     
@@ -35,6 +36,21 @@ public class ChunkManager : MonoBehaviour
     public List<BlockTypes.BlockType> blockTypes;
     
     Debounce _updateChunksDebounce = new Debounce();
+    
+    /*
+     * Temporary place for dis
+     * Workflow after updating this setting:
+     * - rerun ParseBlockTypes()
+     * - rerender all chunks
+     * Limitations atm:
+     * - current implementation stops unknown blocks from being rendered
+     * - cant make air transparent
+     */
+    private Dictionary<string, float> xray = new()
+    {
+        //{ "dirt", .2f },
+        //{ "rock", .2f },
+    };
 
     public void UpdateDistanceDelta()
     {
@@ -165,12 +181,39 @@ public class ChunkManager : MonoBehaviour
                 modelOverride = entry.modelOverride
             };
 
+
+            // block material logic
             if (entry.modelOverride == null)
             {
                 if (entry.material == null)
                 {
-                    var material = new Material(blockMaterial);
-                    material.SetFloat("_index", temp.textureIndex);
+                    bool materialSet = false;
+
+                    Material material;
+                    if (xray.TryGetValue(entry.name, out var value)) // use transparent material if in xray list
+                    {
+                        if (value == 0f)
+                        {
+                            print($"gg i am {entry.name}");
+                            material = null;
+                        }
+                        else
+                        {
+                            material = new Material(blockTransparentMaterial);
+                            material.SetFloat("_opacity", value);
+                            materialSet = true;
+                        }
+                    }
+                    else
+                    {
+                        material = new Material(blockMaterial);
+                        materialSet = true;
+                    }
+
+                    if (materialSet)
+                    {
+                        material.SetFloat("_index", temp.textureIndex);
+                    }
                     temp.material = material;
                 }
                 else
