@@ -92,10 +92,17 @@ public class Mods : MonoBehaviour
         root.Q<Button>("send-packet").RegisterCallback<ClickEvent>(SendPacketEvent);
         
         // Quick send packet
-        root.Q<Button>("send-up").RegisterCallback<ClickEvent>(SendUpPacketEvent);
-        root.Q<Button>("send-down").RegisterCallback<ClickEvent>(SendDownPacketEvent);
-        root.Q<Button>("send-4-up").RegisterCallback<ClickEvent>(Send4UpPacketEvent);
-        root.Q<Button>("send-4-down").RegisterCallback<ClickEvent>(Send4DownPacketEvent);
+        InitQuickSend("send-up", 0, 1, 0, 0);
+        InitQuickSend("send-down", 0, -1, 0, 0);
+        InitQuickSend("send-4-up", 0, 1, 0, 1);
+        InitQuickSend("send-4-down", 0, 1, 0, -1);
+        InitQuickSend("send-forward", 0, 0, 1, 0);
+        InitQuickSend("send-backward", 0, 0, -1, 0);
+        InitQuickSend("send-left", -1, 0, 0, 0);
+        InitQuickSend("send-right", 1, 0, 0, 0);
+        InitQuickSend("send-up-left", -1, 1, 0, 0);
+        InitQuickSend("send-up-right", 1, 1, 0, 0);
+
         
         // Init render distance values
         viewDistance = chunkManager.ViewDistance;
@@ -124,6 +131,27 @@ public class Mods : MonoBehaviour
         SelfKillExecute();
         
         SendPacketExecute();
+    }
+
+    private void InitQuickSend(string name, int x, int y, int z, int xi)
+    {
+        root.Q<Button>(name).RegisterCallback<ClickEvent>(evt =>
+        {
+            Vector3Int newPos = inputManager.TransformXZWithCamera(x, z);
+            int newx = newPos.x;
+            int newz = newPos.z;
+            
+            if (packetType == "Interact" || packetType == "InteractAndMove")
+            {
+                conn.Interact(playerController.GetCurrentSlot(), newx.ToString(), newz.ToString(), y.ToString(), xi.ToString());
+                
+                if (packetType == "Interact") chunkManager.MoveAndUpdate("0", "0", "0", "0");
+            }
+            if (packetType == "Move" || packetType == "InteractAndMove")
+            {
+                chunkManager.MoveAndUpdate(newx.ToString(), y.ToString(), newz.ToString(), xi.ToString());
+            }
+        });
     }
 
     private void InitXray()
@@ -310,80 +338,37 @@ public class Mods : MonoBehaviour
         } else if (evt.newValue == 1)
         {
             packetType = "Interact";
+        } else if (evt.newValue == 2)
+        {
+            packetType = "InteractAndMove";
         }
     }
 
     private void SendPacketExecute()
     {
         if (!sendRepeat) return;
-
-        if (packetType == "Move")
-        {
-            chunkManager.MoveAndUpdate(sendX.ToString(), sendY.ToString(), sendZ.ToString(), send4th.ToString());
-        }
-        else if (packetType == "Interact")
+        
+        if (packetType == "Interact" || packetType == "InteractAndMove")
         {
             conn.Interact(playerController.GetCurrentSlot(), sendX.ToString(), sendZ.ToString(), sendY.ToString(), send4th.ToString());
+            if (packetType == "Interact") chunkManager.MoveAndUpdate("0", "0", "0", "0");
+        } 
+        if (packetType == "Move" || packetType == "InteractAndMove")
+        {
+            chunkManager.MoveAndUpdate(sendX.ToString(), sendY.ToString(), sendZ.ToString(), send4th.ToString());
         }
     }
 
     private void SendPacketEvent(ClickEvent evt)
     {
-        if (packetType == "Move")
-        {
-            chunkManager.MoveAndUpdate(sendX.ToString(), sendY.ToString(), sendZ.ToString(), send4th.ToString());
-        }
-        else if (packetType == "Interact")
+        if (packetType == "Interact" || packetType == "InteractAndMove")
         {
             conn.Interact(playerController.GetCurrentSlot(), sendX.ToString(), sendZ.ToString(), sendY.ToString(), send4th.ToString());
+            if (packetType == "Interact") chunkManager.MoveAndUpdate("0", "0", "0", "0");
         }
-    }
-    
-    private void SendUpPacketEvent(ClickEvent evt)
-    {
-        if (packetType == "Move")
+        if (packetType == "Move" || packetType == "InteractAndMove")
         {
-            chunkManager.MoveAndUpdate("0", "1", "0", "0");
-        }
-        else if (packetType == "Interact")
-        {
-            conn.Interact(playerController.GetCurrentSlot(), "0", "0", "1", "0");
-        }
-    }
-    
-    private void SendDownPacketEvent(ClickEvent evt)
-    {
-        if (packetType == "Move")
-        {
-            chunkManager.MoveAndUpdate("0", "-1", "0", "0");
-        }
-        else if (packetType == "Interact")
-        {
-            conn.Interact(playerController.GetCurrentSlot(), "0", "0", "-1", "0");
-        }
-    }
-    
-    private void Send4UpPacketEvent(ClickEvent evt)
-    {
-        if (packetType == "Move")
-        {
-            chunkManager.MoveAndUpdate("0", "0", "0", "1");
-        }
-        else if (packetType == "Interact")
-        {
-            conn.Interact(playerController.GetCurrentSlot(), "0", "0", "0", "1");
-        }
-    }
-    
-    private void Send4DownPacketEvent(ClickEvent evt)
-    {
-        if (packetType == "Move")
-        {
-            chunkManager.MoveAndUpdate("0", "0", "0", "-1");
-        }
-        else if (packetType == "Interact")
-        {
-            conn.Interact(playerController.GetCurrentSlot(), "0", "0", "0", "-1");
+            chunkManager.MoveAndUpdate(sendX.ToString(), sendY.ToString(), sendZ.ToString(), send4th.ToString());
         }
     }
 }

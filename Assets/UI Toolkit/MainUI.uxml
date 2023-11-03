@@ -28,7 +28,7 @@
                 <ui:Foldout text="Block transparency&#x9;" name="xray-foldout" tabindex="-1" style="color: rgb(191, 191, 191);" />
             </ui:ScrollView>
         </ui:VisualElement>
-        <ui:VisualElement name="navigation" class="side-container" style="height: 50%; width: 15%; background-color: rgba(0, 0, 0, 0.6); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center; border-left-color: rgb(209, 142, 84); border-right-color: rgb(209, 142, 84); border-top-color: rgb(209, 142, 84); border-bottom-color: rgb(209, 142, 84); border-top-width: 5px; border-right-width: 0; border-bottom-width: 5px; border-left-width: 5px; border-top-left-radius: 10px; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 10px;">
+        <ui:VisualElement name="navigation" class="side-container" style="height: 75%; width: 15%; background-color: rgba(0, 0, 0, 0.6); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center; border-left-color: rgb(209, 142, 84); border-right-color: rgb(209, 142, 84); border-top-color: rgb(209, 142, 84); border-bottom-color: rgb(209, 142, 84); border-top-width: 5px; border-right-width: 0; border-bottom-width: 5px; border-left-width: 5px; border-top-left-radius: 10px; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 10px;">
             <ui:Label tabindex="-1" text="Send packets" parse-escape-sequences="true" display-tooltip-when-elided="true" style="color: rgb(191, 191, 191); -unity-font-style: bold;" />
             <ui:VisualElement name="move-xz" style="flex-grow: 0; flex-direction: row; flex-wrap: nowrap;">
                 <ui:IntegerField label="X" value="0" name="send-x" tabindex="-1" class="move-input-2" style="flex-grow: 1;" />
@@ -38,7 +38,7 @@
                 <ui:IntegerField label="Y" value="0" name="send-y" tabindex="-1" class="move-input-2" style="flex-grow: 1;" />
                 <ui:IntegerField label="4th" value="0" name="send-4th" tabindex="-1" class="move-input-2" style="flex-grow: 1;" />
             </ui:VisualElement>
-            <ui:RadioButtonGroup label="Packet type" value="0" choices="Move,Interact" name="packet-type" tabindex="-1" focusable="false" style="flex-direction: row; color: rgb(191, 191, 191);" />
+            <ui:RadioButtonGroup label="Type" value="0" choices="Move,Interact,Both" name="packet-type" tabindex="-1" focusable="false" style="flex-direction: row; color: rgb(191, 191, 191);" />
             <ui:VisualElement name="send-settings" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap;">
                 <ui:Button text="Send" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-packet" tabindex="-1" focusable="false" style="flex-grow: 1;" />
                 <ui:Toggle label="Repeat" name="send-repeat" tabindex="-1" />
@@ -51,6 +51,18 @@
             <ui:VisualElement name="quick-send" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap;">
                 <ui:Button text="4th dim +" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-4-up" tabindex="-1" focusable="false" />
                 <ui:Button text="4th dim -" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-4-down" tabindex="-1" focusable="false" />
+            </ui:VisualElement>
+            <ui:VisualElement name="quick-send" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap;">
+                <ui:Button text="Forward" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-forward" tabindex="-1" focusable="false" />
+                <ui:Button text="Backward" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-backward" tabindex="-1" focusable="false" />
+            </ui:VisualElement>
+            <ui:VisualElement name="quick-send" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap;">
+                <ui:Button text="Left" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-left" tabindex="-1" focusable="false" />
+                <ui:Button text="Right&#x9;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-right" tabindex="-1" focusable="false" />
+            </ui:VisualElement>
+            <ui:VisualElement name="quick-send" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap;">
+                <ui:Button text="Up Left" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-up-left" tabindex="-1" focusable="false" />
+                <ui:Button text="Up Right" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-up-right" tabindex="-1" focusable="false" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="stats" text="placeholder" style="position: absolute; height: auto; width: auto; background-color: rgba(0, 0, 0, 0.69); color: rgb(219, 219, 219); border-left-color: rgb(197, 60, 158); border-right-color: rgb(197, 60, 158); border-top-color: rgb(197, 60, 158); border-bottom-color: rgb(197, 60, 158); border-top-width: 5px; border-right-width: 5px; border-bottom-width: 5px; border-left-width: 5px; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;" />

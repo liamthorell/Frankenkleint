@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -180,15 +181,9 @@ public class InputManager : MonoBehaviour
         
         if (x != 0 || z != 0 || xi != 0)
         {
-            var localY = mainCamera.transform.localEulerAngles.y;
-
-            (x, z) = localY switch
-            {
-                < 315 and > 225 => (-z, x),
-                < 225 and > 135 => (-x, -z),
-                < 135 and > 45 => (z, -x),
-                _ => (x, z)
-            };
+            Vector3Int newPos = TransformXZWithCamera(x, z);
+            x = newPos.x;
+            z = newPos.z;
 
             if (jumpTimer > 0f) y += 1;
 
@@ -207,6 +202,21 @@ public class InputManager : MonoBehaviour
             print("PageDown is pressed");
             chunkManager.IsDoingMove("-1i", "0");
         }*/
+    }
+
+    public Vector3Int TransformXZWithCamera(int x, int z)
+    {
+        var localY = mainCamera.transform.localEulerAngles.y;
+
+        (x, z) = localY switch
+        {
+            < 315 and > 225 => (-z, x),
+            < 225 and > 135 => (-x, -z),
+            < 135 and > 45 => (z, -x),
+            _ => (x, z)
+        };
+
+        return new Vector3Int(x, 0, z);
     }
 
     private void MoveWithThrottle(string x, string y, string z, string xi = "0")
