@@ -555,6 +555,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiController: {fileID: 734952255}
   mainCamera: {fileID: 963194227}
+  freecam: {fileID: 963194229}
   wasd: 1
 --- !u!114 &967077404
 MonoBehaviour:

@@ -11,6 +11,7 @@ public class InputManager : MonoBehaviour
     private PlayerController playerController;
     public UIController uiController;
     public Camera mainCamera;
+    public FreeCam freecam;
     
     Throttle _moveThrottle = new Throttle();
     //Stopwatch sw = new Stopwatch();
@@ -108,6 +109,16 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse1) && !Input.GetKeyDown(KeyCode.Mouse0))
         {
             HandleRightClick();
+        }
+        if (Input.GetKey(KeyCode.Mouse1) && Input.GetKey(KeyCode.Mouse0))
+        {
+            freecam.active = true;
+            wasd = false;
+        }
+        else
+        {
+            freecam.active = false;
+            wasd = true;
         }
         if (Input.GetKeyDown(KeyCode.Tab))
         {
