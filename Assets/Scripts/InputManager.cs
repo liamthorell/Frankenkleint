@@ -43,26 +43,24 @@ public class InputManager : MonoBehaviour
             if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
 
             Transform objectHit = hit.transform;
-            
-            var final_pos = hit.point - new Vector3(.5f, .5f, .5f);
-            if (final_pos.x > 1.5f ||  final_pos.x < -1.5f || final_pos.y > 1.5f || final_pos.y < -1.5f || final_pos.z > 1.5f || final_pos.z < -1.5f) return;
-            
-            var block_pos = new Vector3(
-                CalcBlockPos(final_pos.x),
-                CalcBlockPos(final_pos.y),
-                CalcBlockPos(final_pos.z)
-            );
 
-            // fix not being able to break block below
-            if (final_pos.y == -0.5f)
+
+            var interact_pos = new Vector3((int)Math.Floor(hit.point.x), (int)Math.Floor(hit.point.y), (int)Math.Floor(hit.point.z));
+
+            bool breaking = true;
+            if (breaking)
             {
-                block_pos.y = -1;
+                interact_pos -= hit.normal;
+            }
+
+            if (Mathf.Abs(interact_pos.x) > 1 || Mathf.Abs(interact_pos.y) > 1 || Mathf.Abs(interact_pos.z) > 1)
+            {
+                return;
             }
             
-            //print(block_pos);
-            //print($"{block_pos} | {final_pos} | y: {(Mathf.Abs(final_pos.y) <= 0.5f ? 0 : Mathf.Sign(final_pos.y))}");
+            print(interact_pos);
             
-            conn.Interact(playerController.GetCurrentSlot(), block_pos.x.ToString(), block_pos.z.ToString(), block_pos.y.ToString());
+            conn.Interact(playerController.GetCurrentSlot(), interact_pos.x.ToString(), interact_pos.z.ToString(), interact_pos.y.ToString());
 
             var chunkController = objectHit.parent.GetComponent<ChunkController>();
             
@@ -81,9 +79,21 @@ public class InputManager : MonoBehaviour
             if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
 
             Transform objectHit = hit.transform;
-            var position = Vector3Int.FloorToInt(objectHit.position + hit.normal);
 
-            conn.Interact(playerController.GetCurrentSlot(), position.x.ToString(), position.z.ToString(), position.y.ToString());
+            var interact_pos = new Vector3((int)Math.Floor(hit.point.x), (int)Math.Floor(hit.point.y), (int)Math.Floor(hit.point.z));
+
+            bool breaking = false;
+            if (breaking)
+            {
+                interact_pos -= hit.normal;
+            }
+
+            if (Mathf.Abs(interact_pos.x) > 1 || Mathf.Abs(interact_pos.y) > 1 || Mathf.Abs(interact_pos.z) > 1)
+            {
+                return;
+            }
+            
+            conn.Interact(playerController.GetCurrentSlot(), interact_pos.x.ToString(), interact_pos.z.ToString(), interact_pos.y.ToString());
 
             var chunkController = objectHit.parent.GetComponent<ChunkController>();
             
