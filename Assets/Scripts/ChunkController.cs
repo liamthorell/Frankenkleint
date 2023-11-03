@@ -72,11 +72,11 @@ public class ChunkController : MonoBehaviour
                 // front back left right up down
                 bool[] sides = { true, true, true, true, true, true };
                 
-                string[] transparent = { "air", "tombstone", "leaves", "spawner", "soul"};
+                string[] transparent = { "air", "tombstone", "leaves", "spawner", "soul", "ventricle", "artery", "bone_marrow", "health_potion", "shield", "compass", "pickaxe", "sword"}; // TODO dont hardcode
                 
                 var type = block["type"];
 
-                if (type is "tombstone" or "soul") // rendering for special blocks (TODO should NOT be hardcoded but depend on if model override is set in block settings)
+                if (type is "tombstone" or "soul" or "ventricle" or "artery" or "bone_marrow" or "health_potion" or "shield" or "compass" or "pickaxe" or "sword") // rendering for special blocks (TODO should NOT be hardcoded but depend on if model override is set in block settings)
                 {
                     //no fucking tombstones i am alladeen madafaka
                     CreateBlockWithModel(type, x-7, y-7);
