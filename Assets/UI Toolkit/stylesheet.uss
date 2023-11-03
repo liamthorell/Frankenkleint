@@ -27,3 +27,7 @@
 .input-gray-text .unity-label {
     color: rgb(191, 191, 191);
 }
+
+#xray-foldout .unity-foldout__checkmark {
+    -unity-background-image-tint-color: rgb(191, 191, 191);
+}

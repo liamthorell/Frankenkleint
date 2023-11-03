@@ -337,6 +337,7 @@ MonoBehaviour:
   freecam: {fileID: 963194229}
   inputManager: {fileID: 967077403}
   playerController: {fileID: 967077405}
+  blockTypesObject: {fileID: 11400000, guid: cb343699c8c957f45b86d375c75b5f0d, type: 2}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,6 +575,7 @@ MonoBehaviour:
   removeOldChunksOnMove: 1
   chunkObject: {fileID: 8430967951448889010, guid: 7bdd1c1400b2aa943b693d13a9fa6ff5, type: 3}
   chunksGameObject: {fileID: 1364168029}
+  mods: {fileID: 734952256}
   blockMaterial: {fileID: 2100000, guid: 1c3474a43bfdf4846810af0cc97edceb, type: 2}
   blockTransparentMaterial: {fileID: 2100000, guid: 460013d7d28f2de49b43807aa5b8ecfe, type: 2}
   blockTypesObject: {fileID: 11400000, guid: cb343699c8c957f45b86d375c75b5f0d, type: 2}

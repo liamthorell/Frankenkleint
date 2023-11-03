@@ -17,6 +17,7 @@
                 <ui:Toggle label="Remove old chunks when moving" name="remove-old-chunks-on-move" class="input-gray-text" />
                 <ui:IntegerField label="Inventory size" value="0" name="inventory-size" class="input-gray-text" />
                 <ui:IntegerField label="Inventory size (i)" value="0" name="inventory-size-i" class="input-gray-text" />
+                <ui:Foldout text="X-ray" name="xray-foldout" tabindex="-1" style="color: rgb(191, 191, 191);" />
             </ui:ScrollView>
         </ui:VisualElement>
         <ui:VisualElement name="navigation" class="side-container" style="height: 50%; width: 15%; background-color: rgba(0, 0, 0, 0.6); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center; border-left-color: rgb(209, 142, 84); border-right-color: rgb(209, 142, 84); border-top-color: rgb(209, 142, 84); border-bottom-color: rgb(209, 142, 84); border-top-width: 5px; border-right-width: 0; border-bottom-width: 5px; border-left-width: 5px; border-top-left-radius: 10px; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 10px;">

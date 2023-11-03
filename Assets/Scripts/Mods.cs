@@ -6,6 +6,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using HGS.CallLimiter;
 
 public class Mods : MonoBehaviour
 {
@@ -27,12 +28,31 @@ public class Mods : MonoBehaviour
     public bool sendRepeat = false;
     public string packetType = "Move";
     
+    /*
+     * Temporary place for dis
+     * Workflow after updating this setting:
+     * - rerun ParseBlockTypes()
+     * - rerender all chunks
+     * Limitations atm:
+     * - current implementation stops unknown blocks from being rendered
+     * - cant make air transparent
+     */
+    public Dictionary<string, float> xray = new()
+    {
+        //{ "dirt", .2f },
+        //{ "rock", .2f },
+    };
+    
     private VisualElement root;
     private UIController uiController;
     public Connection conn;
     public FreeCam freecam;
     public InputManager inputManager;
     public PlayerController playerController;
+    
+    public BlockTypes blockTypesObject; 
+    
+    private Debounce xrayDebounce = new Debounce();
 
     private void Start()
     {
@@ -84,6 +104,9 @@ public class Mods : MonoBehaviour
         root.Q<IntegerField>("inventory-size").value = inventorySize;
         root.Q<IntegerField>("inventory-size-i").value = inventorySizeI;
 
+
+        InitXray();
+
         InvokeRepeating(nameof(Execute), 2.0f, 0.08f);
     }
 
@@ -93,6 +116,39 @@ public class Mods : MonoBehaviour
         SelfKillExecute();
         
         SendPacketExecute();
+    }
+
+    private void InitXray()
+    {
+        var xrayContainer = root.Q<VisualElement>("xray-foldout");
+        foreach (var entry in blockTypesObject.blocks)
+        {
+            var slider = new Slider();
+            slider.name = "xray-" + entry.name;
+            slider.label = entry.name;
+            slider.lowValue = 0;
+            slider.highValue = 1;
+            slider.value = 1;
+            slider.style.marginRight = 10;
+            if (xray.TryGetValue(entry.name, out var value))
+            {
+                slider.value = value;
+            }
+
+            slider.RegisterValueChangedCallback(evt =>
+            {
+                xray[entry.name] = evt.newValue;
+                xrayDebounce.Run(XrayUpdated, 0.5f, this);
+            });
+
+            xrayContainer.Add(slider);
+        }
+    }
+
+    private void XrayUpdated()
+    {
+        chunkManager.blockTypes = chunkManager.ParseBlockTypes(blockTypesObject);
+        chunkManager.ResetChunks();
     }
 
     private void KillAuraEvent(ChangeEvent<bool> evt)

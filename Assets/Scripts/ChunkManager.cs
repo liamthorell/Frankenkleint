@@ -21,6 +21,7 @@ public class ChunkManager : MonoBehaviour
 
     public GameObject chunkObject;
     public GameObject chunksGameObject;
+    public Mods mods;
 
     public Material blockMaterial;
     public Material blockTransparentMaterial;
@@ -37,20 +38,7 @@ public class ChunkManager : MonoBehaviour
     
     Debounce _updateChunksDebounce = new Debounce();
     
-    /*
-     * Temporary place for dis
-     * Workflow after updating this setting:
-     * - rerun ParseBlockTypes()
-     * - rerender all chunks
-     * Limitations atm:
-     * - current implementation stops unknown blocks from being rendered
-     * - cant make air transparent
-     */
-    private Dictionary<string, float> xray = new()
-    {
-        //{ "dirt", .2f },
-        //{ "rock", .2f },
-    };
+
 
     public void UpdateDistanceDelta()
     {
@@ -168,7 +156,7 @@ public class ChunkManager : MonoBehaviour
         }
     }
 
-    private List<BlockTypes.BlockType> ParseBlockTypes(BlockTypes types)
+    public List<BlockTypes.BlockType> ParseBlockTypes(BlockTypes types)
     {
         List<BlockTypes.BlockType> res = new();
 
@@ -190,7 +178,7 @@ public class ChunkManager : MonoBehaviour
                     bool materialSet = false;
 
                     Material material;
-                    if (xray.TryGetValue(entry.name, out var value)) // use transparent material if in xray list
+                    if (mods.xray.TryGetValue(entry.name, out var value)) // use transparent material if in xray list
                     {
                         if (value == 0f)
                         {
