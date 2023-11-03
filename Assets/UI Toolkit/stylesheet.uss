@@ -31,3 +31,11 @@
 #xray-foldout .unity-foldout__checkmark {
     -unity-background-image-tint-color: rgb(191, 191, 191);
 }
+
+.heading {
+    font-size: 18px;
+    -unity-font-style: bold;
+    color: rgb(191, 191, 191);
+    margin-top: 15px;
+    margin-bottom: 5px;
+}

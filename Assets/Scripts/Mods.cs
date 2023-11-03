@@ -43,6 +43,8 @@ public class Mods : MonoBehaviour
         //{ "rock", .2f },
         {"air", 0f}
     };
+
+    private Dictionary<string, float> defaultXray = new();
     
     private VisualElement root;
     private UIController uiController;
@@ -57,6 +59,7 @@ public class Mods : MonoBehaviour
 
     private void Start()
     {
+        defaultXray = xray.ToDictionary(entry => entry.Key, entry => entry.Value);
         uiController = GetComponent<UIController>();
         root = uiController.doc.rootVisualElement;
 
@@ -104,6 +107,10 @@ public class Mods : MonoBehaviour
         root.Q<SliderInt>("inventory-slider").highValue = inventorySizeI;
         root.Q<IntegerField>("inventory-size").value = inventorySize;
         root.Q<IntegerField>("inventory-size-i").value = inventorySizeI;
+        
+        root.Q<Button>("dungeon-mode").RegisterCallback<ClickEvent>(DungeonModeEvent);
+        root.Q<Button>("reset-transparency").RegisterCallback<ClickEvent>(ResetTransparencyEvent);
+
 
 
         InitXray();
@@ -148,6 +155,27 @@ public class Mods : MonoBehaviour
 
     private void XrayUpdated()
     {
+        chunkManager.blockTypes = chunkManager.ParseBlockTypes(blockTypesObject);
+        chunkManager.ResetChunks();
+    }
+
+    private void DungeonModeEvent(ClickEvent evt)
+    {
+        xray["dirt"] = 0f;
+        xray["rock"] = 0f;
+        xray["concrete"] = 0f;
+        xray["wood"] = 0f;
+
+        xray["air"] = 0.3f;
+        
+        chunkManager.blockTypes = chunkManager.ParseBlockTypes(blockTypesObject);
+        chunkManager.ResetChunks();
+    }
+    
+    private void ResetTransparencyEvent(ClickEvent evt)
+    {
+        xray = defaultXray.ToDictionary(entry => entry.Key, entry => entry.Value);
+        
         chunkManager.blockTypes = chunkManager.ParseBlockTypes(blockTypesObject);
         chunkManager.ResetChunks();
     }
