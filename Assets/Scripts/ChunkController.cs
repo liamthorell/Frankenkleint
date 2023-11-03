@@ -66,7 +66,7 @@ public class ChunkController : MonoBehaviour
                 
                 var block = map[y, x];
                 
-                if (block["type"] == "air") continue;
+                //if (block["type"] == "air") continue;
 
                 // front back left right up down
                 bool[] sides = { true, true, true, true, true, true };
@@ -271,9 +271,13 @@ public class ChunkController : MonoBehaviour
         renderer.sharedMaterial = type.material;
         var filter = blockObject.transform.AddComponent<MeshFilter>();
         filter.mesh = mesh;
-        var collider = blockObject.transform.AddComponent<BoxCollider>();
-        collider.size = new Vector3(x_width, 1f, y_width);
-        collider.center = new Vector3(x_width * 0.5f, 0.5f, y_width * 0.5f);
+
+        if (type.name != "air") // no collider for air pls
+        {
+            var collider = blockObject.transform.AddComponent<BoxCollider>();
+            collider.size = new Vector3(x_width, 1f, y_width);
+            collider.center = new Vector3(x_width * 0.5f, 0.5f, y_width * 0.5f);
+        }
 
         // custom mesh logic
         List<Vector3> verts = new();

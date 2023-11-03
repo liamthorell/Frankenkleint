@@ -37,8 +37,6 @@ public class ChunkManager : MonoBehaviour
     public List<BlockTypes.BlockType> blockTypes;
     
     Debounce _updateChunksDebounce = new Debounce();
-    
-
 
     public void UpdateDistanceDelta()
     {

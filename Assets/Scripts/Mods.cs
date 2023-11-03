@@ -41,6 +41,7 @@ public class Mods : MonoBehaviour
     {
         //{ "dirt", .2f },
         //{ "rock", .2f },
+        {"air", 0f}
     };
     
     private VisualElement root;
