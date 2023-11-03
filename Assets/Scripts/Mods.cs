@@ -37,7 +37,7 @@ public class Mods : MonoBehaviour
      * - current implementation stops unknown blocks from being rendered
      * - cant make air transparent
      */
-    public Dictionary<string, float> xray = new()
+    public static Dictionary<string, float> xray = new()
     {
         //{ "dirt", .2f },
         //{ "rock", .2f },

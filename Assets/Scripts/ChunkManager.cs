@@ -176,7 +176,7 @@ public class ChunkManager : MonoBehaviour
                     bool materialSet = false;
 
                     Material material;
-                    if (mods.xray.TryGetValue(entry.name, out var value)) // use transparent material if in xray list
+                    if (Mods.xray.TryGetValue(entry.name, out var value)) // use transparent material if in xray list
                     {
                         if (value == 0f)
                         {

@@ -13,18 +13,17 @@ public class MenuHandler : MonoBehaviour
     
     public Button playButton;
     public Button guideButton;
+    public Button quitButton;
 
     private void Start()
     {
         playButton.onClick.AddListener(OnPlayClick);
         guideButton.onClick.AddListener(OnGuideClick);
-
+        quitButton.onClick.AddListener(OnQuitClick);
     }
 
     private void OnPlayClick()
     {
-        print("play");
-
         if (text.text != "")
         {
             username = text.text;
@@ -35,5 +34,11 @@ public class MenuHandler : MonoBehaviour
     private void OnGuideClick()
     {
         print("guide");
+    }
+
+    private void OnQuitClick()
+    {
+        print("quit");
+        Application.Quit();
     }
 }

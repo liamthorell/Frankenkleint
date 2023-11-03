@@ -60,7 +60,7 @@ public class InputManager : MonoBehaviour
             }
             
             //print(block_pos);
-            print($"{block_pos} | {final_pos} | y: {(Mathf.Abs(final_pos.y) <= 0.5f ? 0 : Mathf.Sign(final_pos.y))}");
+            //print($"{block_pos} | {final_pos} | y: {(Mathf.Abs(final_pos.y) <= 0.5f ? 0 : Mathf.Sign(final_pos.y))}");
             
             conn.Interact(playerController.GetCurrentSlot(), block_pos.x.ToString(), block_pos.z.ToString(), block_pos.y.ToString());
 

@@ -59,6 +59,25 @@ public class ChunkController : MonoBehaviour
     {
         bool[,] drawn = new bool[15, 15];
 
+        List<string> transparent = new()
+        {
+            "air", "tombstone", "leaves", "spawner", "soul", "ventricle", "artery", "bone_marrow", "health_potion", "shield", "compass", "pickaxe", "sword"
+        };
+        foreach (var (s, v) in Mods.xray)
+        {
+            if (v == 0f)
+            {
+                transparent.Add(s);
+            }
+        }
+
+
+        var customModel = types
+            .Where(item => item.modelOverride != null)
+            .Select(item => item.name)
+            .ToList();
+        
+
         for (int y = 0; y < 15; y++)
         {
             for (int x = 0; x < 15; x++)
@@ -67,16 +86,16 @@ public class ChunkController : MonoBehaviour
                 
                 var block = map[y, x];
                 
-                //if (block["type"] == "air") continue;
+                if (Mods.xray.TryGetValue(block["type"], out float opacity))
+                    if (opacity == 0f)
+                        continue;
 
                 // front back left right up down
                 bool[] sides = { true, true, true, true, true, true };
                 
-                string[] transparent = { "air", "tombstone", "leaves", "spawner", "soul", "ventricle", "artery", "bone_marrow", "health_potion", "shield", "compass", "pickaxe", "sword"}; // TODO dont hardcode
-                
                 var type = block["type"];
 
-                if (type is "tombstone" or "soul" or "ventricle" or "artery" or "bone_marrow" or "health_potion" or "shield" or "compass" or "pickaxe" or "sword") // rendering for special blocks (TODO should NOT be hardcoded but depend on if model override is set in block settings)
+                if (customModel.Contains(type))
                 {
                     //no fucking tombstones i am alladeen madafaka
                     CreateBlockWithModel(type, x-7, y-7);
