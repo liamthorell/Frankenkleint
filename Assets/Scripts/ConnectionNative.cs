@@ -21,11 +21,11 @@ public class ConnectionNative : MonoBehaviour
     private async void Start()
     {
         print("Starting");
-        ws =  new WebSocket("wss://daydun.com:666");
+        ws = new WebSocket("wss://daydun.com:666");
         
         ws.OnMessage += WebSocketHandler;
         
-        Invoke(nameof(Connect), 0.5f);
+        Invoke(nameof(Connect), 2f);
         
         await ws.Connect();
     }

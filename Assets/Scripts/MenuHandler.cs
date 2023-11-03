@@ -9,7 +9,7 @@ public class MenuHandler : MonoBehaviour
 {
     public TMP_InputField text;
 
-    public static string username;
+    public static string username = "balls420";
     
     public Button playButton;
     public Button guideButton;
@@ -24,7 +24,11 @@ public class MenuHandler : MonoBehaviour
     private void OnPlayClick()
     {
         print("play");
-        username = text.text;
+
+        if (text.text != "")
+        {
+            username = text.text;
+        }
         SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
     }
     
