@@ -90,6 +90,28 @@ public class ChunkManager : MonoBehaviour
         UpdateDistanceDelta();
     }
 
+    public Dictionary<string, object> GetBlockAtPosition(Vector3Int pos)
+    {
+        if (pos.y != 0 && HeightDistance < 3) return null;
+        
+        var controller = chunks[ViewDelta][pos.y + HeightDelta][ViewDelta].GetComponent<ChunkController>();
+
+        var item = ConvertObject<Dictionary<string, object>>(controller.map[7 + pos.z, 7 + pos.x]);
+
+        if ((string)item["type"] == "air")
+        {
+            foreach (var entity in controller.entities)
+            {
+                if ((string)entity["x"] == pos.x.ToString() && (string)entity["y"] == pos.z.ToString())
+                {
+                    item = entity;
+                }
+            }
+        }
+
+        return item;
+    }
+
     public void Start()
     {
         StartCoroutine(ScheduleChunkGeneration());

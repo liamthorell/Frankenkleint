@@ -97,3 +97,7 @@
     padding-bottom: 7px;
     padding-left: 7px;
 }
+
+#unity-radio-button-group__container #unity-checkmark {
+    background-color: rgb(65, 65, 65);
+}

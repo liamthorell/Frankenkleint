@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     public Vector2Int currentSlot = new Vector2Int(0,0);
     public UIController uiController;
 
+    public Mods mods;
+
     public void HandleTick(IDictionary data)
     {
         var entities = ConvertObject<Dictionary<string, object>[]>(data["entities"]);
@@ -65,6 +67,52 @@ public class PlayerController : MonoBehaviour
     public string GetCurrentSlot()
     {
         return ConvertSlot(currentSlot.x, currentSlot.y);
+    }
+
+    public string GetPickUpSlot(string itemType)
+    {
+        if (itemType == "monster")
+        {
+            // use sword slot
+        } else if (itemType == "rock")
+        {
+            // use pickaxe slot
+        } else if (itemType == "soul")
+        {
+            // use a empty slot on a specific row
+        }
+        else if (inventory.ContainsKey(GetCurrentSlot()) && inventory[GetCurrentSlot()]["type"] == itemType)
+        {
+            // use the current slot because its the same type
+            return GetCurrentSlot();
+        }
+        else if (!inventory.ContainsKey(GetCurrentSlot()))
+        {
+            // use the current slot becuase its empty
+            return GetCurrentSlot();
+        }
+        else
+        {
+            // find the first slot thats empty
+            return FirstEmptySlot();
+        }
+        return GetCurrentSlot();
+    }
+
+    public string FirstEmptySlot()
+    {
+        for (int i = 0; i < mods.inventorySizeI; i++)
+        {
+            for (int j = 0; j < mods.inventorySize; j++)
+            {
+                if (!inventory.ContainsKey(ConvertSlot(j, i)))
+                {
+                    return ConvertSlot(j, i);
+                }
+            }
+        }
+
+        return GetCurrentSlot();
     }
     
     private static TValue ConvertObject<TValue>(object obj)

@@ -570,7 +570,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ViewDistance: 3
-  HeightDistance: 15
+  HeightDistance: 9
   ViewDelta: 0
   HeightDelta: 0
   removeOldChunksOnMove: 1
@@ -600,6 +600,7 @@ MonoBehaviour:
   playerName: 
   currentSlot: {x: 0, y: 0}
   uiController: {fileID: 734952255}
+  mods: {fileID: 734952256}
 --- !u!1 &1082765651
 GameObject:
   m_ObjectHideFlags: 0
