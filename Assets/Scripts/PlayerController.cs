@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     public string playerName;
     public Vector2Int currentSlot = new Vector2Int(0,0);
     public UIController uiController;
+    
+    public List<string> nonStackableBlockTypes = new List<string> {"sword", "pickaxe", "tombstone", "compass"};
 
     public Mods mods;
 
@@ -79,9 +81,31 @@ public class PlayerController : MonoBehaviour
             // use pickaxe slot
         } else if (itemType == "soul")
         {
-            // use a empty slot on a specific row
+            for (int i = 0; i < 1000; i++)
+            {
+                if (!inventory.ContainsKey(ConvertSlot(10, i)))
+                {
+                    return ConvertSlot(10, i);
+                }
+            }
+        } 
+        else if (itemType == "ventricle")
+        {
+            return ConvertSlot(9, 0);
         }
-        else if (inventory.ContainsKey(GetCurrentSlot()) && inventory[GetCurrentSlot()]["type"] == itemType)
+        else if (itemType == "artery")
+        {
+            return ConvertSlot(9, 1);
+        }
+        else if (itemType == "bone_marrow")
+        {
+            return ConvertSlot(9, 2);
+        }
+        else if (itemType == "shield")
+        {
+            return ConvertSlot(9, 3);
+        }
+        else if (inventory.ContainsKey(GetCurrentSlot()) && inventory[GetCurrentSlot()]["type"] == itemType && !nonStackableBlockTypes.Contains(itemType))
         {
             // use the current slot because its the same type
             return GetCurrentSlot();
@@ -94,18 +118,18 @@ public class PlayerController : MonoBehaviour
         else
         {
             // find the first slot thats empty
-            return FirstEmptySlot();
+            return FirstEmptySlot(itemType);
         }
         return GetCurrentSlot();
     }
 
-    public string FirstEmptySlot()
+    public string FirstEmptySlot(string itemType)
     {
         for (int i = 0; i < mods.inventorySizeI; i++)
         {
             for (int j = 0; j < mods.inventorySize; j++)
             {
-                if (!inventory.ContainsKey(ConvertSlot(j, i)))
+                if (!inventory.ContainsKey(ConvertSlot(j, i)) || (inventory[ConvertSlot(j, i)]["type"] == itemType && !nonStackableBlockTypes.Contains(itemType)))
                 {
                     return ConvertSlot(j, i);
                 }

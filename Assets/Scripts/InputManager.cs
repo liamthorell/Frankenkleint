@@ -59,9 +59,7 @@ public class InputManager : MonoBehaviour
             }
             
             print(interact_pos);
-            string itemType =
-                (string)chunkManager.GetBlockAtPosition(new Vector3Int((int)interact_pos.x, (int)interact_pos.y,
-                    (int)interact_pos.z))["type"];
+            string itemType = (string)chunkManager.GetBlockAtPosition(new Vector3Int((int)interact_pos.x, (int)interact_pos.y, (int)interact_pos.z))["type"];
             print(itemType);
             
             conn.Interact(playerController.GetPickUpSlot(itemType), interact_pos.x.ToString(), interact_pos.z.ToString(), interact_pos.y.ToString());
