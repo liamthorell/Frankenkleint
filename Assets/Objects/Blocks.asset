@@ -69,3 +69,11 @@ MonoBehaviour:
     textureIndex: 4
     modelOverride: {fileID: 227301695705803069, guid: 6f2dc42c0bcc2e94083b731b1cfc984f, type: 3}
     material: {fileID: 0}
+  - name: pickaxe
+    textureIndex: 4
+    modelOverride: {fileID: 4386096880760361734, guid: 78a480facb4356145bbd215b1c2eebce, type: 3}
+    material: {fileID: 0}
+  - name: sword
+    textureIndex: 4
+    modelOverride: {fileID: 9197322633309066302, guid: 822537e8080fcff4f9b20ca7ff4df697, type: 3}
+    material: {fileID: 0}
