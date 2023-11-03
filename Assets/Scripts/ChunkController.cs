@@ -279,7 +279,7 @@ public class ChunkController : MonoBehaviour
             collider.size = new Vector3(x_width, 1f, y_width);
             collider.center = new Vector3(x_width * 0.5f, 0.5f, y_width * 0.5f);
         }
-        else
+        else // no shadows for air pls
         {
             renderer.shadowCastingMode = ShadowCastingMode.Off;
             renderer.receiveShadows = false;
