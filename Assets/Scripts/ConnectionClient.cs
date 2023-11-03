@@ -46,9 +46,8 @@ public class ConnectionClient : MonoBehaviour
         var data =  
             new Dictionary<string, string>(){
                 {"type", "connect"},
-                {"name", "balls420"},
+                {"name", MenuHandler.username},
             };
-        
         string json = JsonConvert.SerializeObject(data);
         ws.Send(json);
         print("Done connecting");

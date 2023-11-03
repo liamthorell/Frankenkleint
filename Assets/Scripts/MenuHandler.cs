@@ -1,16 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MenuHandler : MonoBehaviour
 {
-    public static void OnPlay()
+    public TMP_InputField text;
+
+    public static string username;
+    
+    public Button playButton;
+    public Button guideButton;
+
+    private void Start()
     {
-        
+        playButton.onClick.AddListener(OnPlayClick);
+        guideButton.onClick.AddListener(OnGuideClick);
+
     }
 
-    public static void OnGuide()
+    private void OnPlayClick()
     {
-        
+        print("play");
+        username = text.text;
+        SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+    }
+    
+    private void OnGuideClick()
+    {
+        print("guide");
     }
 }
