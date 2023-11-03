@@ -77,3 +77,7 @@ MonoBehaviour:
     textureIndex: 4
     modelOverride: {fileID: 9197322633309066302, guid: 822537e8080fcff4f9b20ca7ff4df697, type: 3}
     material: {fileID: 0}
+  - name: air
+    textureIndex: 12
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
