@@ -81,3 +81,23 @@ MonoBehaviour:
     textureIndex: 12
     modelOverride: {fileID: 0}
     material: {fileID: 0}
+  - name: compass
+    textureIndex: 4
+    modelOverride: {fileID: 6634484860754694571, guid: 9b4ad8b6ec8e6d045a12287b5a10f9e2, type: 3}
+    material: {fileID: 0}
+  - name: shield
+    textureIndex: 4
+    modelOverride: {fileID: 3329179299495649079, guid: 5738f1b5981d604419e7c74d24dd2d76, type: 3}
+    material: {fileID: 0}
+  - name: ventricle
+    textureIndex: 4
+    modelOverride: {fileID: 5561078499954356179, guid: ad26c0a6a63670e42a3d8f4f04e758ea, type: 3}
+    material: {fileID: 0}
+  - name: artery
+    textureIndex: 4
+    modelOverride: {fileID: 484649835788638046, guid: bc7e75b743eb5ec45bb0958864c83005, type: 3}
+    material: {fileID: 0}
+  - name: bone_marrow
+    textureIndex: 4
+    modelOverride: {fileID: 1074823685035737869, guid: f64159a0d00db2142ba548a4657cb4e2, type: 3}
+    material: {fileID: 0}

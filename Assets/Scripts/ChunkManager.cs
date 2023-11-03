@@ -180,7 +180,6 @@ public class ChunkManager : MonoBehaviour
                     {
                         if (value == 0f)
                         {
-                            print($"gg i am {entry.name}");
                             material = null;
                         }
                         else
