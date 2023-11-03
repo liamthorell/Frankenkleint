@@ -5,6 +5,7 @@ using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
 public class ChunkController : MonoBehaviour
@@ -277,6 +278,11 @@ public class ChunkController : MonoBehaviour
             var collider = blockObject.transform.AddComponent<BoxCollider>();
             collider.size = new Vector3(x_width, 1f, y_width);
             collider.center = new Vector3(x_width * 0.5f, 0.5f, y_width * 0.5f);
+        }
+        else
+        {
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
         }
 
         // custom mesh logic
