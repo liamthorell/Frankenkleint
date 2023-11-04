@@ -328,6 +328,7 @@ public class ChunkManager : MonoBehaviour
         CreateChunk(new Vector3Int(ViewDelta,HeightDelta,ViewDelta), data);
         
         mods.hasBeenNewTickAutoPickup = true;
+        mods.AutoMineExecute();
     }
 
     private Vector3Int ConvertPositionToRelativeZero(Vector3Int pos)

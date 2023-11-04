@@ -3,7 +3,7 @@
     <ui:VisualElement name="container" picking-mode="Ignore" style="flex-grow: 1; justify-content: space-between; align-items: stretch; width: auto; flex-direction: row; -unity-font-definition: initial; -unity-font: url(&apos;project://database/Assets/Fonts/minecraft_font.ttf?fileID=12800000&amp;guid=934107286e3e8954797bfd7e90d3bae7&amp;type=3#minecraft_font&apos;);">
         <ui:VisualElement name="inventory" class="side-container" style="width: 15%; background-color: rgba(0, 0, 0, 0.6); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center; border-left-color: rgb(191, 191, 191); border-right-color: rgb(191, 191, 191); border-top-color: rgb(191, 191, 191); border-bottom-color: rgb(191, 191, 191); border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; max-height: 65%;">
             <ui:SliderInt picking-mode="Ignore" label="Inventory i: 0" value="0" high-value="10" name="inventory-slider" show-input-field="false" focusable="false" tabindex="-1" style="color: rgb(191, 191, 191);" />
-            <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0.1" name="inventory-list" mouse-wheel-scroll-size="250" class="nice-scroll" style="flex-wrap: wrap;" />
+            <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0.1" name="inventory-list" mouse-wheel-scroll-size="400" class="nice-scroll" style="flex-wrap: wrap;" />
         </ui:VisualElement>
         <ui:VisualElement name="mod-menu" style="height: 50%; width: 50%; background-color: rgba(0, 0, 0, 0.6); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center; visibility: visible; padding-top: 8px; padding-right: 8px; padding-bottom: 8px; padding-left: 8px; border-left-color: rgb(191, 191, 191); border-right-color: rgb(191, 191, 191); border-top-color: rgb(191, 191, 191); border-bottom-color: rgb(191, 191, 191); border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0;">
             <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0.1" mouse-wheel-scroll-size="500" name="main-scroller" class="nice-scroll">
@@ -16,6 +16,7 @@
                 <ui:Toggle label="Kill Aura" name="kill-aura" class="input-gray-text" />
                 <ui:Toggle label="Auto pickup" name="auto-pickup" class="input-gray-text" />
                 <ui:Toggle label="Self kill" name="self-kill" class="input-gray-text" />
+                <ui:Toggle label="Auto mine&#x9;" name="auto-mine" class="input-gray-text" />
                 <ui:Toggle label="Freecam" name="freecam" class="input-gray-text" />
                 <ui:Button text="Reset camera position" parse-escape-sequences="true" display-tooltip-when-elided="true" name="reset-camera-position" />
                 <ui:Label tabindex="-1" text="Inventory" parse-escape-sequences="true" display-tooltip-when-elided="true" class="heading" />
@@ -29,7 +30,7 @@
                 <ui:Foldout text="Block transparency&#x9;" name="xray-foldout" tabindex="-1" style="color: rgb(191, 191, 191); margin-top: 10px;" />
             </ui:ScrollView>
         </ui:VisualElement>
-        <ui:VisualElement name="navigation" class="side-container" style="width: 15%; background-color: rgba(0, 0, 0, 0.6); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center; border-left-color: rgb(191, 191, 191); border-right-color: rgb(191, 191, 191); border-top-color: rgb(191, 191, 191); border-bottom-color: rgb(191, 191, 191); border-top-width: 3px; border-right-width: 0; border-bottom-width: 3px; border-left-width: 3px; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; max-height: 75%;">
+        <ui:VisualElement name="navigation" class="side-container" style="width: 15%; background-color: rgba(0, 0, 0, 0.6); opacity: 1; -unity-background-image-tint-color: rgb(255, 255, 255); background-image: none; align-self: center; border-left-color: rgb(191, 191, 191); border-right-color: rgb(191, 191, 191); border-top-color: rgb(191, 191, 191); border-bottom-color: rgb(191, 191, 191); border-top-width: 3px; border-right-width: 0; border-bottom-width: 3px; border-left-width: 3px; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; max-height: 90%;">
             <ui:Label tabindex="-1" text="Send packets" parse-escape-sequences="true" display-tooltip-when-elided="true" style="color: rgb(191, 191, 191); -unity-font-style: bold;" />
             <ui:VisualElement name="move-xz" style="flex-grow: 0; flex-direction: row; flex-wrap: nowrap;">
                 <ui:IntegerField label="X" value="0" name="send-x" tabindex="-1" class="move-input-2" style="flex-grow: 1;" />
@@ -66,7 +67,13 @@
                 <ui:Button text="Up Right" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-up-right" tabindex="-1" focusable="false" class="smaller-button" />
             </ui:VisualElement>
             <ui:Label tabindex="-1" text="Info" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="color: rgb(191, 191, 191); -unity-font-style: bold;" />
-            <ui:Label tabindex="-1" text="Nothing to show" parse-escape-sequences="true" display-tooltip-when-elided="true" name="info" style="color: rgb(191, 191, 191); -unity-font-style: normal; font-size: 12px;" />
+            <ui:VisualElement name="log" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap;">
+                <ui:Button text="Inventory" parse-escape-sequences="true" display-tooltip-when-elided="true" name="log-inventory" tabindex="-1" focusable="false" class="smaller-button" />
+                <ui:Button text="Entities" parse-escape-sequences="true" display-tooltip-when-elided="true" name="log-entities" tabindex="-1" focusable="false" class="smaller-button" />
+            </ui:VisualElement>
+            <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" mouse-wheel-scroll-size="400" class="nice-scroll" style="max-height: 25%;">
+                <ui:Label tabindex="-1" text="Nothing to show" parse-escape-sequences="true" display-tooltip-when-elided="true" name="info" style="color: rgb(191, 191, 191); -unity-font-style: normal; font-size: 12px;" />
+            </ui:ScrollView>
         </ui:VisualElement>
         <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="stats" text="placeholder" style="position: absolute; height: auto; width: auto; background-color: rgba(0, 0, 0, 0.69); color: rgb(219, 219, 219); border-left-color: rgb(191, 191, 191); border-right-color: rgb(191, 191, 191); border-top-color: rgb(191, 191, 191); border-bottom-color: rgb(191, 191, 191); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; margin-left: 6px; font-size: 16px; margin-top: 6px;" />
     </ui:VisualElement>

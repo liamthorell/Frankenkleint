@@ -16,6 +16,7 @@ public class Mods : MonoBehaviour
     public bool killAura = true;
     public bool selfKill = false;
     public bool autoPickup = true;
+    public bool autoMine = false;
     public int viewDistance;
     public int heightDistance;
     public int inventorySize = 10;
@@ -126,7 +127,11 @@ public class Mods : MonoBehaviour
         
         root.Q<Button>("dungeon-mode").RegisterCallback<ClickEvent>(DungeonModeEvent);
         root.Q<Button>("reset-transparency").RegisterCallback<ClickEvent>(ResetTransparencyEvent);
-
+        
+        root.Q<Button>("log-inventory").RegisterCallback<ClickEvent>(LogInventoryEvent);
+        root.Q<Button>("log-entities").RegisterCallback<ClickEvent>(LogEntitiesEvent);
+        
+        root.Q<Toggle>("auto-mine").RegisterValueChangedCallback(AutoMineEvent);
 
 
         InitXray();
@@ -207,6 +212,150 @@ public class Mods : MonoBehaviour
         }
     }
 
+    private void LogInventoryEvent(ClickEvent evt)
+    {
+        var inventory = playerController.inventory;
+        var inventoryString = "";
+        foreach (var item in inventory)
+        {
+            inventoryString += item.Key + ": " + item.Value["type"] + " (" + item.Value["count"] + ")\n";
+            foreach (var attr in item.Value)
+            {
+                if (attr.Key != "type" && attr.Key != "count")
+                {
+                    inventoryString += attr.Key + ": " + attr.Value + "\n";
+                }
+            }
+            inventoryString += "\n";
+        }
+        LogInfo(inventoryString);
+    }
+
+    private void LogEntitiesEvent(ClickEvent evt)
+    {
+        if (chunkManager.chunks.Count == 0) return;
+        
+        var currentChunk = chunkManager.chunks[chunkManager.ViewDelta][chunkManager.HeightDelta][chunkManager.ViewDelta];
+        
+        if (currentChunk == null) return;
+        
+        var controller  = currentChunk.GetComponent<ChunkController>();
+
+        string logText = "";
+
+        foreach (var entity in controller.entities)
+        {
+            if ((string)entity["type"] != "monster") continue;
+            
+            logText += entity["type"] + " (" + entity["hp"] + ")\n";
+            
+            var inventory = ConvertObject<Dictionary<string,Dictionary<string, string>>>(entity["inventory"]);
+
+            foreach (var item in inventory)
+            {
+                logText += item.Key + ": " + item.Value["type"] + " (" + item.Value["count"] + ")\n";
+                foreach (var attr in item.Value)
+                {
+                    if (attr.Key != "type" && attr.Key != "count")
+                    {
+                        logText += attr.Key + ": " + attr.Value + "\n";
+                    }
+                }
+                logText += "\n";
+            }
+            logText += "-----\n";
+        }
+        
+        LogInfo(logText);
+    }
+
+    private void AutoMineEvent(ChangeEvent<bool> evt)
+    {
+        autoMine = evt.newValue;
+    }
+
+    public void AutoMineExecute()
+    {
+        if (!autoMine) return;
+        
+        if (chunkManager.chunks.Count == 0) return;
+        
+        var block = chunkManager.GetBlockAtPosition(new Vector3Int(1, -1, 0));
+        
+        print("Next block type is: " + block["type"]);
+
+        if ((string)block["type"] == "air")
+        {
+            print("Moving to next");
+            chunkManager.MoveAndUpdate("1", "-1", "0", "0");
+            return;
+        };
+        
+        if ((string)block["type"] != "rock") return;
+        
+        var strength = (string)block["strength"];
+
+        if (!strength.Contains("i"))
+        {
+            var normalStrength = ParseStrength(strength);
+            print("Breaking normal rock: " + normalStrength);
+            for (int i = 0; i < int.Parse(normalStrength); i++)
+            {
+                conn.Interact("-1", "1", "0", "-1");
+            }
+            chunkManager.MoveAndUpdate("0", "0", "0", "0");
+
+            return;
+        }
+
+        var Istrength = ParseIStrength(strength);
+        
+        var inventory = playerController.inventory;
+        bool success = false;
+        foreach (var item in inventory)
+        {
+            if ((string)item.Value["type"] == "pickaxe" && item.Value.TryGetValue("strength", out var value))
+            {
+                var itemIStrength = ParseIStrength(value);
+                if (itemIStrength == "1")
+                {
+                    print("Found pickaxe with strength 1i, breaking " + Istrength + " rock");
+                    for (int i = 0; i < int.Parse(Istrength); i++)
+                    {
+                        conn.Interact(item.Key, "1", "0", "-1");
+                    }
+
+                    success = true;
+                    break;
+                }
+            }
+        }
+        if (success)
+        {
+            chunkManager.MoveAndUpdate("0", "0", "0", "0");
+        }
+        else
+        {
+            Debug.LogWarning("Could not find pickaxe with strength 1i");
+        }
+    }
+
+    private string ParseIStrength(string strength)
+    {
+        if (strength.Contains("+")) {
+            strength = strength.Split('+')[1];
+        }
+        return strength.Remove(strength.Length - 1, 1);
+    }
+    private string ParseStrength(string strength)
+    {
+        if (strength.Contains("+")) {
+           return strength.Split('+')[0];
+        }
+
+        return strength;
+    }
+
     private void XrayUpdated()
     {
         chunkManager.blockTypes = chunkManager.ParseBlockTypes(blockTypesObject);
@@ -260,7 +409,7 @@ public class Mods : MonoBehaviour
                 
             if (x > 1 || x < -1 || y > 1 || y < -1) continue;
                 
-            conn.Interact("-1", (string)entity["x"], (string)entity["y"]);
+            conn.Interact(playerController.GetCurrentSlot(), (string)entity["x"], (string)entity["y"]);
         }
     }
     
