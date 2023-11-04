@@ -40,8 +40,8 @@ public class Mods : MonoBehaviour
      * - rerun ParseBlockTypes()
      * - rerender all chunks
      * Limitations atm:
-     * - current implementation stops unknown blocks from being rendered
-     * - cant make air transparent
+     * - current implementation stops unknown blocks from being rendered [x]
+     * - cant make air transparent [x]
      */
     public static Dictionary<string, float> xray = new()
     {
@@ -62,6 +62,8 @@ public class Mods : MonoBehaviour
     public BlockTypes blockTypesObject; 
     
     private Debounce xrayDebounce = new Debounce();
+
+    private VisualElement detailPanel;
 
     private void Start()
     {
@@ -134,13 +136,15 @@ public class Mods : MonoBehaviour
         
         root.Q<Toggle>("auto-mine").RegisterValueChangedCallback(AutoMineEvent);
         root.Q<Toggle>("inverse-auto-mine").RegisterValueChangedCallback(InverseAutoMineEvent);
-
-
+        
         InitXray();
 
         InvokeRepeating(nameof(Execute), 2.0f, 0.08f);
         
         InvokeRepeating(nameof(AutoMineExecute), 2.0f, 0.7f);
+
+        detailPanel = root.Q<VisualElement>("detail-panel");
+        detailPanel.visible = false;
     }
 
     public void Execute()
@@ -458,14 +462,14 @@ public class Mods : MonoBehaviour
         
         var positions = new List<Vector2Int>()
         {
-            new Vector2Int(1,1),
-            new Vector2Int(1,-1),
-            new Vector2Int(-1,1),
-            new Vector2Int(-1,-1),
-            new Vector2Int(0,1),
-            new Vector2Int(0,-1),
-            new Vector2Int(1,0),
-            new Vector2Int(-1,0),
+            new (1,1),
+            new (1,-1),
+            new (-1,1),
+            new (-1,-1),
+            new (0,1),
+            new (0,-1),
+            new (1,0),
+            new (-1,0),
         };
 
         var goodItems = new List<string>() {"sword", "pickaxe", "compass", "soul", "ventricle", "artery", "bone_marrow", "shield", "health_potion"};
@@ -616,6 +620,63 @@ public class Mods : MonoBehaviour
     public void LogInfo(string info)
     {
         root.Q<Label>("info").text = info;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            detailPanel.visible = false;
+        }
+    }
+
+    public void ShowDetailPane(Dictionary<string, object> data)
+    {
+        detailPanel.visible = true;
+        
+        // title
+        string type = (string)data["type"];
+        string title = type[0] + type[1..];
+        if(data.TryGetValue("name", out var name))
+        {
+            title += " - " + (string)name;
+        }
+        root.Q<Label>("detail-type").text = title;
+
+        // entity stats
+        string entityStats = "";
+
+        if (data.TryGetValue("x", out var x) && data.TryGetValue("y", out var y))
+        {
+            entityStats += $"Position: ({(string)x}, {(string)y})\n";
+        }
+
+        if (data.TryGetValue("hp", out var hp) && data.TryGetValue("max_hp", out var maxHp))
+        {
+            entityStats += $"HP: {(string)hp} / {(string)maxHp}\n";
+        }
+
+        if (data.TryGetValue("level", out var level))
+        {
+            entityStats += $"Level: {(string)level}\n";
+        }
+
+        if (data.TryGetValue("xp", out var xp))
+        {
+            entityStats += $"XP: {(string)xp}\n";
+        }
+
+        root.Q<Label>("detail-entity-stats").text = entityStats;
+
+        bool foundInventory = false;
+        var inventoryContent = root.Q<Label>("detail-inventory");
+        if (data.TryGetValue("inventory", out var inventory))
+        {
+            inventoryContent.text += "";
+            foundInventory = true;
+        }
+        root.Q<Label>("detail-inventory-title").visible = foundInventory;
+        inventoryContent.visible = foundInventory;
     }
 
     private void SendPacketEvent(ClickEvent evt)

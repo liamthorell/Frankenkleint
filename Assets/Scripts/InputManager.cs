@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using HGS.CallLimiter;
+using Newtonsoft.Json;
+
 //using System.Diagnostics;
 public class InputManager : MonoBehaviour
 {
@@ -33,6 +35,30 @@ public class InputManager : MonoBehaviour
         return Mathf.Abs(input) <= 0.5f ? 0 : Mathf.Sign(input);
     }
 
+    private Vector3 GetBlockPosFromPos(Vector3 pos, Vector3 normal, bool getClickedBlock)
+    {
+        Vector3 blockPos = new ((int)Math.Floor(pos.x), (int)Math.Floor(pos.y), (int)Math.Floor(pos.z));
+
+        if (getClickedBlock)
+        {
+            if (normal.x == -1)
+            {
+                normal.x = 0;
+            }
+
+            // todo why doesnt this handle for y? not needed??
+            
+            if (normal.z == -1)
+            {
+                normal.z = 0;
+            }
+
+            blockPos -= normal;
+        }
+
+        return blockPos;
+    }
+
     private void HandleLeftClick()
     {
         RaycastHit hit;
@@ -42,39 +68,80 @@ public class InputManager : MonoBehaviour
             // prevent clicking through ui elements
             if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
 
-            Transform objectHit = hit.transform;
             
-            var interact_pos = new Vector3((int)Math.Floor(hit.point.x), (int)Math.Floor(hit.point.y), (int)Math.Floor(hit.point.z));
+            var interactPos = GetBlockPosFromPos(hit.point, hit.normal, true);
 
-            bool breaking = true;
-            var normal = hit.normal;
-            if (breaking)
-            {
-                if (normal.x == -1)
-                {
-                    normal.x = 0;
-                }
-                if (normal.z == -1)
-                {
-                    normal.z = 0;
-                }
-                interact_pos -= normal;
-            }
-
-            if (Mathf.Abs(interact_pos.x) > 1 || Mathf.Abs(interact_pos.y) > 1 || Mathf.Abs(interact_pos.z) > 1)
+            if (Mathf.Abs(interactPos.x) > 1 || Mathf.Abs(interactPos.y) > 1 || Mathf.Abs(interactPos.z) > 1)
             {
                 return;
             }
 
-            var itemType = chunkManager.GetBlockAtPosition(new Vector3Int((int)interact_pos.x, (int)interact_pos.y, (int)interact_pos.z));
+            var itemType = chunkManager.GetBlockAtPosition(new Vector3Int((int)interactPos.x, (int)interactPos.y, (int)interactPos.z));
             
-            conn.Interact(playerController.GetPickUpSlot(itemType), interact_pos.x.ToString(), interact_pos.z.ToString(), interact_pos.y.ToString());
+            conn.Interact(playerController.GetPickUpSlot(itemType), interactPos.x.ToString(), interactPos.z.ToString(), interactPos.y.ToString());
 
-            var chunkController = objectHit.parent.GetComponent<ChunkController>();
+            var chunkController = hit.transform.parent.GetComponent<ChunkController>();
             
             chunkManager.UpdateSingleChunk(chunkController.chunkPosition.x, chunkController.chunkPosition.y, chunkController.chunkPosition.z);
             
             //Destroy(objectHit.gameObject);
+        }
+    }
+
+    private void HandleShiftRightClick()
+    {
+        RaycastHit hit;
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
+
+            var interactPos = GetBlockPosFromPos(hit.point, hit.normal, true);
+            
+            if (hit.transform.parent.TryGetComponent<ChunkController>(out var controller))
+            {
+                var res = new Vector2Int(((int)interactPos.x + 7) % 15, ((int)interactPos.z + 7) % 15);
+                
+                if (res.x < 0)
+                    res.x += 15;
+
+                if (res.y < 0)
+                    res.y += 15;
+                
+                Dictionary<string, object> entity = null;
+
+                foreach (var e in controller.entities)
+                {
+                    int x = int.Parse((string)e["x"]) + 7;
+                    int y = int.Parse((string)e["y"]) + 7;
+
+                    if (x == res.x && y == res.y)
+                    {
+                        entity = e;
+                    }
+                }
+                
+
+                if (entity == null)
+                {
+                    var block = controller.map[res.y, res.x];
+                    //block.Add("x", res.x.ToString());
+                    //block.Add("y", res.y.ToString());
+                    uiController.mods.ShowDetailPane(ConvertObject<Dictionary<string, object>>(block));
+                    print(block["type"]);
+                }
+                else
+                {
+                    print($"entity type: {entity["type"]}");
+                    uiController.mods.ShowDetailPane(entity);
+                }
+            }
+
+            //
+            //print(lol["type"]);
+            
+            //print($"Requested data for {interactPos}");
         }
     }
     
@@ -86,33 +153,16 @@ public class InputManager : MonoBehaviour
         if (Physics.Raycast(ray, out hit)) {
             if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
 
-            Transform objectHit = hit.transform;
+            var interactPos = GetBlockPosFromPos(hit.point, hit.normal, false);
 
-            var interact_pos = new Vector3((int)Math.Floor(hit.point.x), (int)Math.Floor(hit.point.y), (int)Math.Floor(hit.point.z));
-
-            /*bool breaking = false;
-            if (breaking)
-            {
-                interact_pos -= hit.normal;
-            }
-            */
-            if (hit.normal.x == -1)
-            {
-                interact_pos.x -= 1;
-            }
-            if (hit.normal.z == -1)
-            {
-                interact_pos.z -= 1;
-            }
-
-            if (Mathf.Abs(interact_pos.x) > 1 || Mathf.Abs(interact_pos.y) > 1 || Mathf.Abs(interact_pos.z) > 1)
+            if (Mathf.Abs(interactPos.x) > 1 || Mathf.Abs(interactPos.y) > 1 || Mathf.Abs(interactPos.z) > 1)
             {
                 return;
             }
             
-            conn.Interact(playerController.GetCurrentSlot(), interact_pos.x.ToString(), interact_pos.z.ToString(), interact_pos.y.ToString());
+            conn.Interact(playerController.GetCurrentSlot(), interactPos.x.ToString(), interactPos.z.ToString(), interactPos.y.ToString());
 
-            var chunkController = objectHit.parent.GetComponent<ChunkController>();
+            var chunkController = hit.transform.parent.GetComponent<ChunkController>();
             
             chunkManager.UpdateSingleChunk(chunkController.chunkPosition.x, chunkController.chunkPosition.y + (int)hit.normal.y, chunkController.chunkPosition.z);
         }
@@ -136,7 +186,14 @@ public class InputManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Mouse1) && !Input.GetKeyDown(KeyCode.Mouse0))
         {
-            HandleRightClick();
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                HandleShiftRightClick();
+            }
+            else
+            {
+                HandleRightClick();
+            }
         }
         if (Input.GetKey(KeyCode.Mouse1) && Input.GetKey(KeyCode.Mouse0))
         {
@@ -249,5 +306,12 @@ public class InputManager : MonoBehaviour
     private void MoveWithThrottle(string x, string y, string z, string xi = "0")
     {
         _moveThrottle.Run(() => chunkManager.MoveAndUpdate(x, y, z, xi), 0.3f);
+    }
+    
+    private static TValue ConvertObject<TValue>(object obj)
+    {       
+        var json = JsonConvert.SerializeObject(obj);
+        var res = JsonConvert.DeserializeObject<TValue>(json);   
+        return res;
     }
 }

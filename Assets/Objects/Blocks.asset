@@ -105,3 +105,11 @@ MonoBehaviour:
     textureIndex: 4
     modelOverride: {fileID: 195184127822695715, guid: efb42230b8945f4408f2af75a72fe4b4, type: 3}
     material: {fileID: 0}
+  - name: hypercube
+    textureIndex: 13
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
+  - name: veilstone
+    textureIndex: 14
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
