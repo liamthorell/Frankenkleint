@@ -98,7 +98,7 @@ public class ChunkManager : MonoBehaviour
 
         var item = ConvertObject<Dictionary<string, object>>(controller.map[7 + pos.z, 7 + pos.x]);
 
-        if ((string)item["type"] == "air")
+        if ((string)item["type"] == "air" && pos.y == 0)
         {
             foreach (var entity in controller.entities)
             {

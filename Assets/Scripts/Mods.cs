@@ -143,7 +143,9 @@ public class Mods : MonoBehaviour
             
             if (packetType == "Interact" || packetType == "InteractAndMove")
             {
-                conn.Interact(playerController.GetCurrentSlot(), newx.ToString(), newz.ToString(), y.ToString(), xi.ToString());
+                string itemType = (string)chunkManager.GetBlockAtPosition(new Vector3Int(sendX, sendY, sendZ))["type"];
+                
+                conn.Interact(playerController.GetPickUpSlot(itemType), newx.ToString(), newz.ToString(), y.ToString(), xi.ToString());
                 
                 if (packetType == "Interact") chunkManager.MoveAndUpdate("0", "0", "0", "0");
             }
@@ -350,7 +352,10 @@ public class Mods : MonoBehaviour
         
         if (packetType == "Interact" || packetType == "InteractAndMove")
         {
-            conn.Interact(playerController.GetCurrentSlot(), sendX.ToString(), sendZ.ToString(), sendY.ToString(), send4th.ToString());
+            string itemType = (string)chunkManager.GetBlockAtPosition(new Vector3Int(sendX, sendY, sendZ))["type"];
+            
+            conn.Interact(playerController.GetPickUpSlot(itemType), sendX.ToString(), sendZ.ToString(), sendY.ToString(), send4th.ToString());
+            
             if (packetType == "Interact") chunkManager.MoveAndUpdate("0", "0", "0", "0");
         } 
         if (packetType == "Move" || packetType == "InteractAndMove")
@@ -363,7 +368,10 @@ public class Mods : MonoBehaviour
     {
         if (packetType == "Interact" || packetType == "InteractAndMove")
         {
-            conn.Interact(playerController.GetCurrentSlot(), sendX.ToString(), sendZ.ToString(), sendY.ToString(), send4th.ToString());
+            string itemType = (string)chunkManager.GetBlockAtPosition(new Vector3Int(sendX, sendY, sendZ))["type"];
+            
+            conn.Interact(playerController.GetPickUpSlot(itemType), sendX.ToString(), sendZ.ToString(), sendY.ToString(), send4th.ToString());
+            
             if (packetType == "Interact") chunkManager.MoveAndUpdate("0", "0", "0", "0");
         }
         if (packetType == "Move" || packetType == "InteractAndMove")

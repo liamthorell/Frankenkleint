@@ -40,7 +40,7 @@
             </ui:VisualElement>
             <ui:RadioButtonGroup label="Type" value="0" choices="Move,Interact,Both" name="packet-type" tabindex="-1" focusable="false" style="flex-direction: row; color: rgb(191, 191, 191);" />
             <ui:VisualElement name="send-settings" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap;">
-                <ui:Button text="Send" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-packet" tabindex="-1" focusable="false" style="flex-grow: 1;" />
+                <ui:Button text="Send" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-packet" tabindex="-1" focusable="false" class="smaller-button" style="flex-grow: 1;" />
                 <ui:Toggle label="Repeat" name="send-repeat" tabindex="-1" />
             </ui:VisualElement>
             <ui:Label tabindex="-1" text="Quick send" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="color: rgb(191, 191, 191); -unity-font-style: bold;" />
