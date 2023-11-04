@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
+using Newtonsoft.Json;
 
 public class ChunkController : MonoBehaviour
 {
@@ -212,7 +213,13 @@ public class ChunkController : MonoBehaviour
                     CreateBlockWithModel((string)entity["type"], x, y, 1f, entity["name"] + " " + entity["hp"] + "/" + entity["max_hp"]);
                     break;
                 case "monster":
-                    CreateBlockWithModel((string)entity["type"], x, y, 1f, "Monster" + " " + entity["hp"] + "/" + entity["max_hp"]);
+                    string text = "Monster" + " " + entity["hp"] + "/" + entity["max_hp"];
+                    var inventory = ConvertObject<Dictionary<string,Dictionary<string, string>>>(entity["inventory"]);
+                    foreach (var slot in inventory)
+                    {
+                        if (slot.Value["type"] == "compass") text += " (" + "Compass" + ")";
+                    }
+                    CreateBlockWithModel((string)entity["type"], x, y, 1f, text);
                     break;
                 case "ghost":
                     CreateBlockWithModel((string)entity["type"], x, y, 1f, "Ghost");
@@ -371,5 +378,12 @@ public class ChunkController : MonoBehaviour
 
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
+    }
+    
+    private static TValue ConvertObject<TValue>(object obj)
+    {       
+        var json = JsonConvert.SerializeObject(obj);
+        var res = JsonConvert.DeserializeObject<TValue>(json);   
+        return res;
     }
 }
