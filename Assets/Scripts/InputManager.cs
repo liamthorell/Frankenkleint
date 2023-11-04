@@ -43,28 +43,30 @@ public class InputManager : MonoBehaviour
             if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
 
             Transform objectHit = hit.transform;
-
-
+            
             var interact_pos = new Vector3((int)Math.Floor(hit.point.x), (int)Math.Floor(hit.point.y), (int)Math.Floor(hit.point.z));
 
             bool breaking = true;
+            var normal = hit.normal;
             if (breaking)
             {
-                interact_pos -= hit.normal;
+                if (normal.x == -1)
+                {
+                    normal.x = 0;
+                }
+                if (normal.z == -1)
+                {
+                    normal.z = 0;
+                }
+                interact_pos -= normal;
             }
-            
-            print($"{interact_pos} | {hit.point}");
 
             if (Mathf.Abs(interact_pos.x) > 1 || Mathf.Abs(interact_pos.y) > 1 || Mathf.Abs(interact_pos.z) > 1)
             {
                 return;
             }
-            
-            //print(interact_pos);
-            string itemType =
-                (string)chunkManager.GetBlockAtPosition(new Vector3Int((int)interact_pos.x, (int)interact_pos.y,
-                    (int)interact_pos.z))["type"];
-            //print(itemType);
+
+            string itemType = (string)chunkManager.GetBlockAtPosition(new Vector3Int((int)interact_pos.x, (int)interact_pos.y, (int)interact_pos.z))["type"];
             
             conn.Interact(playerController.GetPickUpSlot(itemType), interact_pos.x.ToString(), interact_pos.z.ToString(), interact_pos.y.ToString());
 
@@ -88,12 +90,21 @@ public class InputManager : MonoBehaviour
 
             var interact_pos = new Vector3((int)Math.Floor(hit.point.x), (int)Math.Floor(hit.point.y), (int)Math.Floor(hit.point.z));
 
-            bool breaking = false;
+            /*bool breaking = false;
             if (breaking)
             {
                 interact_pos -= hit.normal;
             }
-            
+            */
+            if (hit.normal.x == -1)
+            {
+                interact_pos.x -= 1;
+            }
+            if (hit.normal.z == -1)
+            {
+                interact_pos.z -= 1;
+            }
+
             if (Mathf.Abs(interact_pos.x) > 1 || Mathf.Abs(interact_pos.y) > 1 || Mathf.Abs(interact_pos.z) > 1)
             {
                 return;
@@ -103,7 +114,7 @@ public class InputManager : MonoBehaviour
 
             var chunkController = objectHit.parent.GetComponent<ChunkController>();
             
-            chunkManager.UpdateSingleChunk(chunkController.chunkPosition.x, chunkController.chunkPosition.y, chunkController.chunkPosition.z);
+            chunkManager.UpdateSingleChunk(chunkController.chunkPosition.x, chunkController.chunkPosition.y + (int)hit.normal.y, chunkController.chunkPosition.z);
         }
     }
 
