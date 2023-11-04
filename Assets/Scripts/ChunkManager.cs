@@ -97,7 +97,7 @@ public class ChunkManager : MonoBehaviour
         var controller = chunks[ViewDelta][pos.y + HeightDelta][ViewDelta].GetComponent<ChunkController>();
 
         var item = ConvertObject<Dictionary<string, object>>(controller.map[7 + pos.z, 7 + pos.x]);
-
+        
         if ((string)item["type"] == "air" && pos.y == 0)
         {
             foreach (var entity in controller.entities)
@@ -326,6 +326,8 @@ public class ChunkManager : MonoBehaviour
     public void HandleTick(IDictionary data)
     {
         CreateChunk(new Vector3Int(ViewDelta,HeightDelta,ViewDelta), data);
+        
+        mods.hasBeenNewTickAutoPickup = true;
     }
 
     private Vector3Int ConvertPositionToRelativeZero(Vector3Int pos)

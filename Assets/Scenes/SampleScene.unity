@@ -320,8 +320,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chunkManager: {fileID: 967077404}
-  killAura: 0
+  killAura: 1
   selfKill: 0
+  autoPickup: 1
   viewDistance: 0
   heightDistance: 0
   inventorySize: 10
@@ -333,6 +334,7 @@ MonoBehaviour:
   send4th: 0
   sendRepeat: 0
   packetType: Move
+  hasBeenNewTickAutoPickup: 0
   conn: {fileID: 967077401}
   freecam: {fileID: 963194229}
   inputManager: {fileID: 967077403}
@@ -601,6 +603,7 @@ MonoBehaviour:
   currentSlot: {x: 0, y: 0}
   uiController: {fileID: 734952255}
   mods: {fileID: 734952256}
+  conn: {fileID: 967077401}
 --- !u!1 &1082765651
 GameObject:
   m_ObjectHideFlags: 0

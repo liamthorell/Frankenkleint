@@ -13,9 +13,8 @@ public class PlayerController : MonoBehaviour
     public Vector2Int currentSlot = new Vector2Int(0,0);
     public UIController uiController;
     
-    public List<string> nonStackableBlockTypes = new List<string> {"sword", "pickaxe", "tombstone", "compass"};
-
     public Mods mods;
+    public Connection conn;
 
     public void HandleTick(IDictionary data)
     {
@@ -71,8 +70,10 @@ public class PlayerController : MonoBehaviour
         return ConvertSlot(currentSlot.x, currentSlot.y);
     }
 
-    public string GetPickUpSlot(string itemType)
+    public string GetPickUpSlot(Dictionary<string, object> item)
     {
+        string itemType = item["type"] as string;
+        
         if (itemType == "monster")
         {
             // use sword slot
@@ -88,6 +89,10 @@ public class PlayerController : MonoBehaviour
                     if (!inventory.ContainsKey(ConvertSlot(j, 10 + i)))
                     {
                         return ConvertSlot(j, 10 + i);
+                    }
+                    if (inventory[ConvertSlot(j, 10 + i)]["type"] == "air")
+                    {
+                        conn.Interact(ConvertSlot(j, 10 + i), "0", "1", "0", "0");
                     }
                 }
             }
@@ -108,7 +113,7 @@ public class PlayerController : MonoBehaviour
         {
             return ConvertSlot(3, 9);
         }
-        else if (inventory.ContainsKey(GetCurrentSlot()) && inventory[GetCurrentSlot()]["type"] == itemType && !nonStackableBlockTypes.Contains(itemType))
+        else if (inventory.ContainsKey(GetCurrentSlot()) && CheckIfItemIsSame(item, ConvertObject<Dictionary<string, object>>(inventory[GetCurrentSlot()])))
         {
             // use the current slot because its the same type
             return GetCurrentSlot();
@@ -121,18 +126,18 @@ public class PlayerController : MonoBehaviour
         else
         {
             // find the first slot thats empty
-            return FirstEmptySlot(itemType);
+            return FirstEmptySlot(item);
         }
         return GetCurrentSlot();
     }
 
-    public string FirstEmptySlot(string itemType)
+    public string FirstEmptySlot(Dictionary<string, object> item)
     {
         for (int i = 0; i < mods.inventorySizeI; i++)
         {
             for (int j = 0; j < mods.inventorySize; j++)
             {
-                if (!inventory.ContainsKey(ConvertSlot(j, i)) || (inventory[ConvertSlot(j, i)]["type"] == itemType && !nonStackableBlockTypes.Contains(itemType)))
+                if (!inventory.ContainsKey(ConvertSlot(j, i)) || (CheckIfItemIsSame(item, ConvertObject<Dictionary<string, object>>(inventory[ConvertSlot(j, i)]))))
                 {
                     return ConvertSlot(j, i);
                 }
@@ -140,6 +145,26 @@ public class PlayerController : MonoBehaviour
         }
 
         return GetCurrentSlot();
+    }
+
+    public bool CheckIfItemIsSame(Dictionary<string, object> item, Dictionary<string, object> item2)
+    {
+        if ((string)item["type"] == "tombstone" && (string)item2["type"] == "tombstone")
+        {
+            return (string)item["text"] == (string)item2["text"];
+        }
+        if (((string)item["type"] == "sword" && (string)item2["type"] == "sword") ||
+            ((string)item["type"] == "pickaxe" && (string)item2["type"] == "pickaxe"))
+        {
+            return (string)item["strength"] == (string)item2["strength"];
+        }
+
+        if ((string)item["type"] == "compass" && (string)item2["type"] == "compass")
+        {
+            return false;
+        }
+
+        return (string)item["type"] == (string)item2["type"];
     }
     
     private static TValue ConvertObject<TValue>(object obj)

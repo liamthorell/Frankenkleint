@@ -7,13 +7,15 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 using HGS.CallLimiter;
+using Newtonsoft.Json;
 
 public class Mods : MonoBehaviour
 {
     public ChunkManager chunkManager;
     
-    public bool killAura = false;
+    public bool killAura = true;
     public bool selfKill = false;
+    public bool autoPickup = true;
     public int viewDistance;
     public int heightDistance;
     public int inventorySize = 10;
@@ -27,6 +29,8 @@ public class Mods : MonoBehaviour
     
     public bool sendRepeat = false;
     public string packetType = "Move";
+    
+    public bool hasBeenNewTickAutoPickup = false;
     
     /*
      * Temporary place for dis
@@ -65,12 +69,17 @@ public class Mods : MonoBehaviour
 
 
         root.Q<Toggle>("kill-aura").RegisterValueChangedCallback(KillAuraEvent);
+        root.Q<Toggle>("kill-aura").value = killAura;
+        
         root.Q<Toggle>("self-kill").RegisterValueChangedCallback(SelfKillEvent);
         root.Q<Toggle>("freecam").RegisterValueChangedCallback(FreecamEvent);
         root.Q<Button>("reset-camera-position").RegisterCallback<ClickEvent>(ResetCameraPositionEvent);
 
         root.Q<Toggle>("remove-old-chunks-on-move").RegisterValueChangedCallback(RemoveOldChunksOnMoveEvent);
         root.Q<Toggle>("remove-old-chunks-on-move").value = chunkManager.removeOldChunksOnMove;
+        
+        root.Q<Toggle>("auto-pickup").RegisterValueChangedCallback(AutoPickUpEvent);
+        root.Q<Toggle>("auto-pickup").value = autoPickup;
 
         root.Q<IntegerField>("inventory-size").RegisterValueChangedCallback(InventorySizeEvent);
         root.Q<IntegerField>("inventory-size-i").RegisterValueChangedCallback(InventorySizeIEvent);
@@ -129,6 +138,7 @@ public class Mods : MonoBehaviour
     {
         KillAuraExecute();
         SelfKillExecute();
+        AutoPickupExecute();
         
         SendPacketExecute();
     }
@@ -143,7 +153,7 @@ public class Mods : MonoBehaviour
             
             if (packetType == "Interact" || packetType == "InteractAndMove")
             {
-                string itemType = (string)chunkManager.GetBlockAtPosition(new Vector3Int(sendX, sendY, sendZ))["type"];
+                var itemType = chunkManager.GetBlockAtPosition(new Vector3Int(newx, y, newz));
                 
                 conn.Interact(playerController.GetPickUpSlot(itemType), newx.ToString(), newz.ToString(), y.ToString(), xi.ToString());
                 
@@ -223,6 +233,8 @@ public class Mods : MonoBehaviour
         
         var currentChunk = chunkManager.chunks[chunkManager.ViewDelta][chunkManager.HeightDelta][chunkManager.ViewDelta];
         
+        if (currentChunk == null) return;
+        
         var controller  = currentChunk.GetComponent<ChunkController>();
 
         foreach (var entity in controller.entities)
@@ -248,6 +260,55 @@ public class Mods : MonoBehaviour
         if (!selfKill) return;
         
         conn.Interact("-1", "0", "0");
+    }
+
+    private void AutoPickUpEvent(ChangeEvent<bool> evt)
+    {
+        autoPickup = evt.newValue;
+    }
+
+    private void AutoPickupExecute()
+    {
+        if (!hasBeenNewTickAutoPickup) return;
+        hasBeenNewTickAutoPickup = false;
+
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+        {
+            return;
+        }
+        
+        if (chunkManager.chunks.Count == 0) return;
+        
+        var currentChunk = chunkManager.chunks[chunkManager.ViewDelta][chunkManager.HeightDelta][chunkManager.ViewDelta];
+        
+        if (currentChunk == null) return;
+        
+        var controller  = currentChunk.GetComponent<ChunkController>();
+        
+        var positions = new List<Vector2Int>()
+        {
+            new Vector2Int(1,1),
+            new Vector2Int(1,-1),
+            new Vector2Int(-1,1),
+            new Vector2Int(-1,-1),
+            new Vector2Int(0,1),
+            new Vector2Int(0,-1),
+            new Vector2Int(1,0),
+            new Vector2Int(-1,0),
+        };
+
+        var goodItems = new List<string>() {"sword", "pickaxe", "compass", "soul", "ventricle", "artery", "bone_marrow", "shield", "health_potion"};
+        
+        foreach (var pos in positions)
+        {
+            var mapItem = controller.map[7 + pos.y, 7 + pos.x];
+
+            if (goodItems.Contains(mapItem["type"]))
+            {
+                conn.Interact(playerController.GetPickUpSlot(ConvertObject<Dictionary<string, object>>(mapItem)), pos.x.ToString(), pos.y.ToString(), "0", "0");
+            }
+        }
+        
     }
     
     private void ViewDistanceEvent(ChangeEvent<int> evt)
@@ -352,7 +413,7 @@ public class Mods : MonoBehaviour
         
         if (packetType == "Interact" || packetType == "InteractAndMove")
         {
-            string itemType = (string)chunkManager.GetBlockAtPosition(new Vector3Int(sendX, sendY, sendZ))["type"];
+            var itemType = chunkManager.GetBlockAtPosition(new Vector3Int(sendX, sendY, sendZ));
             
             conn.Interact(playerController.GetPickUpSlot(itemType), sendX.ToString(), sendZ.ToString(), sendY.ToString(), send4th.ToString());
             
@@ -368,7 +429,7 @@ public class Mods : MonoBehaviour
     {
         if (packetType == "Interact" || packetType == "InteractAndMove")
         {
-            string itemType = (string)chunkManager.GetBlockAtPosition(new Vector3Int(sendX, sendY, sendZ))["type"];
+            var itemType = chunkManager.GetBlockAtPosition(new Vector3Int(sendX, sendY, sendZ));
             
             conn.Interact(playerController.GetPickUpSlot(itemType), sendX.ToString(), sendZ.ToString(), sendY.ToString(), send4th.ToString());
             
@@ -378,5 +439,12 @@ public class Mods : MonoBehaviour
         {
             chunkManager.MoveAndUpdate(sendX.ToString(), sendY.ToString(), sendZ.ToString(), send4th.ToString());
         }
+    }
+    
+    private static TValue ConvertObject<TValue>(object obj)
+    {       
+        var json = JsonConvert.SerializeObject(obj);
+        var res = JsonConvert.DeserializeObject<TValue>(json);   
+        return res;
     }
 }

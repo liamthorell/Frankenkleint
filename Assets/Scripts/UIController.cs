@@ -67,6 +67,14 @@ public class UIController : MonoBehaviour
                   {
                      label.text = itemData["count"] + " - " + itemData["type"] + " - " + itemData["text"];
                   }
+                  else if (itemData["type"] == "sword" || itemData["type"] == "pickaxe")
+                  {
+                     label.text = itemData["count"] + " - " + itemData["type"] + " (" + itemData["strength"] + ")";
+                  }
+                  else if (itemData["type"] == "compass")
+                  {
+                     label.text = itemData["count"] + " - " + itemData["type"] + " (" + itemData["x"] + " " + itemData["y"] + ")";
+                  }
                   else
                   {
                      label.text = itemData["count"] + " - " + itemData["type"];
