@@ -45,8 +45,6 @@ public class Mods : MonoBehaviour
      */
     public static Dictionary<string, float> xray = new()
     {
-        //{ "dirt", .2f },
-        //{ "rock", .2f },
         {"air", 0f}
     };
 
@@ -116,7 +114,6 @@ public class Mods : MonoBehaviour
         InitQuickSend("send-up-left", -1, 1, 0, 0);
         InitQuickSend("send-up-right", 1, 1, 0, 0);
 
-        
         // Init render distance values
         viewDistance = chunkManager.ViewDistance;
         heightDistance = chunkManager.HeightDistance;
@@ -632,6 +629,8 @@ public class Mods : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             detailPanel.visible = false;
+            root.Q<Label>("detail-inventory-title").visible = false;
+            root.Q<Label>("detail-inventory").visible = false;
         }
     }
 
@@ -641,7 +640,7 @@ public class Mods : MonoBehaviour
         
         // title
         string type = (string)data["type"];
-        string title = type[0] + type[1..];
+        string title = char.ToUpper(type[0]) + type[1..];
         if(data.TryGetValue("name", out var name))
         {
             title += " - " + (string)name;
@@ -673,9 +672,9 @@ public class Mods : MonoBehaviour
 
         foreach (var attr in data)
         {
-            if (attr.Key != "type" && attr.Key != "name" && attr.Key != "x" && attr.Key != "y" && attr.Key != "hp" && attr.Key != "max_hp" && attr.Key != "level" && attr.Key != "xp" && attr.Key != "inventory")
+            if (!new[] { "type", "name", "x", "y", "hp", "max_hp", "level", "xp", "inventory" }.Contains(attr.Key))
             {
-                entityStats += attr.Key + ": " + attr.Value + "\n";
+                entityStats += char.ToUpper(attr.Key[0]) + attr.Key[1..] + ": " + attr.Value + "\n";
             }
         }
 
@@ -689,12 +688,12 @@ public class Mods : MonoBehaviour
             var inventoryDict = ConvertObject<Dictionary<string,Dictionary<string, string>>>(inventory);
             foreach (var item in inventoryDict)
             {
-                inventoryContent.text += item.Key + ": " + item.Value["type"] + " (" + item.Value["count"] + ")\n";
+                inventoryContent.text += item.Key + ": " + char.ToUpper(item.Value["type"][0]) + item.Value["type"][1..] + " (" + item.Value["count"] + ")\n";
                 foreach (var attr in item.Value)
                 {
                     if (attr.Key != "type" && attr.Key != "count")
                     {
-                        inventoryContent.text += attr.Key + ": " + attr.Value + "\n";
+                        inventoryContent.text += "- " + char.ToUpper(attr.Key[0]) + attr.Key[1..] + ": " + attr.Value + "\n";
                     }
                 }
                 inventoryContent.text += "\n";
