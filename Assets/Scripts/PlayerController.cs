@@ -83,27 +83,30 @@ public class PlayerController : MonoBehaviour
         {
             for (int i = 0; i < 1000; i++)
             {
-                if (!inventory.ContainsKey(ConvertSlot(10, i)))
+                for (int j = 0; j < 15; j++)
                 {
-                    return ConvertSlot(10, i);
+                    if (!inventory.ContainsKey(ConvertSlot(j, 10 + i)))
+                    {
+                        return ConvertSlot(j, 10 + i);
+                    }
                 }
             }
         } 
         else if (itemType == "ventricle")
         {
-            return ConvertSlot(9, 0);
+            return ConvertSlot(0, 9);
         }
         else if (itemType == "artery")
         {
-            return ConvertSlot(9, 1);
+            return ConvertSlot(1, 9);
         }
         else if (itemType == "bone_marrow")
         {
-            return ConvertSlot(9, 2);
+            return ConvertSlot(2, 9);
         }
         else if (itemType == "shield")
         {
-            return ConvertSlot(9, 3);
+            return ConvertSlot(3, 9);
         }
         else if (inventory.ContainsKey(GetCurrentSlot()) && inventory[GetCurrentSlot()]["type"] == itemType && !nonStackableBlockTypes.Contains(itemType))
         {
