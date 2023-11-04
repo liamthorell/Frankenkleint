@@ -52,17 +52,19 @@ public class InputManager : MonoBehaviour
             {
                 interact_pos -= hit.normal;
             }
+            
+            print($"{interact_pos} | {hit.point}");
 
             if (Mathf.Abs(interact_pos.x) > 1 || Mathf.Abs(interact_pos.y) > 1 || Mathf.Abs(interact_pos.z) > 1)
             {
                 return;
             }
             
-            print(interact_pos);
+            //print(interact_pos);
             string itemType =
                 (string)chunkManager.GetBlockAtPosition(new Vector3Int((int)interact_pos.x, (int)interact_pos.y,
                     (int)interact_pos.z))["type"];
-            print(itemType);
+            //print(itemType);
             
             conn.Interact(playerController.GetPickUpSlot(itemType), interact_pos.x.ToString(), interact_pos.z.ToString(), interact_pos.y.ToString());
 
@@ -91,7 +93,7 @@ public class InputManager : MonoBehaviour
             {
                 interact_pos -= hit.normal;
             }
-
+            
             if (Mathf.Abs(interact_pos.x) > 1 || Mathf.Abs(interact_pos.y) > 1 || Mathf.Abs(interact_pos.z) > 1)
             {
                 return;

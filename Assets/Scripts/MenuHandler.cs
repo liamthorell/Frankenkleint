@@ -38,7 +38,7 @@ public class MenuHandler : MonoBehaviour
     
     private void OnGuideClick()
     {
-        print("guide");
+        SceneManager.LoadScene("GuideScene", LoadSceneMode.Single);
     }
 
     private void OnQuitClick()
