@@ -163,6 +163,20 @@ public class Mods : MonoBehaviour
             {
                 chunkManager.MoveAndUpdate(newx.ToString(), y.ToString(), newz.ToString(), xi.ToString());
             }
+            if (packetType == "Info")
+            {
+                var block = chunkManager.GetBlockAtPosition(new Vector3Int(newx, y, newz));
+
+                if ((string)block["type"] == "rock")
+                {
+                    LogInfo("Block: " + block["type"] + " (" + block["strength"] + ")");
+                }
+                else
+                {
+                    LogInfo("Block: " + block["type"]);
+                }
+            
+            }
         });
     }
 
@@ -404,6 +418,9 @@ public class Mods : MonoBehaviour
         } else if (evt.newValue == 2)
         {
             packetType = "InteractAndMove";
+        } else if (evt.newValue == 3)
+        {
+            packetType = "Info";
         }
     }
 
@@ -423,6 +440,25 @@ public class Mods : MonoBehaviour
         {
             chunkManager.MoveAndUpdate(sendX.ToString(), sendY.ToString(), sendZ.ToString(), send4th.ToString());
         }
+        if (packetType == "Info")
+        {
+            var block = chunkManager.GetBlockAtPosition(new Vector3Int(sendX, sendY, sendZ));
+
+            if ((string)block["type"] == "rock")
+            {
+                LogInfo("Block: " + block["type"] + " (" + block["strength"] + ")");
+            }
+            else
+            {
+                LogInfo("Block: " + block["type"]);
+            }
+            
+        }
+    }
+
+    public void LogInfo(string info)
+    {
+        root.Q<Label>("info").text = info;
     }
 
     private void SendPacketEvent(ClickEvent evt)
@@ -438,6 +474,20 @@ public class Mods : MonoBehaviour
         if (packetType == "Move" || packetType == "InteractAndMove")
         {
             chunkManager.MoveAndUpdate(sendX.ToString(), sendY.ToString(), sendZ.ToString(), send4th.ToString());
+        }
+        if (packetType == "Info")
+        {
+            var block = chunkManager.GetBlockAtPosition(new Vector3Int(sendX, sendY, sendZ));
+
+            if ((string)block["type"] == "rock")
+            {
+                LogInfo("Block: " + block["type"] + " (" + block["strength"] + ")");
+            }
+            else
+            {
+                LogInfo("Block: " + block["type"]);
+            }
+            
         }
     }
     

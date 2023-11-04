@@ -39,7 +39,7 @@
                 <ui:IntegerField label="Y" value="0" name="send-y" tabindex="-1" class="move-input-2" style="flex-grow: 1;" />
                 <ui:IntegerField label="4th" value="0" name="send-4th" tabindex="-1" class="move-input-2" style="flex-grow: 1;" />
             </ui:VisualElement>
-            <ui:RadioButtonGroup label="Type" value="0" choices="Move,Interact,Both" name="packet-type" tabindex="-1" focusable="false" style="flex-direction: row; color: rgb(191, 191, 191);" />
+            <ui:RadioButtonGroup label="Type" value="0" choices="Move,Interact,Both,Info" name="packet-type" tabindex="-1" focusable="false" style="flex-direction: row; color: rgb(191, 191, 191);" />
             <ui:VisualElement name="send-settings" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap;">
                 <ui:Button text="Send" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-packet" tabindex="-1" focusable="false" class="smaller-button" style="flex-grow: 1;" />
                 <ui:Toggle label="Repeat" name="send-repeat" tabindex="-1" />
@@ -65,6 +65,8 @@
                 <ui:Button text="Up Left" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-up-left" tabindex="-1" focusable="false" class="smaller-button" />
                 <ui:Button text="Up Right" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-up-right" tabindex="-1" focusable="false" class="smaller-button" />
             </ui:VisualElement>
+            <ui:Label tabindex="-1" text="Info" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="color: rgb(191, 191, 191); -unity-font-style: bold;" />
+            <ui:Label tabindex="-1" text="Nothing to show" parse-escape-sequences="true" display-tooltip-when-elided="true" name="info" style="color: rgb(191, 191, 191); -unity-font-style: normal; font-size: 12px;" />
         </ui:VisualElement>
         <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="stats" text="placeholder" style="position: absolute; height: auto; width: auto; background-color: rgba(0, 0, 0, 0.69); color: rgb(219, 219, 219); border-left-color: rgb(191, 191, 191); border-right-color: rgb(191, 191, 191); border-top-color: rgb(191, 191, 191); border-bottom-color: rgb(191, 191, 191); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; margin-left: 6px; font-size: 16px; margin-top: 6px;" />
     </ui:VisualElement>
