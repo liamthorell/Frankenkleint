@@ -17,6 +17,7 @@
                 <ui:Toggle label="Auto pickup" name="auto-pickup" class="input-gray-text" />
                 <ui:Toggle label="Self kill" name="self-kill" class="input-gray-text" />
                 <ui:Toggle label="Auto mine&#x9;" name="auto-mine" class="input-gray-text" />
+                <ui:Toggle label="Auto mine inverse direction&#x9;" name="inverse-auto-mine" class="input-gray-text" />
                 <ui:Toggle label="Freecam" name="freecam" class="input-gray-text" />
                 <ui:Button text="Reset camera position" parse-escape-sequences="true" display-tooltip-when-elided="true" name="reset-camera-position" />
                 <ui:Label tabindex="-1" text="Inventory" parse-escape-sequences="true" display-tooltip-when-elided="true" class="heading" />

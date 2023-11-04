@@ -59,7 +59,7 @@ public class ChunkController : MonoBehaviour
     public void GenerateBlocks()
     {
         bool[,] drawn = new bool[15, 15];
-
+        
         List<string> transparent = new()
         {
             "air", "tombstone", "leaves", "spawner", "soul", "ventricle", "artery", "bone_marrow", "health_potion", "shield", "compass", "pickaxe", "sword"
@@ -71,7 +71,6 @@ public class ChunkController : MonoBehaviour
                 transparent.Add(s);
             }
         }
-
 
         var customModel = types
             .Where(item => item.modelOverride != null)
@@ -277,11 +276,11 @@ public class ChunkController : MonoBehaviour
     {
         // this is most likely slow as fuck due to using linq pls fix it
         BlockTypes.BlockType type = types.Find(item => item.name == textureName);
-        if (type.material == null && type.modelOverride == null)
+        /*if (type.material == null && type.modelOverride == null)
         {
-            return; // TODO issue with this: stops rendering of blocks without texture
+            //return; TODO issue with this: stops rendering of blocks without texture
             //type = types.Find(item => item.name == "none");
-        }
+        }*/
 
         var blockObject = new GameObject
         {

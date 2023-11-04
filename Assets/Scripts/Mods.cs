@@ -17,6 +17,7 @@ public class Mods : MonoBehaviour
     public bool selfKill = false;
     public bool autoPickup = true;
     public bool autoMine = false;
+    public bool inverseAutoMine = false;
     public int viewDistance;
     public int heightDistance;
     public int inventorySize = 10;
@@ -132,11 +133,14 @@ public class Mods : MonoBehaviour
         root.Q<Button>("log-entities").RegisterCallback<ClickEvent>(LogEntitiesEvent);
         
         root.Q<Toggle>("auto-mine").RegisterValueChangedCallback(AutoMineEvent);
+        root.Q<Toggle>("inverse-auto-mine").RegisterValueChangedCallback(InverseAutoMineEvent);
 
 
         InitXray();
 
         InvokeRepeating(nameof(Execute), 2.0f, 0.08f);
+        
+        InvokeRepeating(nameof(AutoMineExecute), 2.0f, 0.7f);
     }
 
     public void Execute()
@@ -273,21 +277,29 @@ public class Mods : MonoBehaviour
     {
         autoMine = evt.newValue;
     }
+    
+    private void InverseAutoMineEvent(ChangeEvent<bool> evt)
+    {
+        inverseAutoMine = evt.newValue;
+    }
 
     public void AutoMineExecute()
     {
         if (!autoMine) return;
         
         if (chunkManager.chunks.Count == 0) return;
+
+        int y = -1;
+        if (inverseAutoMine) y = 1;
         
-        var block = chunkManager.GetBlockAtPosition(new Vector3Int(1, -1, 0));
+        var block = chunkManager.GetBlockAtPosition(new Vector3Int(1, y, 0));
         
         print("Next block type is: " + block["type"]);
 
         if ((string)block["type"] == "air")
         {
             print("Moving to next");
-            chunkManager.MoveAndUpdate("1", "-1", "0", "0");
+            chunkManager.MoveAndUpdate("1", y.ToString(), "0", "0");
             return;
         };
         
@@ -295,49 +307,45 @@ public class Mods : MonoBehaviour
         
         var strength = (string)block["strength"];
 
-        if (!strength.Contains("i"))
-        {
-            var normalStrength = ParseStrength(strength);
-            print("Breaking normal rock: " + normalStrength);
-            for (int i = 0; i < int.Parse(normalStrength); i++)
-            {
-                conn.Interact("-1", "1", "0", "-1");
-            }
-            chunkManager.MoveAndUpdate("0", "0", "0", "0");
-
-            return;
-        }
-
         var Istrength = ParseIStrength(strength);
-        
-        var inventory = playerController.inventory;
-        bool success = false;
-        foreach (var item in inventory)
-        {
-            if ((string)item.Value["type"] == "pickaxe" && item.Value.TryGetValue("strength", out var value))
-            {
-                var itemIStrength = ParseIStrength(value);
-                if (itemIStrength == "1")
-                {
-                    print("Found pickaxe with strength 1i, breaking " + Istrength + " rock");
-                    for (int i = 0; i < int.Parse(Istrength); i++)
-                    {
-                        conn.Interact(item.Key, "1", "0", "-1");
-                    }
 
-                    success = true;
-                    break;
+        if (strength.Contains("i"))
+        {
+            var inventory = playerController.inventory;
+            bool success = false;
+            foreach (var item in inventory)
+            {
+                if ((string)item.Value["type"] == "pickaxe" && item.Value.TryGetValue("strength", out var value))
+                {
+                    var itemIStrength = ParseIStrength(value);
+                    if (itemIStrength == "")
+                    {
+                        print("Found pickaxe with strength 1i, breaking " + Istrength + "i rock");
+                        for (int i = 0; i < int.Parse(Istrength); i++)
+                        {
+                            conn.Interact(item.Key, "1", "0", y.ToString());
+                        }
+
+                        success = true;
+                        break;
+                    }
                 }
             }
+
+            if (!success)
+            {
+                Debug.LogWarning("Could not find pickaxe with strength 1i");
+                return;
+            }
         }
-        if (success)
+
+        var normalStrength = ParseStrength(strength);
+        print("Breaking " + normalStrength + " rock");
+        for (int i = 0; i < int.Parse(normalStrength); i++)
         {
-            chunkManager.MoveAndUpdate("0", "0", "0", "0");
+            conn.Interact("-1", "1", "0", y.ToString());
         }
-        else
-        {
-            Debug.LogWarning("Could not find pickaxe with strength 1i");
-        }
+        chunkManager.MoveAndUpdate("1", y.ToString(), "0", "0");
     }
 
     private string ParseIStrength(string strength)
