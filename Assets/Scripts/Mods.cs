@@ -313,6 +313,11 @@ public class Mods : MonoBehaviour
 
         var Istrength = ParseIStrength(strength);
 
+        if (Istrength == "")
+        {
+            Istrength = "1";
+        }
+
         if (strength.Contains("i"))
         {
             var inventory = playerController.inventory;
@@ -666,13 +671,34 @@ public class Mods : MonoBehaviour
             entityStats += $"XP: {(string)xp}\n";
         }
 
+        foreach (var attr in data)
+        {
+            if (attr.Key != "type" && attr.Key != "name" && attr.Key != "x" && attr.Key != "y" && attr.Key != "hp" && attr.Key != "max_hp" && attr.Key != "level" && attr.Key != "xp" && attr.Key != "inventory")
+            {
+                entityStats += attr.Key + ": " + attr.Value + "\n";
+            }
+        }
+
         root.Q<Label>("detail-entity-stats").text = entityStats;
 
         bool foundInventory = false;
         var inventoryContent = root.Q<Label>("detail-inventory");
+        inventoryContent.text = "";
         if (data.TryGetValue("inventory", out var inventory))
         {
-            inventoryContent.text += "";
+            var inventoryDict = ConvertObject<Dictionary<string,Dictionary<string, string>>>(inventory);
+            foreach (var item in inventoryDict)
+            {
+                inventoryContent.text += item.Key + ": " + item.Value["type"] + " (" + item.Value["count"] + ")\n";
+                foreach (var attr in item.Value)
+                {
+                    if (attr.Key != "type" && attr.Key != "count")
+                    {
+                        inventoryContent.text += attr.Key + ": " + attr.Value + "\n";
+                    }
+                }
+                inventoryContent.text += "\n";
+            }
             foundInventory = true;
         }
         root.Q<Label>("detail-inventory-title").visible = foundInventory;
