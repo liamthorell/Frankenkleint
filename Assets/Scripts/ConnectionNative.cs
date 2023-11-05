@@ -73,8 +73,16 @@ public class ConnectionNative : MonoBehaviour
         }
     }
 
-    public async void Interact(string slot, string x, string z, string y = "0", string i = "0")
+    public async void Interact(string slot, string x, string z, string _y = "0", string _i = "0")
     {
+        string y = _y;
+        string i = _i;
+        if (chunkManager.mods.invertDimensions)
+        {
+            y = _i;
+            i = _y;
+        }
+        
         if (i[0] != '-') i = "+" + i;
         if (y[0] != '-') y = "+" + y;
         
@@ -89,8 +97,16 @@ public class ConnectionNative : MonoBehaviour
         await ws.SendText(json);
     }
     
-    public async void Move(string x, string z, string y = "0", string i = "0")
+    public async void Move(string x, string z, string _y = "0", string _i = "0")
     {
+        string y = _y;
+        string i = _i;
+        if (chunkManager.mods.invertDimensions)
+        {
+            y = _i;
+            i = _y;
+        }
+        
         if (i[0] != '-') i = "+" + i;
         if (y[0] != '-') y = "+" + y;
         

@@ -23,6 +23,7 @@ public class Mods : MonoBehaviour
     public int inventorySize = 10;
     public int inventorySizeI = 10;
     public int inventorySlider = 0;
+    public bool invertDimensions = false;
     
     public int sendX = 0;
     public int sendY = 0;
@@ -103,6 +104,8 @@ public class Mods : MonoBehaviour
         root.Q<Toggle>("send-repeat").RegisterValueChangedCallback(SendRepeatEvent);
         root.Q<RadioButtonGroup>("packet-type").RegisterValueChangedCallback(PacketTypeEvent);
         root.Q<Button>("send-packet").RegisterCallback<ClickEvent>(SendPacketEvent);
+        
+        root.Q<Toggle>("invert-dimensions").RegisterValueChangedCallback(InvertDimensionsEvent);
         
         // Quick send packet
         InitQuickSend("send-up", 0, 1, 0, 0);
@@ -191,6 +194,11 @@ public class Mods : MonoBehaviour
             
             }
         });
+    }
+
+    private void InvertDimensionsEvent(ChangeEvent<bool> evt)
+    {
+        invertDimensions = evt.newValue;
     }
 
     private void InitXray()

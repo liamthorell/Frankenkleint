@@ -75,6 +75,7 @@
                 <ui:Button text="Up Left" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-up-left" tabindex="-1" focusable="false" class="smaller-button" />
                 <ui:Button text="Up Right" parse-escape-sequences="true" display-tooltip-when-elided="true" name="send-up-right" tabindex="-1" focusable="false" class="smaller-button" />
             </ui:VisualElement>
+            <ui:Toggle label="Invert dimensions" name="invert-dimensions" tabindex="-1" class="input-gray-text" />
             <ui:Label tabindex="-1" text="Info" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="color: rgb(191, 191, 191); -unity-font-style: bold;" />
             <ui:VisualElement name="log" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap;">
                 <ui:Button text="Inventory" parse-escape-sequences="true" display-tooltip-when-elided="true" name="log-inventory" tabindex="-1" focusable="false" class="smaller-button" />
