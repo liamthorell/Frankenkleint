@@ -113,6 +113,10 @@ public class PlayerController : MonoBehaviour
         {
             return ConvertSlot(3, 9);
         }
+        else if (itemType == "sword" || itemType == "pickaxe")
+        {
+            return FirstEmptySlot(item);
+        }
         else if (inventory.ContainsKey(GetCurrentSlot()) && CheckIfItemIsSame(item, ConvertObject<Dictionary<string, object>>(inventory[GetCurrentSlot()])))
         {
             // use the current slot because its the same type
