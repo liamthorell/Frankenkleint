@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1126798614240331987}
   - component: {fileID: 5337119074297543107}
   m_Layer: 0
-  m_Name: Ventricle
+  m_Name: ventrcle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e837493fd458a6e489f09d9bc3cfdd7d, type: 2}
+  - {fileID: 2100000, guid: 83b6fbb08113afe44aaad44d8c974d6f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
