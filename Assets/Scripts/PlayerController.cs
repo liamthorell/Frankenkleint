@@ -113,6 +113,14 @@ public class PlayerController : MonoBehaviour
         {
             return ConvertSlot(3, 9);
         }
+        else if (itemType == "sheld")
+        {
+            return ConvertSlot(4, 9);
+        }
+        else if (itemType == "ventrcle")
+        {
+            return ConvertSlot(4, 9);
+        }
         else if (itemType == "sword" || itemType == "pickaxe")
         {
             return FirstEmptySlot(item);

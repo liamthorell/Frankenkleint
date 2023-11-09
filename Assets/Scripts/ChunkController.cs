@@ -217,6 +217,7 @@ public class ChunkController : MonoBehaviour
                     foreach (var slot in inventory)
                     {
                         if (slot.Value["type"] == "compass") text += " (" + "Compass" + ")";
+                        if (slot.Value["type"] == "spider_legs") text += " (" + "Spider" + ")";
                     }
                     CreateBlockWithModel((string)entity["type"], x, y, 1f, text);
                     break;

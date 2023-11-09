@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using HGS.CallLimiter;
 using Newtonsoft.Json;
+using Microsoft.Z3;
 
 public class Mods : MonoBehaviour
 {
@@ -108,8 +109,8 @@ public class Mods : MonoBehaviour
         // Quick send packet
         InitQuickSend("send-up", 0, 1, 0, 0);
         InitQuickSend("send-down", 0, -1, 0, 0);
-        InitQuickSend("send-4-up", 0, 1, 0, 1);
-        InitQuickSend("send-4-down", 0, 1, 0, -1);
+        InitQuickSend("send-4-up", 0, 0, 0, 1);
+        InitQuickSend("send-4-down", 0, 0, 0, -1);
         InitQuickSend("send-forward", 0, 0, 1, 0);
         InitQuickSend("send-backward", 0, 0, -1, 0);
         InitQuickSend("send-left", -1, 0, 0, 0);
@@ -136,9 +137,11 @@ public class Mods : MonoBehaviour
         
         root.Q<Toggle>("auto-mine").RegisterValueChangedCallback(AutoMineEvent);
         root.Q<Toggle>("inverse-auto-mine").RegisterValueChangedCallback(InverseAutoMineEvent);
+
+        Calculate();
         
         InitXray();
-
+        
         InvokeRepeating(nameof(Execute), 2.0f, 0.08f);
         InvokeRepeating(nameof(KillAuraExecute), 2.0f, 0.05f);
         InvokeRepeating(nameof(AutoMineExecute), 2.0f, 0.5f);
@@ -221,6 +224,40 @@ public class Mods : MonoBehaviour
 
             xrayContainer.Add(slider);
         }
+    }
+
+    public void Calculate()
+    {
+        /*int enemyHp = 6;
+
+        int[] swords = { 7, 4, -5 };
+        
+        using (Context ctx = new Context())
+        {
+            Debug.Log("Doing");
+            for (int i = 1; i < 10; i++)
+            {
+                IntExpr[] solutions = Enumerable.Range(0, i)
+                    .Select(j => (IntExpr)ctx.MkIntConst($"x{j}"))
+                    .ToArray();
+                
+                BoolExpr[] swordConstraints = solutions.Select(sol => ctx.MkOr(swords.Select(x => ctx.MkEq(sol, ctx.MkInt(x))))).ToArray();
+
+                BoolExpr sumConstraint = ctx.MkEq(ctx.MkAdd(solutions), ctx.MkInt(enemyHp));
+
+                Solver solver = ctx.MkSolver();
+                solver.Assert(swordConstraints);
+                solver.Assert(sumConstraint);
+
+                if (solver.Check() == Status.SATISFIABLE)
+                {
+                    Model model = solver.Model;
+                    Debug.Log(model);
+                    break;
+                }
+                Debug.Log("Model not good");
+            }
+        }*/
     }
 
     private void LogInventoryEvent(ClickEvent evt)
@@ -314,81 +351,128 @@ public class Mods : MonoBehaviour
         
         var strength = (string)block["strength"];
 
-        var Istrength = ParseIStrength(strength);
-
-        if (Istrength == "")
-        {
-            Istrength = "1";
-        }
-
         if (strength.Contains("i"))
         {
+            var Istrength = ParseIStrength(strength);
             var inventory = playerController.inventory;
             bool success = false;
-            foreach (var item in inventory)
-            {
-                if ((string)item.Value["type"] == "pickaxe" && item.Value.TryGetValue("strength", out var value))
-                {
-                    var itemIStrength = ParseIStrength(value);
-                    if (itemIStrength == "")
-                    {
-                        print("Found pickaxe with strength 1i, breaking " + Istrength + "i rock");
-                        for (int i = 0; i < int.Parse(Istrength); i++)
-                        {
-                            conn.Interact(item.Key, "1", "0", y.ToString());
-                        }
 
-                        success = true;
-                        break;
+            if (Istrength > 0)
+            {
+                foreach (var item in inventory)
+                {
+                    if (item.Value["type"] == "pickaxe" && item.Value.TryGetValue("strength", out var value))
+                    {
+                        var itemIStrength = ParseIStrength(value);
+                        if (itemIStrength == 1)
+                        {
+                            print("Found pickaxe with strength 1i, breaking " + Istrength + "i rock");
+                            for (int i = 0; i < Istrength; i++)
+                            {
+                                conn.Interact(item.Key, "1", "0", y.ToString());
+                            }
+
+                            success = true;
+                            break;
+                        }
+                        
                     }
                 }
-            }
+                
+                if (!success)
+                {
+                    foreach (var item1 in inventory)
+                    {
+                        foreach (var item2 in inventory)
+                        {
+                            if (item1.Value["type"] == "pickaxe" && item1.Value.TryGetValue("strength", out var value1) && item2.Value["type"] == "pickaxe" && item2.Value.TryGetValue("strength", out var value2))
+                            {
+                                var itemIStrength1 = ParseIStrength(value1);
+                                var itemIStrength2 = ParseIStrength(value2);
 
-            if (!success)
-            {
-                Debug.LogWarning("Could not find pickaxe with strength 1i");
-                return;
+                                if (itemIStrength1 + itemIStrength2 == 1)
+                                {
+                                    print("Found two pickaxes with combined strength 1i, breaking " + Istrength + "i rock");
+                                    for (int i = 0; i < Istrength; i++)
+                                    {
+                                        conn.Interact(item1.Key, "1", "0", y.ToString());
+                                        conn.Interact(item2.Key, "1", "0", y.ToString());
+                                    }
+
+                                    success = true;
+                                    break;
+                                }
+
+                            }
+                        }
+
+                        if (success) break;
+                    }
+                }
+
+                if (!success)
+                {
+                    Debug.LogWarning("Could not find pickaxe with strength 1i");
+                    return;
+                }
             }
         }
 
         var normalStrength = ParseStrength(strength);
         print("Breaking " + normalStrength + " rock");
-        for (int i = 0; i < int.Parse(normalStrength); i++)
+        if (normalStrength > 0)
         {
-            for (int j = 0; j < 1000; j++)
+            for (int i = 0; i < normalStrength; i++)
             {
-                var slot = playerController.ConvertSlot(j, -1);
-                if (!playerController.inventory.ContainsKey(slot))
+                for (int j = 0; j < 1000; j++)
                 {
-                    conn.Interact(slot, "1", "0", y.ToString());
-                    break;
+                    var slot = playerController.ConvertSlot(j, -1);
+                    if (!playerController.inventory.ContainsKey(slot))
+                    {
+                        conn.Interact(slot, "1", "0", y.ToString());
+                        break;
+                    }
                 }
             }
         }
         chunkManager.MoveAndUpdate("1", y.ToString(), "0", "0");
     }
 
-    private string ParseIStrength(string strength)
+    private int ParseIStrength(string strength)
     {
         if (strength.Contains("+")) {
             strength = strength.Split('+')[1];
         }
-        return strength.Remove(strength.Length - 1, 1);
-    }
-    private string ParseStrength(string strength)
-    {
-        if (strength.Contains("+")) {
-           return strength.Split('+')[0];
+        if (strength.Contains("-"))
+        {
+            int minusCount = strength.Count(x => x == '-');
+            strength = strength.Split('-')[minusCount];
+            
+            if (minusCount == 2 && strength == "i") strength = "-1i";
         }
 
-        return strength;
+        if (strength == "i") strength = "1i";
+        
+        return int.Parse(strength.Remove(strength.Length - 1, 1));
+    }
+    private int ParseStrength(string strength)
+    {
+        if (strength.Contains("+")) {
+           return int.Parse(strength.Split('+')[0]);
+        }
+        if (strength.Contains("i") || strength == "")
+        {
+            return 0;
+        }
+        
+        return int.Parse(strength);
     }
 
     private void XrayUpdated()
     {
         chunkManager.blockTypes = chunkManager.ParseBlockTypes(blockTypesObject);
         chunkManager.ResetChunks();
-    }
+    }   
 
     private void DungeonModeEvent(ClickEvent evt)
     {
@@ -461,6 +545,7 @@ public class Mods : MonoBehaviour
     private void AutoPickupExecute()
     {
         if (!hasBeenNewTickAutoPickup) return;
+        if (!autoPickup) return;
         hasBeenNewTickAutoPickup = false;
 
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
