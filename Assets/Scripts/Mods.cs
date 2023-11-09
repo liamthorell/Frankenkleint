@@ -140,8 +140,8 @@ public class Mods : MonoBehaviour
         InitXray();
 
         InvokeRepeating(nameof(Execute), 2.0f, 0.08f);
-        
-        InvokeRepeating(nameof(AutoMineExecute), 2.0f, 0.7f);
+        InvokeRepeating(nameof(KillAuraExecute), 2.0f, 0.05f);
+        InvokeRepeating(nameof(AutoMineExecute), 2.0f, 0.5f);
 
         detailPanel = root.Q<VisualElement>("detail-panel");
         detailPanel.visible = false;
@@ -149,10 +149,8 @@ public class Mods : MonoBehaviour
 
     public void Execute()
     {
-        KillAuraExecute();
         SelfKillExecute();
         AutoPickupExecute();
-        
         SendPacketExecute();
     }
 
@@ -357,7 +355,15 @@ public class Mods : MonoBehaviour
         print("Breaking " + normalStrength + " rock");
         for (int i = 0; i < int.Parse(normalStrength); i++)
         {
-            conn.Interact("-1", "1", "0", y.ToString());
+            for (int j = 0; j < 1000; j++)
+            {
+                var slot = playerController.ConvertSlot(j, -1);
+                if (!playerController.inventory.ContainsKey(slot))
+                {
+                    conn.Interact(slot, "1", "0", y.ToString());
+                    break;
+                }
+            }
         }
         chunkManager.MoveAndUpdate("1", y.ToString(), "0", "0");
     }
