@@ -113,3 +113,23 @@ MonoBehaviour:
     textureIndex: 14
     modelOverride: {fileID: 0}
     material: {fileID: 0}
+  - name: sheld
+    textureIndex: 4
+    modelOverride: {fileID: 3329179299495649079, guid: 8c538e0ae74320546b288201b2a4a2c5, type: 3}
+    material: {fileID: 0}
+  - name: ventrcle
+    textureIndex: 4
+    modelOverride: {fileID: 5561078499954356179, guid: 1015a2252f71ef14aa65cb3e81b10c68, type: 3}
+    material: {fileID: 0}
+  - name: spider_legs
+    textureIndex: 17
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
+  - name: multiplier
+    textureIndex: 16
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
+  - name: goal
+    textureIndex: 18
+    modelOverride: {fileID: 0}
+    material: {fileID: 0}
