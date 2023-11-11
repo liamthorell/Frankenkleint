@@ -323,11 +323,14 @@ MonoBehaviour:
   killAura: 1
   selfKill: 0
   autoPickup: 1
+  autoMine: 0
+  inverseAutoMine: 0
   viewDistance: 0
   heightDistance: 0
   inventorySize: 10
   inventorySizeI: 10
   inventorySlider: 0
+  invertDimensions: 0
   sendX: 0
   sendY: 0
   sendZ: 0
