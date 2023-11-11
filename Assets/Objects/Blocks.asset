@@ -47,15 +47,15 @@ MonoBehaviour:
     material: {fileID: 0}
   - name: ghost
     textureIndex: 8
-    modelOverride: {fileID: 0}
+    modelOverride: {fileID: 5601750541150420667, guid: 3fe13a48487c2b846801bb025caf5618, type: 3}
     material: {fileID: 0}
   - name: monster
     textureIndex: 9
-    modelOverride: {fileID: 0}
+    modelOverride: {fileID: 5601750541150420667, guid: 44d17617434423a44a051c6bcd715785, type: 3}
     material: {fileID: 0}
   - name: player
     textureIndex: 10
-    modelOverride: {fileID: 0}
+    modelOverride: {fileID: 5601750541150420667, guid: 4feec50961863c143b30f57975d2f1e7, type: 3}
     material: {fileID: 0}
   - name: none
     textureIndex: 255
