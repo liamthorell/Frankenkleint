@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>z3x64win</id>
+        <version>4.5.0.1</version>
+        <authors>Microsoft Corporation</authors>
+        <licenseUrl>https://github.com/Z3Prover/z3/blob/master/LICENSE.txt</licenseUrl>
+        <projectUrl>https://github.com/Z3Prover/z3</projectUrl>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <description>Contains Microsoft.Z3.dll version 4.5.0 for platform x64, the helper file libz3.dll and the tool z3.exe</description>
+        <summary>Z3 .NET Interface</summary>
+        <releaseNotes>At installation time libz3.dll is moved into the lib folder after files in lib have been added as references, libz3.dll must be in the same folder as Microsoft.Z3.dll but is not a valid reference.</releaseNotes>
+        <copyright>Microsoft Corporation</copyright>
+        <language>es-US</language>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.0" />
+        </frameworkAssemblies>
+    </metadata>
+</package>
