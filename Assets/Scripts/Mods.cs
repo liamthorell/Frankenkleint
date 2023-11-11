@@ -58,6 +58,7 @@ public class Mods : MonoBehaviour
     public FreeCam freecam;
     public InputManager inputManager;
     public PlayerController playerController;
+    public MazeSolver mazeSolver;
     
     public BlockTypes blockTypesObject; 
     
@@ -134,6 +135,8 @@ public class Mods : MonoBehaviour
         
         root.Q<Button>("log-inventory").RegisterCallback<ClickEvent>(LogInventoryEvent);
         root.Q<Button>("log-entities").RegisterCallback<ClickEvent>(LogEntitiesEvent);
+
+        root.Q<Button>("save-maze").RegisterCallback<ClickEvent>(SaveMazeEvent);
         
         root.Q<Toggle>("auto-mine").RegisterValueChangedCallback(AutoMineEvent);
         root.Q<Toggle>("inverse-auto-mine").RegisterValueChangedCallback(InverseAutoMineEvent);
@@ -226,6 +229,11 @@ public class Mods : MonoBehaviour
         }
     }
 
+    public void SaveMazeEvent(ClickEvent evt)
+    {
+        mazeSolver.SaveMaze();
+    }
+    
     public void Calculate()
     {
         /*int enemyHp = 6;

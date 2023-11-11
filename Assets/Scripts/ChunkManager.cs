@@ -37,8 +37,6 @@ public class ChunkManager : MonoBehaviour
     public BlockTypes blockTypesObject; 
     public List<BlockTypes.BlockType> blockTypes;
 
-    public bool mazeSolve = false;
-    
     Debounce _updateChunksDebounce = new Debounce();
 
     public void UpdateDistanceDelta()
@@ -384,13 +382,13 @@ public class ChunkManager : MonoBehaviour
 
     public void HandleMove(IDictionary data)
     {
-        if (mazeSolve)
+        if (mazeSolver.isSavingMaze)
         {
-            chunkDataQueue.Add(data);
+            mazeSolver.HandleMove(data);
         }
         else
         {
-            mazeSolver.HandleMove(data);
+            chunkDataQueue.Add(data);
         }
     }
     

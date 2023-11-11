@@ -23,6 +23,11 @@
                 <ui:Label tabindex="-1" text="Inventory" parse-escape-sequences="true" display-tooltip-when-elided="true" class="heading" />
                 <ui:IntegerField label="Inventory size" value="0" name="inventory-size" class="input-gray-text" />
                 <ui:IntegerField label="Inventory size (i)" value="0" name="inventory-size-i" class="input-gray-text" />
+                <ui:Label tabindex="-1" text="Maze" parse-escape-sequences="true" display-tooltip-when-elided="true" class="heading" />
+                <ui:VisualElement name="maze-buttons" style="flex-grow: 1; flex-direction: row;">
+                    <ui:Button text="Save maze" parse-escape-sequences="true" display-tooltip-when-elided="true" name="save-maze" style="flex-grow: 1;" />
+                    <ui:Button text="Solve maze" parse-escape-sequences="true" display-tooltip-when-elided="true" name="solve-maze" style="flex-grow: 1;" />
+                </ui:VisualElement>
                 <ui:Label tabindex="-1" text="X-ray" parse-escape-sequences="true" display-tooltip-when-elided="true" class="heading" />
                 <ui:VisualElement name="xray-modes" style="flex-grow: 1; flex-direction: row;">
                     <ui:Button text="Enable dungeon mode" parse-escape-sequences="true" display-tooltip-when-elided="true" name="dungeon-mode" style="flex-grow: 1;" />

@@ -323,11 +323,14 @@ MonoBehaviour:
   killAura: 1
   selfKill: 0
   autoPickup: 1
+  autoMine: 0
+  inverseAutoMine: 0
   viewDistance: 0
   heightDistance: 0
   inventorySize: 10
   inventorySizeI: 10
   inventorySlider: 0
+  invertDimensions: 0
   sendX: 0
   sendY: 0
   sendZ: 0
@@ -339,6 +342,7 @@ MonoBehaviour:
   freecam: {fileID: 963194229}
   inputManager: {fileID: 967077403}
   playerController: {fileID: 967077405}
+  mazeSolver: {fileID: 967077406}
   blockTypesObject: {fileID: 11400000, guid: cb343699c8c957f45b86d375c75b5f0d, type: 2}
 --- !u!1 &963194225
 GameObject:
@@ -509,6 +513,7 @@ GameObject:
   - component: {fileID: 967077403}
   - component: {fileID: 967077404}
   - component: {fileID: 967077405}
+  - component: {fileID: 967077406}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -603,6 +608,20 @@ MonoBehaviour:
   currentSlot: {x: 0, y: 0}
   uiController: {fileID: 734952255}
   mods: {fileID: 734952256}
+  conn: {fileID: 967077401}
+--- !u!114 &967077406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967077400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 816cf342840076c48b415275d792b408, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isSavingMaze: 0
   conn: {fileID: 967077401}
 --- !u!1 &1082765651
 GameObject:
