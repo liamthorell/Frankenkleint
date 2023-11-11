@@ -27,6 +27,7 @@ public class ChunkManager : MonoBehaviour
     public Material blockTransparentMaterial;
 
     private Connection conn;
+    private MazeSolver mazeSolver;
     
     private List<Vector3Int> preChunkQueue = new();
     private List<Vector3Int> chunkQueue = new();
@@ -35,6 +36,8 @@ public class ChunkManager : MonoBehaviour
     // very temporary way of doing it
     public BlockTypes blockTypesObject; 
     public List<BlockTypes.BlockType> blockTypes;
+
+    public bool mazeSolve = false;
     
     Debounce _updateChunksDebounce = new Debounce();
 
@@ -83,6 +86,7 @@ public class ChunkManager : MonoBehaviour
     public void Awake()
     {
         conn = GetComponent<Connection>();
+        mazeSolver = GetComponent<MazeSolver>();
 
         blockTypes = ParseBlockTypes(blockTypesObject);
         
@@ -380,7 +384,14 @@ public class ChunkManager : MonoBehaviour
 
     public void HandleMove(IDictionary data)
     {
-        chunkDataQueue.Add(data);
+        if (mazeSolve)
+        {
+            chunkDataQueue.Add(data);
+        }
+        else
+        {
+            mazeSolver.HandleMove(data);
+        }
     }
     
     private static TValue ConvertObject<TValue>(object obj)
