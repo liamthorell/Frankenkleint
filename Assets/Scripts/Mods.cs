@@ -29,6 +29,11 @@ public class Mods : MonoBehaviour
     public int sendY = 0;
     public int sendZ = 0;
     public int send4th = 0;
+
+    public int mineX = 1;
+    public int mineY = -1;
+    public int mineZ = 0;
+    public int mine4th = 0;
     
     public bool sendRepeat = false;
     public string packetType = "Move";
@@ -98,7 +103,11 @@ public class Mods : MonoBehaviour
         root.Q<IntegerField>("send-y").RegisterValueChangedCallback(SendYEvent);
         root.Q<IntegerField>("send-z").RegisterValueChangedCallback(SendZEvent);
         root.Q<IntegerField>("send-4th").RegisterValueChangedCallback(Send4thEvent);
-        
+
+        root.Q<IntegerField>("mine-x").RegisterValueChangedCallback(MineXEvent);
+        root.Q<IntegerField>("mine-y").RegisterValueChangedCallback(MineYEvent);
+        root.Q<IntegerField>("mine-z").RegisterValueChangedCallback(MineZEvent);
+
         root.Q<Toggle>("send-repeat").RegisterValueChangedCallback(SendRepeatEvent);
         root.Q<RadioButtonGroup>("packet-type").RegisterValueChangedCallback(PacketTypeEvent);
         root.Q<Button>("send-packet").RegisterCallback<ClickEvent>(SendPacketEvent);
@@ -366,6 +375,19 @@ public class Mods : MonoBehaviour
     {
         inverseAutoMine = evt.newValue;
     }
+    
+    private void MineXEvent(ChangeEvent<int> evt)
+    {
+        mineX = evt.newValue;
+    }
+    private void MineYEvent(ChangeEvent<int> evt)
+    {
+        mineY = evt.newValue;
+    }
+    private void MineZEvent(ChangeEvent<int> evt)
+    {
+        mineZ = evt.newValue;
+    }
 
     public void AutoMineExecute()
     {
@@ -373,17 +395,16 @@ public class Mods : MonoBehaviour
         
         if (chunkManager.chunks.Count == 0) return;
 
-        int y = -1;
-        if (inverseAutoMine) y = 1;
+        var newY = inverseAutoMine ? -mineY : mineY;
         
-        var block = chunkManager.GetBlockAtPosition(new Vector3Int(1, y, 0));
+        var block = chunkManager.GetBlockAtPosition(new Vector3Int(mineX, newY, mineZ));
         
         print("Next block type is: " + block["type"]);
 
         if ((string)block["type"] == "air")
         {
             print("Moving to next");
-            chunkManager.MoveAndUpdate("1", y.ToString(), "0", "0");
+            chunkManager.MoveAndUpdate(mineX.ToString(), newY.ToString(), mineZ.ToString(), "0");
             return;
         };
         
@@ -409,7 +430,7 @@ public class Mods : MonoBehaviour
                             print("Found pickaxe with strength 1i, breaking " + Istrength + "i rock");
                             for (int i = 0; i < Istrength; i++)
                             {
-                                conn.Interact(item.Key, "1", "0", y.ToString());
+                                conn.Interact(item.Key, mineX.ToString(), mineZ.ToString(), newY.ToString());
                             }
 
                             success = true;
@@ -435,8 +456,8 @@ public class Mods : MonoBehaviour
                                     print("Found two pickaxes with combined strength 1i, breaking " + Istrength + "i rock");
                                     for (int i = 0; i < Istrength; i++)
                                     {
-                                        conn.Interact(item1.Key, "1", "0", y.ToString());
-                                        conn.Interact(item2.Key, "1", "0", y.ToString());
+                                        conn.Interact(item1.Key, mineX.ToString(), mineZ.ToString(), newY.ToString());
+                                        conn.Interact(item2.Key, mineX.ToString(), mineZ.ToString(), newY.ToString());
                                     }
 
                                     success = true;
@@ -469,13 +490,13 @@ public class Mods : MonoBehaviour
                     var slot = playerController.ConvertSlot(j, -1);
                     if (!playerController.inventory.ContainsKey(slot))
                     {
-                        conn.Interact(slot, "1", "0", y.ToString());
+                        conn.Interact(slot, mineX.ToString(), mineZ.ToString(), newY.ToString());
                         break;
                     }
                 }
             }
         }
-        chunkManager.MoveAndUpdate("1", y.ToString(), "0", "0");
+        chunkManager.MoveAndUpdate(mineX.ToString(), newY.ToString(), mineZ.ToString(), "0");
     }
 
     private int ParseIStrength(string strength)

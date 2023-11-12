@@ -20,7 +20,7 @@ public class InputManager : MonoBehaviour
     //Stopwatch sw = new Stopwatch();
     private float jumpTimer = 0f;
 
-    public bool wasd = false;
+    public bool wasd = true;
     
     private void Awake()
     {
