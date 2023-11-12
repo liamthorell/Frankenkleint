@@ -23,9 +23,7 @@ public class CoordinateSystemHandler : MonoBehaviour
     private void OnScreenResChange()
     {
         var topRight = ownCam.ScreenToWorldPoint(new Vector3(ownCam.pixelWidth, ownCam.pixelHeight, ownCam.farClipPlane));
-            
-        print(topRight);
-
+        
         transform.position = new Vector3(topRight.x + offset.x, topRight.y + offset.y, 1);
     }
 
