@@ -212,7 +212,7 @@ public class ChunkController : MonoBehaviour
                     CreateBlockWithModel((string)entity["type"], x, y, 1f, entity["name"] + " " + entity["hp"] + "/" + entity["max_hp"]);
                     break;
                 case "monster":
-                    string text = "Monster" + " " + entity["hp"] + "/" + entity["max_hp"];
+                    string text = "Zombie" + " " + entity["hp"] + "/" + entity["max_hp"];
                     var inventory = ConvertObject<Dictionary<string,Dictionary<string, string>>>(entity["inventory"]);
                     foreach (var slot in inventory)
                     {
@@ -222,7 +222,7 @@ public class ChunkController : MonoBehaviour
                     CreateBlockWithModel((string)entity["type"], x, y, 1f, text);
                     break;
                 case "ghost":
-                    CreateBlockWithModel((string)entity["type"], x, y, 1f, "Ghost");
+                    CreateBlockWithModel((string)entity["type"], x, y, 1f, "Ghast");
                     break;
                 default:
                     CreateBlockWithModel("none", x, y);
