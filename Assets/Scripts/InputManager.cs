@@ -20,7 +20,7 @@ public class InputManager : MonoBehaviour
     //Stopwatch sw = new Stopwatch();
     private float jumpTimer = 0f;
 
-    public bool wasd = true;
+    public bool wasd = false;
     
     private void Awake()
     {
@@ -170,9 +170,7 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
-        //if (sw.Elapsed.TotalSeconds < 0.3) return;
-        //sw.Reset();
-        //sw.Start();
+        if (chunkManager.hasNotStarted) return;
         
         int x = 0;
         int z = 0;

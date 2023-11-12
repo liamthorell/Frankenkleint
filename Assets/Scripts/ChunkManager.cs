@@ -37,6 +37,8 @@ public class ChunkManager : MonoBehaviour
     public BlockTypes blockTypesObject; 
     public List<BlockTypes.BlockType> blockTypes;
 
+    public bool hasNotStarted = true;
+
     Debounce _updateChunksDebounce = new Debounce();
 
     public void UpdateDistanceDelta()
@@ -332,6 +334,12 @@ public class ChunkManager : MonoBehaviour
         CreateChunk(new Vector3Int(ViewDelta,HeightDelta,ViewDelta), data);
         
         mods.hasBeenNewTickAutoPickup = true;
+
+        if (hasNotStarted)
+        {
+            hasNotStarted = false;
+            MoveAndUpdate("0", "0", "0");
+        }
     }
 
     private Vector3Int ConvertPositionToRelativeZero(Vector3Int pos)

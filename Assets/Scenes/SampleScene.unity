@@ -563,7 +563,7 @@ MonoBehaviour:
   uiController: {fileID: 734952255}
   mainCamera: {fileID: 963194227}
   freecam: {fileID: 963194229}
-  wasd: 1
+  wasd: 0
 --- !u!114 &967077404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -584,6 +584,7 @@ MonoBehaviour:
   chunkObject: {fileID: 8430967951448889010, guid: 7bdd1c1400b2aa943b693d13a9fa6ff5, type: 3}
   chunksGameObject: {fileID: 1364168029}
   mods: {fileID: 734952256}
+  inputManager: {fileID: 967077403}
   blockMaterial: {fileID: 2100000, guid: 1c3474a43bfdf4846810af0cc97edceb, type: 2}
   blockTransparentMaterial: {fileID: 2100000, guid: 460013d7d28f2de49b43807aa5b8ecfe, type: 2}
   blockTypesObject: {fileID: 11400000, guid: cb343699c8c957f45b86d375c75b5f0d, type: 2}
