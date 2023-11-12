@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using HGS.CallLimiter;
 using Newtonsoft.Json;
-//using Microsoft.Z3;
 
 public class Mods : MonoBehaviour
 {
@@ -209,6 +208,9 @@ public class Mods : MonoBehaviour
         var xrayContainer = root.Q<VisualElement>("xray-foldout");
         foreach (var entry in blockTypesObject.blocks)
         {
+            if (entry.modelOverride)
+                continue;
+            
             var slider = new Slider();
             slider.name = "xray-" + entry.name;
             slider.label = entry.name;

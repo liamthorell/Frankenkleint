@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.Z3</id>
+    <version>4.12.2</version>
+    <authors>Microsoft</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>content/icon.jpg</icon>
+    <projectUrl>https://github.com/Z3Prover/z3</projectUrl>
+    <description>Z3 is a satisfiability modulo theories solver from Microsoft Research.
+
+Linux Dependencies:
+    libgomp.so.1 installed</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <language>en</language>
+    <tags>smt constraint solver theorem prover</tags>
+    <repository type="git" url="https://github.com/Z3Prover/z3" branch="master" commit="e417f7d78509b2d0c9ebc911fee7632e6ef546b6" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.0" />
+    </dependencies>
+  </metadata>
+</package>
