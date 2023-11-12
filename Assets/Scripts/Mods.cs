@@ -840,7 +840,10 @@ public class Mods : MonoBehaviour
             else
             {
                 print("Could not find weapon");
-                conn.Interact(playerController.GetCurrentSlot(), (string)entity["x"], (string)entity["y"]);
+                for (int i = 0; i < 10; i++)
+                {
+                    conn.Interact(playerController.GetCurrentSlot(), (string)entity["x"], (string)entity["y"]);
+                }
             }
             //conn.Interact(playerController.GetCurrentSlot(), (string)entity["x"], (string)entity["y"]);
         }
