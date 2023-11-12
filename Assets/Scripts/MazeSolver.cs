@@ -12,7 +12,7 @@ public class MazeSolver : MonoBehaviour
     private List<Vector4> chunkQueue = new();
     private List<Vector4> preChunkQueue = new();
     private List<Dictionary<string, object>> maze = new();
-    private List<Dictionary<string, object>> path = new();
+    private List<Dictionary<string, int>> path = new();
     
     public Connection conn;
     public ChunkManager ChunkManager;
@@ -77,13 +77,27 @@ public class MazeSolver : MonoBehaviour
     public void SolveMaze()
     {
         var json = File.ReadAllText("path.json");
-        path = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(json);
+        path = JsonConvert.DeserializeObject<List<Dictionary<string, int>>>(json);
     }
     public void SolveMazeReverse()
     {
         var json = File.ReadAllText("path.json");
-        path = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(json);
-        path.Reverse();
+        var tempPath = JsonConvert.DeserializeObject<List<Dictionary<string, int>>>(json);
+        var tempPathInverse = new List<Dictionary<string, int>>();
+        foreach (var p in tempPath)  
+        {
+            tempPathInverse.Add(new Dictionary<string, int>()
+            {
+                {"x", -p["x"]},
+                {"y", -p["y"]},
+                {"z", -p["z"]},
+                {"xi", -p["xi"]},
+            });
+        }
+        
+        tempPathInverse.Reverse();
+        
+        path = tempPathInverse;
     }
     
     IEnumerator SendChunks()
