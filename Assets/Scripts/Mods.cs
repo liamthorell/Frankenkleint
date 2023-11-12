@@ -8,6 +8,9 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using HGS.CallLimiter;
 using Newtonsoft.Json;
+using Microsoft.Z3;
+using Unity.Collections;
+using Unity.Jobs;
 
 public class Mods : MonoBehaviour
 {
@@ -69,6 +72,12 @@ public class Mods : MonoBehaviour
     private Debounce xrayDebounce = new Debounce();
 
     private VisualElement detailPanel;
+
+    public Dictionary<string, List<string>> calculatedKills = new();
+    public List<JobHandle> calcJobHandles = new();
+    public List<NativeArray<int>> calcJobInputData = new();
+    public List<NativeArray<int>> calcJobOutputData = new();
+    public List<string> calcIds = new();
 
     private void Start()
     {
@@ -150,13 +159,14 @@ public class Mods : MonoBehaviour
         
         root.Q<Toggle>("auto-mine").RegisterValueChangedCallback(AutoMineEvent);
         root.Q<Toggle>("inverse-auto-mine").RegisterValueChangedCallback(InverseAutoMineEvent);
-
-        Calculate();
+        
+        InvokeRepeating(nameof(CheckToSeeIfMobsNeedsCalculate), 0f, 0.5f);
         
         InitXray();
         
-        InvokeRepeating(nameof(Execute), 2.0f, 0.08f);
-        InvokeRepeating(nameof(KillAuraExecute), 2.0f, 0.05f);
+        InvokeRepeating(nameof(Execute), 1.0f, 0.08f);
+        //InvokeRepeating(nameof(KillAuraExecute), 2.0f, 0.05f);
+        InvokeRepeating(nameof(KillAuraExecute), 2.0f, 0.5f);
         InvokeRepeating(nameof(AutoMineExecute), 2.0f, 0.5f);
 
         detailPanel = root.Q<VisualElement>("detail-panel");
@@ -168,6 +178,132 @@ public class Mods : MonoBehaviour
         SelfKillExecute();
         AutoPickupExecute();
         SendPacketExecute();
+    }
+    
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            detailPanel.visible = false;
+            root.Q<Label>("detail-inventory-title").visible = false;
+            root.Q<Label>("detail-inventory").visible = false;
+        }
+
+        for (int i = 0; i < calcJobHandles.Count; i++)
+        {
+            var job = calcJobHandles[i];
+            if (job.IsCompleted)
+            {
+                var outputData = calcJobOutputData[i];
+                var inputData = calcJobInputData[i];
+                var id = calcIds[i];
+                calcJobInputData.RemoveAt(i);
+                calcJobOutputData.RemoveAt(i);
+                calcJobHandles.RemoveAt(i);
+                calcIds.RemoveAt(i);
+
+                var swordsToUse = new List<string>();
+                
+                job.Complete();
+
+                for (int j = 0; j < outputData.Length / 2; j++)
+                {
+                    var sw1 = outputData[j * 2];
+                    var sw2 = outputData[j * 2 + 1];
+                    
+                    if (sw1 == 0 && sw2 == 0) continue;
+                    swordsToUse.Add(playerController.ConvertSlot(sw1, sw2));
+                }
+                calculatedKills[id] = swordsToUse;
+                
+                outputData.Dispose();
+                inputData.Dispose();
+            }
+        }
+    }
+
+    public void CheckToSeeIfMobsNeedsCalculate()
+    {
+        var chunk = chunkManager.chunks[chunkManager.ViewDelta][chunkManager.HeightDelta][chunkManager.ViewDelta];
+        if (chunk == null) return;
+        
+        var controller = chunk.GetComponent<ChunkController>();
+        
+        var swords = playerController.inventory.Where(item => item.Value["type"] == "sword").ToList();
+        
+        foreach (var entity in controller.entities)
+        {
+            if ((string)entity["type"] == "monster")
+            {
+                var id = GetIdOfMob(entity);
+                
+                if (!calculatedKills.ContainsKey(id))
+                {
+                    var inputData = new NativeArray<int>(swords.Count * 2 + 6, Allocator.Persistent);
+                    
+                    inputData[0] = ParseStrength((string)entity["hp"]);
+                    inputData[1] = ParseIStrength((string)entity["hp"]);
+
+
+
+                    int shield = 0;
+                    int sheld = 0;
+                    
+                    var inventory = ConvertObject<Dictionary<string,Dictionary<string, string>>>(entity["inventory"]);
+                    foreach (var item in inventory)
+                    {
+                        if (item.Value["type"] == "shield")
+                        {
+                            shield += int.Parse(item.Value["count"]);
+                        }
+                        if (item.Value["type"] == "sheld")
+                        {
+                            sheld += int.Parse(item.Value["count"]);
+                        }
+                    }
+                    
+                    inputData[2] = shield;
+                    inputData[3] = sheld;
+                    
+                    inputData[4] = 1;
+                    inputData[5] = 0;
+                    
+                    for (int i = 0; i < swords.Count; i++)
+                    {
+                        inputData[i * 2 + 4] = ParseStrength(swords[i].Value["strength"]);
+                        inputData[i * 2 + 4 + 1] = ParseIStrength(swords[i].Value["strength"]);
+                    }
+                    
+                    var outputData = new NativeArray<int>(100, Allocator.Persistent);
+                    
+                    calculatedKills.Add(id, new List<string>());
+                    var job = new Calculate() {
+                        inputData = inputData,
+                        outputData = outputData,
+                    };
+                    
+                    calcJobHandles.Add(job.Schedule());
+                    calcJobInputData.Add(inputData);
+                    calcJobOutputData.Add(outputData);
+                    calcIds.Add(id);
+                }
+            }
+        }
+    }
+
+    private string GetIdOfMob(Dictionary<string, object> entity)
+    {
+        string id = "";
+        id += entity["hp"];
+        id += entity["max_hp"];
+        var inventory = ConvertObject<Dictionary<string,Dictionary<string, string>>>(entity["inventory"]);
+        foreach (var item in inventory.Take(10))
+        {
+            id += item.Value["type"];
+            id += item.Value["count"];
+        }
+
+        return id;
     }
 
     private void InitQuickSend(string name, int x, int y, int z, int xi)
@@ -274,40 +410,95 @@ public class Mods : MonoBehaviour
     {
         mazeSolver.AbortMazeSolve();
     }
-    
-    public void Calculate()
+    struct Calculate : IJob
     {
-        /*int enemyHp = 6;
-
-        int[] swords = { 7, 4, -5 };
-        
-        using (Context ctx = new Context())
+        public NativeArray<int> inputData;
+        public NativeArray<int> outputData;
+        public void Execute()
         {
-            Debug.Log("Doing");
-            for (int i = 1; i < 10; i++)
+            //Tuple<int, int> enemyHp = new Tuple<int, int>(11, 5);
+
+            Tuple<int, int> enemyHp = new Tuple<int, int>(inputData[0], inputData[1]);
+
+
+            //Tuple<int, int>[] swords = { new Tuple<int, int>(7, -4), new Tuple<int, int>(4, -3), new Tuple<int, int>(-5, -5), new Tuple<int, int>(7, -9) };
+            List<Tuple<int, int>> swords = new List<Tuple<int, int>>();
+
+            for (int i = 0; i < ((inputData.Length - 4) / 2); i++)
             {
-                IntExpr[] solutions = Enumerable.Range(0, i)
-                    .Select(j => (IntExpr)ctx.MkIntConst($"x{j}"))
-                    .ToArray();
-                
-                BoolExpr[] swordConstraints = solutions.Select(sol => ctx.MkOr(swords.Select(x => ctx.MkEq(sol, ctx.MkInt(x))))).ToArray();
-
-                BoolExpr sumConstraint = ctx.MkEq(ctx.MkAdd(solutions), ctx.MkInt(enemyHp));
-
-                Solver solver = ctx.MkSolver();
-                solver.Assert(swordConstraints);
-                solver.Assert(sumConstraint);
-
-                if (solver.Check() == Status.SATISFIABLE)
-                {
-                    Model model = solver.Model;
-                    Debug.Log(model);
-                    break;
-                }
-                Debug.Log("Model not good");
+                swords.Add(new Tuple<int, int>(inputData[i*2 + 4], inputData[i*2 + 4 + 1]));
             }
-        }*/
+            
+            using (Context ctx = new Context())
+            {
+                var shield = ctx.MkInt(inputData[2]);
+                var sheld = ctx.MkInt(inputData[3]);
+                for (int i = 1; i < 50; i++)
+                {
+                    Tuple<ArithExpr, ArithExpr>[] convertedSwords = swords.Select(x => new Tuple<ArithExpr, ArithExpr>(ctx.MkInt(x.Item1), ctx.MkInt(x.Item2))).ToArray();
+
+                    Tuple<ArithExpr, ArithExpr>[] solutions = Enumerable.Range(0, i).Select(j => new Tuple<ArithExpr, ArithExpr>(ctx.MkIntConst(j.ToString()), ctx.MkIntConst("i" + j.ToString()))).ToArray();
+
+                    Solver solver = ctx.MkSolver();
+                    
+                    foreach (var sol in solutions)
+                    {
+                        solver.Assert(ctx.MkOr(convertedSwords.Select(x => ctx.MkAnd(ctx.MkEq(sol.Item1, x.Item1), ctx.MkEq(sol.Item2, x.Item2)))));
+                    }
+
+                    ArithExpr total = ctx.MkInt(0);
+                    ArithExpr totalI = ctx.MkInt(0);
+                    foreach (var sol in solutions)
+                    {
+                        total = ctx.MkAdd(total, sol.Item1 - shield);
+                        totalI = ctx.MkAdd(totalI, sol.Item2 - sheld);
+                    }
+
+                    solver.Assert(ctx.MkEq(total, ctx.MkInt(enemyHp.Item1)));
+                    solver.Assert(ctx.MkEq(totalI, ctx.MkInt(enemyHp.Item2)));
+
+                    if (solver.Check() == Status.SATISFIABLE)
+                    {
+                        Model model = solver.Model;
+
+                        int[][] swordsToUse = new int[i][];
+                        for (int j = 0; j < i; j++)
+                        {
+                            swordsToUse[j] = new int[2];
+                        }
+                        
+                        foreach (FuncDecl constDecl in model.ConstDecls)
+                        {
+                            Expr value = model.Evaluate(constDecl.Apply());
+                            if (constDecl.Name.ToString().Contains("i"))
+                            {
+                                swordsToUse[int.Parse(constDecl.Name.ToString().Substring(1))][1] = int.Parse(value.ToString());
+                            }
+                            else
+                            {
+                                swordsToUse[int.Parse(constDecl.Name.ToString())][0] = int.Parse(value.ToString());
+                            }
+                        }
+
+                        for (int j = 0; j < (swordsToUse.Length); j++)
+                        {
+                            var sw = swordsToUse[j];
+                            outputData[j * 2] = sw[0];
+                            outputData[j * 2 + 1] = sw[1];
+                        }
+                        /*foreach (var sw in swordsToUse)   
+                        {
+                            print("Swords: " + sw[0] + ", " + sw[1]);
+                        }*/
+                        
+                        break;
+                    }
+                    //Debug.Log("Model not good");
+                }
+            }
+        }
     }
+    
 
     private void LogInventoryEvent(ClickEvent evt)
     {
@@ -513,8 +704,12 @@ public class Mods : MonoBehaviour
         }
 
         if (strength == "i") strength = "1i";
-        
-        return int.Parse(strength.Remove(strength.Length - 1, 1));
+
+        if (int.TryParse(strength.Remove(strength.Length - 1, 1), out var result))
+        {
+            return result;
+        }
+        return 0;
     }
     private int ParseStrength(string strength)
     {
@@ -526,7 +721,11 @@ public class Mods : MonoBehaviour
             return 0;
         }
         
-        return int.Parse(strength);
+        if (int.TryParse(strength, out var result))
+        {
+            return result;
+        }
+        return 0;
     }
 
     private void XrayUpdated()
@@ -608,8 +807,39 @@ public class Mods : MonoBehaviour
             int y = int.Parse((string)entity["y"]);
                 
             if (x > 1 || x < -1 || y > 1 || y < -1) continue;
-                
-            conn.Interact(playerController.GetCurrentSlot(), (string)entity["x"], (string)entity["y"]);
+
+            string id = GetIdOfMob(entity);
+
+            if (calculatedKills.TryGetValue(id, out var killItem))
+            {
+                calculatedKills.Remove(id);
+                if (killItem.Count > 0)
+                {
+                    foreach (var lol in killItem)
+                    {
+                        if (lol == "1")
+                        {
+                            print("Killing mob with hand");
+                            conn.Interact("-10", (string)entity["x"], (string)entity["y"]);
+                        }
+                        foreach (var invItem in playerController.inventory)
+                        {
+                            if (invItem.Value["type"] == "sword" && invItem.Value["strength"] == lol)
+                            {   
+                                print("Killing mob with " + lol + " sword");
+                                conn.Interact(invItem.Key, (string)entity["x"], (string)entity["y"]);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                print("Could not find weapon");
+                conn.Interact(playerController.GetCurrentSlot(), (string)entity["x"], (string)entity["y"]);
+            }
+            //conn.Interact(playerController.GetCurrentSlot(), (string)entity["x"], (string)entity["y"]);
         }
     }
     
@@ -801,16 +1031,6 @@ public class Mods : MonoBehaviour
     public void LogInfo(string info)
     {
         root.Q<Label>("info").text = info;
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            detailPanel.visible = false;
-            root.Q<Label>("detail-inventory-title").visible = false;
-            root.Q<Label>("detail-inventory").visible = false;
-        }
     }
 
     public void ShowDetailPane(Dictionary<string, object> data)

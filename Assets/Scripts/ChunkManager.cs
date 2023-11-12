@@ -282,7 +282,7 @@ public class ChunkManager : MonoBehaviour
         while (true)
         {
             int chunksPerFrame = 0;
-            while (chunksPerFrame < 3)
+            while (chunksPerFrame < 4)
             {
                 if (chunkQueue.Count > 0 && chunkDataQueue.Count > 0)
                 {
