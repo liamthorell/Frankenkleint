@@ -218,15 +218,30 @@ public class Mods : MonoBehaviour
             slider.highValue = 1;
             slider.value = 1;
             slider.style.marginRight = 10;
+            slider.userData = true;
             if (xray.TryGetValue(entry.name, out var value))
             {
                 slider.value = value;
             }
 
-            slider.RegisterValueChangedCallback(evt =>
-            {
-                xray[entry.name] = evt.newValue;
-                xrayDebounce.Run(XrayUpdated, 0.5f, this);
+            slider.RegisterValueChangedCallback(evt => {
+                var sli = root.Q<Slider>("xray-" + entry.name);
+                if ((bool)sli.userData)
+                {
+                    if (Math.Abs(evt.newValue - 1f) < 0.05f)
+                    {
+                        xray.Remove(entry.name);
+                    }
+                    else
+                    {
+                        xray[entry.name] = evt.newValue;
+                    }
+                    xrayDebounce.Run(XrayUpdated, 0.5f, this);
+                }
+                else
+                {
+                    sli.userData = true;
+                }
             });
 
             xrayContainer.Add(slider);
@@ -505,16 +520,43 @@ public class Mods : MonoBehaviour
         xray["rock"] = 0f;
         xray["concrete"] = 0f;
         xray["wood"] = 0f;
-
+        xray["veilstone"] = 0f;
+        xray["hypercube"] = 0f;
         xray["air"] = 0.3f;
+        
+        UpdateXraySliders();
         
         chunkManager.blockTypes = chunkManager.ParseBlockTypes(blockTypesObject);
         chunkManager.ResetChunks();
+    }
+
+    private void UpdateXraySliders()
+    {
+        var xrayContainer = root.Q<VisualElement>("xray-foldout");
+        foreach (var entry in blockTypesObject.blocks)
+        {
+            if (entry.modelOverride)
+                continue;
+            
+            var slider = xrayContainer.Q<Slider>("xray-" + entry.name);
+            slider.userData = false;
+
+            if (xray.TryGetValue(entry.name, out var value))
+            {
+                slider.value = value;
+            }
+            else
+            {
+                slider.value = 1f;
+            }
+        }
     }
     
     private void ResetTransparencyEvent(ClickEvent evt)
     {
         xray = defaultXray.ToDictionary(entry => entry.Key, entry => entry.Value);
+
+        UpdateXraySliders();
         
         chunkManager.blockTypes = chunkManager.ParseBlockTypes(blockTypesObject);
         chunkManager.ResetChunks();
