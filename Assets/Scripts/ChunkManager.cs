@@ -143,15 +143,15 @@ public class ChunkManager : MonoBehaviour
         
         if (removeOldChunksOnMove) DestroyAllChunks();
 
+        if (!updateAll) return;
+        
         for (int yy = -HeightDelta; yy <= HeightDelta; yy++)
         {
             UpdateSingleChunk(0, yy, 0);
         }
 
-        if (updateAll)
-        {
-            _updateChunksDebounce.Run(AddAllChunksToQueue, 0.5f, this);
-        }
+        _updateChunksDebounce.Run(AddAllChunksToQueue, 0.5f, this);
+        
         //AddAllChunksToQueue();
     }
     
