@@ -76,7 +76,6 @@ public class Mods : MonoBehaviour
         root.Q<Toggle>("kill-aura").value = killAura;
         
         root.Q<Toggle>("self-kill").RegisterValueChangedCallback(SelfKillEvent);
-        root.Q<Toggle>("freecam").RegisterValueChangedCallback(FreecamEvent);
         root.Q<Button>("reset-camera-position").RegisterCallback<ClickEvent>(ResetCameraPositionEvent);
 
         root.Q<Toggle>("remove-old-chunks-on-move").RegisterValueChangedCallback(RemoveOldChunksOnMoveEvent);
@@ -138,6 +137,7 @@ public class Mods : MonoBehaviour
         root.Q<Button>("save-maze").RegisterCallback<ClickEvent>(SaveMazeEvent);
         root.Q<Button>("solve-maze").RegisterCallback<ClickEvent>(SolveMazeEvent);
         root.Q<Button>("solve-maze-reverse").RegisterCallback<ClickEvent>(SolveMazeReverseEvent);
+        root.Q<Button>("abort-solve-maze").RegisterCallback<ClickEvent>(AbortMazeSolveEvent);
         
         root.Q<Toggle>("auto-mine").RegisterValueChangedCallback(AutoMineEvent);
         root.Q<Toggle>("inverse-auto-mine").RegisterValueChangedCallback(InverseAutoMineEvent);
@@ -244,6 +244,11 @@ public class Mods : MonoBehaviour
     public void SolveMazeReverseEvent(ClickEvent evt)
     {
         mazeSolver.SolveMazeReverse();
+    }
+    
+    public void AbortMazeSolveEvent(ClickEvent evt)
+    {
+        mazeSolver.AbortMazeSolve();
     }
     
     public void Calculate()
@@ -623,14 +628,6 @@ public class Mods : MonoBehaviour
         chunkManager.HeightDistance = heightDistance;
         chunkManager.UpdateDistanceDelta();
         chunkManager.ResetChunks();
-    }
-    
-    private void FreecamEvent(ChangeEvent<bool> evt)
-    {
-        var newValue = evt.newValue;
-
-        freecam.active = newValue;
-        inputManager.wasd = !newValue;
     }
     
     private void InventorySizeEvent(ChangeEvent<int> evt)

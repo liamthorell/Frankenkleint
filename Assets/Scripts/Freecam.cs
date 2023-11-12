@@ -27,7 +27,7 @@ public class FreeCam : MonoBehaviour
     /// <summary>
     /// Speed of camera movement when shift is held down,
     /// </summary>
-    public float fastMovementSpeed = 100f;
+    public float fastMovementSpeed = 25f;
 
     /// <summary>
     /// Sensitivity for free look.
@@ -64,8 +64,8 @@ public class FreeCam : MonoBehaviour
     {
         if (!active) return;
         
-        //var fastMode = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-        var fastMode = false;
+        var fastMode = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        //var fastMode = false;
         var movementSpeed = fastMode ? this.fastMovementSpeed : this.movementSpeed;
         if (Input.GetKey(KeyCode.A))
         {
@@ -130,11 +130,11 @@ public class FreeCam : MonoBehaviour
             transform.position = transform.position + transform.forward * axis * zoomSensitivity;
         }
 
-        if ((Input.GetKey(KeyCode.Mouse1) && Input.GetKey(KeyCode.Mouse0)) && !looking)
+        if (((Input.GetKey(KeyCode.Mouse1) && Input.GetKey(KeyCode.Mouse0)) || Input.GetKey(KeyCode.Mouse2)) && !looking)
         {
             StartLooking();
         }
-        else if (Input.GetKeyUp(KeyCode.Mouse1) || Input.GetKeyUp(KeyCode.Mouse0))
+        else if (Input.GetKeyUp(KeyCode.Mouse1) || Input.GetKeyUp(KeyCode.Mouse0) || Input.GetKeyUp(KeyCode.Mouse2))
         {
             StopLooking();
         }

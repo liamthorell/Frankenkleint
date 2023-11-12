@@ -451,7 +451,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 10
-  fastMovementSpeed: 100
+  fastMovementSpeed: 40
   freeLookSensitivity: 3
   zoomSensitivity: 10
   fastZoomSensitivity: 50
@@ -624,7 +624,6 @@ MonoBehaviour:
   isSavingMaze: 0
   conn: {fileID: 967077401}
   ChunkManager: {fileID: 967077404}
-  hashBeenNewTick: 0
 --- !u!1 &1082765651
 GameObject:
   m_ObjectHideFlags: 0

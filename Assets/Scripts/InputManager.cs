@@ -195,7 +195,7 @@ public class InputManager : MonoBehaviour
                 HandleRightClick();
             }
         }
-        if (Input.GetKey(KeyCode.Mouse1) && Input.GetKey(KeyCode.Mouse0))
+        if ((Input.GetKey(KeyCode.Mouse1) && Input.GetKey(KeyCode.Mouse0)) || Input.GetKey(KeyCode.Mouse2))
         {
             freecam.active = true;
             wasd = false;
@@ -305,7 +305,7 @@ public class InputManager : MonoBehaviour
 
     private void MoveWithThrottle(string x, string y, string z, string xi = "0")
     {
-        _moveThrottle.Run(() => chunkManager.MoveAndUpdate(x, y, z, xi), 0.3f);
+        _moveThrottle.Run(() => chunkManager.MoveAndUpdate(x, y, z, xi), 0.25f);
     }
     
     private static TValue ConvertObject<TValue>(object obj)

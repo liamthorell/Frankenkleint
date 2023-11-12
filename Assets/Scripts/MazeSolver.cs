@@ -99,6 +99,11 @@ public class MazeSolver : MonoBehaviour
         
         path = tempPathInverse;
     }
+
+    public void AbortMazeSolve()
+    {
+        path = new List<Dictionary<string, int>>();
+    }
     
     IEnumerator SendChunks()
     {
