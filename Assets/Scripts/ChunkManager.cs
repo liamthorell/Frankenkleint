@@ -134,7 +134,7 @@ public class ChunkManager : MonoBehaviour
         }
     }
     
-    public void MoveAndUpdate(string x, string y, string z, string xi = "0")
+    public void MoveAndUpdate(string x, string y, string z, string xi = "0", bool updateAll = true)
     {
         
         chunkQueue.Add(new Vector3Int(-1,-1,-1));
@@ -148,8 +148,10 @@ public class ChunkManager : MonoBehaviour
             UpdateSingleChunk(0, yy, 0);
         }
 
-        _updateChunksDebounce.Run(AddAllChunksToQueue, 0.5f, this);
-
+        if (updateAll)
+        {
+            _updateChunksDebounce.Run(AddAllChunksToQueue, 0.5f, this);
+        }
         //AddAllChunksToQueue();
     }
     

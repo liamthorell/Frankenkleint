@@ -12,13 +12,15 @@ public class MazeSolver : MonoBehaviour
     private List<Vector4> chunkQueue = new();
     private List<Vector4> preChunkQueue = new();
     private List<Dictionary<string, object>> maze = new();
-
+    private List<Dictionary<string, object>> path = new();
+    
     public Connection conn;
-
-
+    public ChunkManager ChunkManager;
+    
     private void Start()
     {
         StartCoroutine(SendChunks());
+        InvokeRepeating(nameof(MoveOneStepFromPath), 0f, 0.26f);
     }
 
     private void Update()
@@ -29,7 +31,23 @@ public class MazeSolver : MonoBehaviour
         {
             isSavingMaze = false;
             var json = JsonConvert.SerializeObject(maze);
-            File.WriteAllText("maze.txt", json);
+            File.WriteAllText("maze.json", json);
+        }
+    }
+
+
+    public void MoveOneStepFromPath()
+    {
+        if (path.Count > 0)
+        {
+            print("Current path length: " + path.Count);
+            
+            var p = path[0];
+            path.RemoveAt(0);
+
+            print("Moving to: " + p["x"] + " " + p["y"] + " " + p["z"] + " " + p["xi"]);
+            
+            ChunkManager.MoveAndUpdate(p["x"].ToString(), p["y"].ToString(), p["z"].ToString(), p["xi"].ToString(), false);
         }
     }
 
@@ -54,6 +72,18 @@ public class MazeSolver : MonoBehaviour
         }
         
         isSavingMaze = true;
+    }
+
+    public void SolveMaze()
+    {
+        var json = File.ReadAllText("path.json");
+        path = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(json);
+    }
+    public void SolveMazeReverse()
+    {
+        var json = File.ReadAllText("path.json");
+        path = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(json);
+        path.Reverse();
     }
     
     IEnumerator SendChunks()

@@ -623,6 +623,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isSavingMaze: 0
   conn: {fileID: 967077401}
+  ChunkManager: {fileID: 967077404}
+  hashBeenNewTick: 0
 --- !u!1 &1082765651
 GameObject:
   m_ObjectHideFlags: 0

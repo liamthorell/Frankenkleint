@@ -27,6 +27,7 @@
                 <ui:VisualElement name="maze-buttons" style="flex-grow: 1; flex-direction: row;">
                     <ui:Button text="Save maze" parse-escape-sequences="true" display-tooltip-when-elided="true" name="save-maze" style="flex-grow: 1;" />
                     <ui:Button text="Solve maze" parse-escape-sequences="true" display-tooltip-when-elided="true" name="solve-maze" style="flex-grow: 1;" />
+                    <ui:Button text="Solve maze reversed" parse-escape-sequences="true" display-tooltip-when-elided="true" name="solve-maze-reverse" style="flex-grow: 1;" />
                 </ui:VisualElement>
                 <ui:Label tabindex="-1" text="X-ray" parse-escape-sequences="true" display-tooltip-when-elided="true" class="heading" />
                 <ui:VisualElement name="xray-modes" style="flex-grow: 1; flex-direction: row;">

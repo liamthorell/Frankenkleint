@@ -137,6 +137,8 @@ public class Mods : MonoBehaviour
         root.Q<Button>("log-entities").RegisterCallback<ClickEvent>(LogEntitiesEvent);
 
         root.Q<Button>("save-maze").RegisterCallback<ClickEvent>(SaveMazeEvent);
+        root.Q<Button>("solve-maze").RegisterCallback<ClickEvent>(SolveMazeEvent);
+        root.Q<Button>("solve-maze-reverse").RegisterCallback<ClickEvent>(SolveMazeReverseEvent);
         
         root.Q<Toggle>("auto-mine").RegisterValueChangedCallback(AutoMineEvent);
         root.Q<Toggle>("inverse-auto-mine").RegisterValueChangedCallback(InverseAutoMineEvent);
@@ -232,6 +234,14 @@ public class Mods : MonoBehaviour
     public void SaveMazeEvent(ClickEvent evt)
     {
         mazeSolver.SaveMaze();
+    }
+    public void SolveMazeEvent(ClickEvent evt)
+    {
+        mazeSolver.SolveMaze();
+    }
+    public void SolveMazeReverseEvent(ClickEvent evt)
+    {
+        mazeSolver.SolveMazeReverse();
     }
     
     public void Calculate()
