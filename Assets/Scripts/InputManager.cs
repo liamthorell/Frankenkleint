@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using HGS.CallLimiter;
 using Newtonsoft.Json;
+using UnityEngine.SceneManagement;
 
 //using System.Diagnostics;
 public class InputManager : MonoBehaviour
@@ -167,9 +168,26 @@ public class InputManager : MonoBehaviour
             chunkManager.UpdateSingleChunk(chunkController.chunkPosition.x, chunkController.chunkPosition.y + (int)hit.normal.y, chunkController.chunkPosition.z);
         }
     }
+    
+    private void ToggleGuideScene()
+    {
+        if (SceneManager.GetSceneByName("GuideScene").isLoaded)
+        {
+            SceneManager.UnloadSceneAsync(SceneManager.GetSceneByName("GuideScene"));
+
+            return;
+        }
+        
+        SceneManager.LoadScene("Scenes/GuideScene", LoadSceneMode.Additive);
+    }
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            ToggleGuideScene();
+        }
+        
         if (chunkManager.hasNotStarted) return;
         
         int x = 0;
