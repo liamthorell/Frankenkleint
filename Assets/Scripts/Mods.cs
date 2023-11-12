@@ -450,8 +450,11 @@ public class Mods : MonoBehaviour
                     ArithExpr totalI = ctx.MkInt(0);
                     foreach (var sol in solutions)
                     {
-                        total = ctx.MkAdd(total, sol.Item1 - shield);
-                        totalI = ctx.MkAdd(totalI, sol.Item2 - sheld);
+                        ArithExpr expr = ctx.MkSub(sol.Item1, shield);
+                        total = ctx.MkAdd(total, ctx.MkITE(ctx.MkLt(expr, ctx.MkInt(0)), ctx.MkInt(0), expr) as ArithExpr);
+
+                        ArithExpr exprI = ctx.MkSub(sol.Item2, shield);
+                        totalI = ctx.MkAdd(totalI, ctx.MkITE(ctx.MkLt(exprI, ctx.MkInt(0)), ctx.MkInt(0), exprI) as ArithExpr);
                     }
 
                     solver.Assert(ctx.MkEq(total, ctx.MkInt(enemyHp.Item1)));
