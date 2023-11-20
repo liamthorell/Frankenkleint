@@ -1,6 +1,7 @@
 # Frankenkleint
 
-yes very good klient
+3D-client for the game "Halloweenspelet" hosted by Kodsport for the Halloween season of 2023.
+
 ![Main](https://github.com/liamthorell/Frankenkleint/blob/main/images/main.png?raw=true)
 ![Img](https://github.com/liamthorell/Frankenkleint/blob/main/images/img1.png?raw=true)
 ![Img](https://github.com/liamthorell/Frankenkleint/blob/main/images/img2.png?raw=true)
